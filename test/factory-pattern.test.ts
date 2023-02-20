@@ -1,12 +1,9 @@
-import { User } from "../src/models/abstract-user.model";
-import { Team } from "../src/models/team.model";
 import {
   Developer,
   ScrumMaster,
   LeadDeveloper,
   ProductOwner,
 } from "../src/models/users.model";
-import { TeamFactory } from "../src/factory-pattern/team-factory";
 import { UserFactory } from "../src/factory-pattern/user-factory";
 
 describe("User class", () => {

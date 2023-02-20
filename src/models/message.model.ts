@@ -3,12 +3,14 @@ import { Composite } from "../composite-pattern/models/composite.model";
 
 export class Message extends Composite implements IMessage {
   public sender: string;
+  public recipient?: string;
   public content: string;
 
-  constructor(sender: string, content: string) {
+  constructor(sender: string, content: string, recipient?: string) {
     super();
     this.sender = sender;
     this.content = content;
+    this.recipient = recipient
   }
 
   public log(): void {

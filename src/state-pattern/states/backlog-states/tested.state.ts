@@ -1,6 +1,7 @@
-import { BacklogItem } from "../../../observer-pattern/models/backlogItem.model";
+import { BacklogItem } from "../../../models/backlogItem.model";
 import { IBacklogItemState } from "../../interface/IBacklogItemState";
 import { BacklogDoneState } from "./done.state";
+import { BacklogReadyForTestingState } from "./readyForTesting.state";
 import { BacklogToDoState } from "./toDo.state";
 
 export class BacklogTestedState implements IBacklogItemState {
@@ -22,12 +23,7 @@ export class BacklogTestedState implements IBacklogItemState {
   }
 
   readyForTesting(): void {
-    console.log(
-      "Cannot move backlog item to the ReadyForTesting state from Tested state"
-    );
-    throw new Error(
-      "Cannot move backlog item to the ReadyForTesting from Tested state"
-    );
+    this.backlogItem.setState(new BacklogReadyForTestingState(this.backlogItem));
   }
 
   testing(): void {

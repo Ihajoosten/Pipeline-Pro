@@ -1,4 +1,4 @@
-import { BacklogItem } from "../../../composite-pattern/models/backlogItem.composite.model";
+import { BacklogItem } from "../../../models/backlogItem.model";
 import { IBacklogItemState } from "../../interface/IBacklogItemState";
 import { BacklogDoingState } from "./doing.state";
 

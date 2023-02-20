@@ -1,4 +1,4 @@
-import { BacklogItem } from "../../../observer-pattern/models/backlogItem.model";
+import { BacklogItem } from "../../../models/backlogItem.model";
 import { IBacklogItemState } from "../../interface/IBacklogItemState";
 import { BacklogReadyForTestingState } from "./readyForTesting.state";
 import { BacklogToDoState } from "./toDo.state";

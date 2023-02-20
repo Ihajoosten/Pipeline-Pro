@@ -1,5 +1,6 @@
-import { IMessage } from "../interface/IMessage";
-import { IMessagingService } from "../interface/IMessagingService";
+import { IMessage } from "../interfaces/IMessage";
+import { IMessagingService } from "../interfaces/IMessagingService";
+
 
 // Implementation of the MessagingService for discord
 export class DiscordService implements IMessagingService {

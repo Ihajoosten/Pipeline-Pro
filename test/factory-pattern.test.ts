@@ -1,6 +1,6 @@
-import { User } from "../src/factory-pattern/models/abstract-user.model";
-import { Team } from "../src/factory-pattern/models/team.model";
-import { Developer, ScrumMaster, LeadDeveloper, ProductOwner } from "../src/factory-pattern/models/users.model";
+import { User } from "../src/models/abstract-user.model";
+import { Team } from "../src/models/team.model";
+import { Developer, ScrumMaster, LeadDeveloper, ProductOwner } from "../src/models/users.model";
 import { TeamFactory } from "../src/factory-pattern/team-factory";
 import { UserFactory } from "../src/factory-pattern/user-factory";
 

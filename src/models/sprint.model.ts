@@ -1,11 +1,14 @@
-import { IMessage } from "../../adapter-pattern/interfaces/IMessage";
-import { MessagingServiceAdapter } from "../../adapter-pattern/message.adapter";
-import { ISprintState } from "../../state-pattern/interface/ISprintState";
-import { SprintCreatedState } from "../../state-pattern/states/sprint-states/created.state";
-import { IObserver } from "../interfaces/IObserver";
+import { IMessage } from "../adapter-pattern/interfaces/IMessage";
+import { MessagingServiceAdapter } from "../adapter-pattern/message.adapter";
+import { ISprintState } from "../state-pattern/interface/ISprintState";
+import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
+import { IObserver } from "../observer-pattern/interfaces/IObserver";
+import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { BacklogItem } from "./backlogItem.model";
+import { Composite } from "../composite-pattern/models/composite.model";
+import { ScrumMaster } from "./users.model";
 
-export class Sprint {
+export class Sprint extends Composite implements ISubject {
   public name: string;
   public startDate: Date;
   public endDate: Date;
@@ -18,6 +21,7 @@ export class Sprint {
   private state: ISprintState;
 
   constructor(name: string, startDate: Date, endDate: Date) {
+    super();
     this.name = name;
     this.startDate = startDate;
     this.endDate = endDate;
@@ -26,6 +30,28 @@ export class Sprint {
     this.activities = new Array<string>();
     this.observers = new Array<IObserver>();
     this.state = new SprintCreatedState(this);
+  }
+
+  public log(): void {
+    console.log(`Sprint: ${this.name}`);
+    this.children.forEach((child) => child.log());
+  }
+
+  public override add(component: Composite): void {
+    if (!(component instanceof BacklogItem || ScrumMaster)) {
+      return;
+    }
+
+    let containsScrumMaster = false;
+    this.children.forEach(child => {
+      if (child instanceof ScrumMaster) {
+        containsScrumMaster = true;
+      }
+    })
+
+    if (containsScrumMaster && component instanceof BacklogItem) {
+      this.children.push(component);
+    }
   }
 
   public setState(state: ISprintState): void {
@@ -74,21 +100,6 @@ export class Sprint {
     for (const observer of this.observers) {
       observer.update(this);
     }
-  }
-
-  public addBacklogItem(backlogItem: BacklogItem) {
-    this.backlogItems.push(backlogItem);
-  }
-
-  public removeBacklogItem(backlogItem: BacklogItem) {
-    const index = this.backlogItems.indexOf(backlogItem);
-    if (index !== -1) {
-      this.backlogItems.splice(index, 1);
-    }
-  }
-
-  public addActivity(activity: string) {
-    this.activities.push(activity);
   }
 
   public startSprint() {

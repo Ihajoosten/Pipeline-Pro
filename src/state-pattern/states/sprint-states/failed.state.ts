@@ -1,4 +1,4 @@
-import { Sprint } from "../../../observer-pattern/models/sprint.model";
+import { Sprint } from "../../../models/sprint.model";
 import { ISprintState } from "../../interface/ISprintState";
 import { SprintInProgressState } from "./inProgress.state";
 

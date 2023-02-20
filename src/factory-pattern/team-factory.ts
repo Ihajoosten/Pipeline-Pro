@@ -1,5 +1,5 @@
-import { User } from "./models/abstract-user.model";
-import { Team } from "./models/team.model";
+import { User } from "../models/abstract-user.model";
+import { Team } from "../models/team.model";
 import { UserFactory } from "./user-factory";
 
 // TeamFactory class

@@ -10,10 +10,10 @@ export class Developer extends User {
     console.log(`Developer: ${this.name}`);
   }
   public getRole(): string {
-    return super.role;
+    return this.role;
   }
   public getEmail(): string {
-    return super.email;
+    return this.email;
   }
   public getDescription() {
     return "I am a developer.";
@@ -28,10 +28,10 @@ export class LeadDeveloper extends User {
     console.log(`Lead developer: ${this.name}`);
   }
   public getRole(): string {
-    return super.role;
+    return this.role;
   }
   public getEmail(): string {
-    return super.email;
+    return this.email;
   }
   public getDescription() {
     return "I am a lead developer.";
@@ -46,10 +46,10 @@ export class ScrumMaster extends User {
     console.log(`Scrum master: ${this.name}`);
   }
   public getRole(): string {
-    return super.role;
+    return this.role;
   }
   public getEmail(): string {
-    return super.email;
+    return this.email;
   }
   public getDescription() {
     return "I am a scrum master.";
@@ -67,10 +67,10 @@ export class ProductOwner extends User {
     return component instanceof ProductOwner;
   }
   public getRole(): string {
-    return super.role;
+    return this.role;
   }
   public getEmail(): string {
-    return super.email;
+    return this.email;
   }
   public getDescription() {
     return "I am a product owner.";

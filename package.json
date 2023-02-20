@@ -8,6 +8,10 @@
     "start": "ts-node src/test.ts",
     "prettier": "prettier --write ."
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lhajoosten/Pipeline-Pro.git"
+  },
   "keywords": [
     "Typescript",
     "Avans",

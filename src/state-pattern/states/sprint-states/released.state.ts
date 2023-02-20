@@ -2,7 +2,7 @@ import { Sprint } from "../../../observer-pattern/models/sprint.model";
 import { ISprintState } from "../../interface/ISprintState";
 
 export class SprintReleasedState implements ISprintState {
-  constructor(private sprint: Sprint) { }
+  constructor(private sprint: Sprint) {}
 
   public create(): void {
     console.log("Sprint is already released.");

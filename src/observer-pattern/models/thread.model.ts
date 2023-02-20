@@ -2,7 +2,6 @@ import { IObserver } from "../interfaces/IObserver";
 import { ISubject } from "../interfaces/ISubject";
 import { BacklogItem } from "./backlogItem.model";
 
-
 // Implement the Subject interface in the Thread class
 export class Thread implements ISubject {
   private backlogItem: BacklogItem;

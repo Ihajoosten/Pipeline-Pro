@@ -3,7 +3,7 @@ import { ISprintState } from "../../interface/ISprintState";
 import { SprintInProgressState } from "./inProgress.state";
 
 export class SprintFailedState implements ISprintState {
-  constructor(private sprint: Sprint) { }
+  constructor(private sprint: Sprint) {}
 
   public create(): void {
     let hasToDo: boolean = false;

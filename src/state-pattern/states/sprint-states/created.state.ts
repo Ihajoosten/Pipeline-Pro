@@ -3,7 +3,7 @@ import { ISprintState } from "../../interface/ISprintState";
 import { SprintInProgressState } from "./inProgress.state";
 
 export class SprintCreatedState implements ISprintState {
-  constructor(private sprint: Sprint) { }
+  constructor(private sprint: Sprint) {}
 
   public create(): void {
     console.log("Sprint is already created.");

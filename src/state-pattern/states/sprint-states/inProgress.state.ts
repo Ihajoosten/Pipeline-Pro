@@ -4,7 +4,7 @@ import { SprintCompletedState } from "./completed.state";
 import { SprintFailedState } from "./failed.state";
 
 export class SprintInProgressState implements ISprintState {
-  constructor(private sprint: Sprint) { }
+  constructor(private sprint: Sprint) {}
 
   public create(): void {
     console.log("Sprint is already created.");

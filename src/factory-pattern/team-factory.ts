@@ -4,11 +4,17 @@ import { UserFactory } from "./user-factory";
 
 // TeamFactory class
 export class TeamFactory {
-  static createTeam(teamName: string, roles: string[], numMembers: number): Team {
+  static createTeam(
+    teamName: string,
+    roles: string[],
+    numMembers: number
+  ): Team {
     let users: User[] = [];
     for (let i = 0; i < numMembers; i++) {
       const role = roles[i % roles.length];
-      users.push(UserFactory.createUser(`User ${i}`, `user${i}@example.com`, role));
+      users.push(
+        UserFactory.createUser(`User ${i}`, `user${i}@example.com`, role)
+      );
     }
     return new Team(teamName, users);
   }

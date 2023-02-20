@@ -23,7 +23,9 @@ export class BacklogTestedState implements IBacklogItemState {
   }
 
   readyForTesting(): void {
-    this.backlogItem.setState(new BacklogReadyForTestingState(this.backlogItem));
+    this.backlogItem.setState(
+      new BacklogReadyForTestingState(this.backlogItem)
+    );
   }
 
   testing(): void {

@@ -43,11 +43,11 @@ export class Sprint extends Composite implements ISubject {
     }
 
     let containsScrumMaster = false;
-    this.children.forEach(child => {
+    this.children.forEach((child) => {
       if (child instanceof ScrumMaster) {
         containsScrumMaster = true;
       }
-    })
+    });
 
     if (containsScrumMaster && component instanceof BacklogItem) {
       this.children.push(component);

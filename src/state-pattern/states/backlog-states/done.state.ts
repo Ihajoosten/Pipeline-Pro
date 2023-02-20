@@ -1,4 +1,4 @@
-import { BacklogItem } from "../../../observer-pattern/models/backlogItem.model";
+import { BacklogItem } from "../../../models/backlogItem.model";
 import { IBacklogItemState } from "../../interface/IBacklogItemState";
 
 export class BacklogDoneState implements IBacklogItemState {

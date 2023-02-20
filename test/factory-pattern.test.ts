@@ -1,6 +1,11 @@
 import { User } from "../src/models/abstract-user.model";
 import { Team } from "../src/models/team.model";
-import { Developer, ScrumMaster, LeadDeveloper, ProductOwner } from "../src/models/users.model";
+import {
+  Developer,
+  ScrumMaster,
+  LeadDeveloper,
+  ProductOwner,
+} from "../src/models/users.model";
 import { TeamFactory } from "../src/factory-pattern/team-factory";
 import { UserFactory } from "../src/factory-pattern/user-factory";
 
@@ -13,29 +18,49 @@ describe("User class", () => {
   });
 
   test("getDescription returns a description of the user's role", () => {
-    const user = new ScrumMaster("Jane Smith", "jane.smith@example.com", "ScrumMaster");
+    const user = new ScrumMaster(
+      "Jane Smith",
+      "jane.smith@example.com",
+      "ScrumMaster"
+    );
     expect(user.getDescription()).toEqual("I am a scrum master.");
   });
 
   test("Developer getDescription returns correct string", () => {
-    const developer = new Developer("Luc Joosten", "lhajoost@avans.nl", "Developer");
+    const developer = new Developer(
+      "Luc Joosten",
+      "lhajoost@avans.nl",
+      "Developer"
+    );
     expect(developer.getDescription()).toEqual("I am a developer.");
   });
 
   test("LeadDeveloper getDescription returns correct string", () => {
-    const leadDeveloper = new LeadDeveloper("Luc Joosten", "lhajoost@avans.nl", "LeadDeveloper");
+    const leadDeveloper = new LeadDeveloper(
+      "Luc Joosten",
+      "lhajoost@avans.nl",
+      "LeadDeveloper"
+    );
     expect(leadDeveloper.getDescription()).toEqual("I am a lead developer.");
   });
 
   test("ScrumMaster getDescription returns correct string", () => {
-    const scrumMaster = new ScrumMaster("Luc Joosten", "lhajoost@avans.nl", "ScrumMaster");
+    const scrumMaster = new ScrumMaster(
+      "Luc Joosten",
+      "lhajoost@avans.nl",
+      "ScrumMaster"
+    );
     expect(scrumMaster.getDescription()).toEqual("I am a scrum master.");
   });
 });
 
 describe("UserFactory class", () => {
   test("createUser returns a Developer object for role 'Developer'", () => {
-    const user = UserFactory.createUser("Luc Joosten", "lhajoost@avans.nl", "Developer");
+    const user = UserFactory.createUser(
+      "Luc Joosten",
+      "lhajoost@avans.nl",
+      "Developer"
+    );
     expect(user).toBeInstanceOf(Developer);
     expect(user.name).toEqual("Luc Joosten");
     expect(user.email).toEqual("lhajoost@avans.nl");
@@ -43,7 +68,11 @@ describe("UserFactory class", () => {
   });
 
   test("createUser returns a LeadDeveloper object for role 'LeadDeveloper'", () => {
-    const user = UserFactory.createUser("Luc Joosten", "lhajoost@avans.nl", "LeadDeveloper");
+    const user = UserFactory.createUser(
+      "Luc Joosten",
+      "lhajoost@avans.nl",
+      "LeadDeveloper"
+    );
     expect(user).toBeInstanceOf(LeadDeveloper);
     expect(user.name).toEqual("Luc Joosten");
     expect(user.email).toEqual("lhajoost@avans.nl");
@@ -51,7 +80,11 @@ describe("UserFactory class", () => {
   });
 
   test("createUser returns a ScrumMaster object for role 'ScrumMaster'", () => {
-    const user = UserFactory.createUser("Luc Joosten", "lhajoost@avans.nl", "ScrumMaster");
+    const user = UserFactory.createUser(
+      "Luc Joosten",
+      "lhajoost@avans.nl",
+      "ScrumMaster"
+    );
     expect(user).toBeInstanceOf(ScrumMaster);
     expect(user.name).toEqual("Luc Joosten");
     expect(user.email).toEqual("lhajoost@avans.nl");
@@ -59,7 +92,11 @@ describe("UserFactory class", () => {
   });
 
   test("createUser returns a ProductOwner object for role 'ProductOwner'", () => {
-    const user = UserFactory.createUser("Luc Joosten", "lhajoost@avans.nl", "ProductOwner");
+    const user = UserFactory.createUser(
+      "Luc Joosten",
+      "lhajoost@avans.nl",
+      "ProductOwner"
+    );
     expect(user).toBeInstanceOf(ProductOwner);
     expect(user.name).toEqual("Luc Joosten");
     expect(user.email).toEqual("lhajoost@avans.nl");

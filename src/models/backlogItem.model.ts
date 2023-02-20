@@ -29,16 +29,18 @@ export class BacklogItem extends Composite implements ISubject {
   }
 
   public override add(component: Composite): void {
-    if (!(component instanceof Developer || LeadDeveloper || Activity || Thread)) {
+    if (
+      !(component instanceof Developer || LeadDeveloper || Activity || Thread)
+    ) {
       return;
     }
 
     let containsDeveloper = false;
-    this.children.forEach(child => {
+    this.children.forEach((child) => {
       if (child instanceof Developer || LeadDeveloper) {
         containsDeveloper = true;
       }
-    })
+    });
 
     if (containsDeveloper && component instanceof Activity) {
       this.children.push(component);

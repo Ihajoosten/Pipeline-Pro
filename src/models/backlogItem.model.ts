@@ -1,19 +1,20 @@
-import { IMessage } from "../adapter-pattern/interfaces/IMessage";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IBacklogItemState } from "../state-pattern/interface/IBacklogItemState";
+import { BacklogDoneState } from "../state-pattern/states/backlog-states/done.state";
+import { BacklogReadyForTestingState } from "../state-pattern/states/backlog-states/readyForTesting.state";
 import { BacklogToDoState } from "../state-pattern/states/backlog-states/toDo.state";
 import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
-import { Developer, LeadDeveloper } from "./users.model"; // Mag ik hier een referenties hebben?
+import { Developer, LeadDeveloper } from "./users.model";
 
 export class BacklogItem implements ISubject {
   public id: string;
   public name: string;
   public description: string;
-  private observers: Array<IObserver>;
+  public notifyScrumMaster = false;
+  private observers: IObserver[] = [];
   private state: IBacklogItemState;
-  private message: IMessage = { content: "" };
   private developer?: Developer | LeadDeveloper
   private activities: Activity[] = [];
   private thread?: Thread;
@@ -22,7 +23,6 @@ export class BacklogItem implements ISubject {
     this.id = id;
     this.name = name;
     this.description = description;
-    this.observers = new Array<IObserver>();
     this.state = new BacklogToDoState(this);
   }
 
@@ -82,47 +82,42 @@ export class BacklogItem implements ISubject {
   }
 
   public toDo(): void {
-    this.message.content = `Backlog Item: ${this.name} is back in To Do`;
-    this.notify(this.message);
+    if (this.state instanceof BacklogReadyForTestingState || BacklogDoneState) {
+      this.notifyScrumMaster = true;
+    }
+    this.notify("Backlog item moved from 'ready for testing/done' state to 'to do' state.");
     this.state.toDo();
   }
 
   public doing(): void {
-    this.message.content = `Backlog Item: ${this.name} is in progress`;
-    this.notify(this.message);
+    this.notify("");
     this.state.doing();
   }
 
   public readyForTesting(): void {
-    this.message.content = `Backlog Item: ${this.name} ready for testing`;
-    this.notify(this.message);
+    this.notify("");
     this.state.readyForTesting();
   }
 
   public testing(): void {
-    this.message.content = `Backlog Item: ${this.name} is testing`;
-    this.notify(this.message);
+    this.notify("");
     this.state.testing();
   }
 
   public tested(): void {
-    this.message.content = `Backlog Item: ${this.name} is tested`;
-    this.notify(this.message);
+    this.notify("");
     this.state.tested();
   }
 
   public done(): void {
-    this.message.content = `Backlog Item: ${this.name} is done`;
-    this.notify(this.message);
+    this.notify("");
     this.state.done();
   }
 
-  // Attach an observer to the list of observers
   public subscribe(observer: IObserver) {
     this.observers.push(observer);
   }
 
-  // Detach an observer from the list of observers
   public unsubscribe(observer: IObserver) {
     const index = this.observers.indexOf(observer);
     if (index !== -1) {
@@ -130,10 +125,9 @@ export class BacklogItem implements ISubject {
     }
   }
 
-  // Notify all observers of a change in the backlogItem
-   public notify(message: IMessage) {
+   public notify(message: string) {
     for (const observer of this.observers) {
-      observer.update(message);
+      observer.update({ message, notifyScrumMaster: this.notifyScrumMaster });
     }
   }
 

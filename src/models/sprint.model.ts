@@ -8,13 +8,12 @@ import { ScrumMaster } from "./users.model";
 import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
 import { User } from "./abstract-user.model";
 
-export class Sprint implements ISubject {
+export class Sprint implements IObserver {
   private name: string;
   private startDate: Date;
   private endDate: Date;
   private messageService!: MessagingServiceAdapter;
   private message!: IMessage;
-  private observers: Array<IObserver>;
   private state: ISprintState;
   private scrumMaster?: ScrumMaster;
   private backlogItems: BacklogItem[] = [];
@@ -23,7 +22,6 @@ export class Sprint implements ISubject {
     this.name = name;
     this.startDate = startDate;
     this.endDate = endDate;
-    this.observers = new Array<IObserver>();
     this.state = new SprintActiveState(this);
   }
 
@@ -44,6 +42,7 @@ export class Sprint implements ISubject {
   }
 
   public addBacklogItem(backlogItem: BacklogItem) {
+    backlogItem.subscribe(this);
     this.backlogItems.push(backlogItem);
   }
 
@@ -51,6 +50,7 @@ export class Sprint implements ISubject {
     const index = this.backlogItems.indexOf(backlogItem);
     if (index !== -1) {
       this.backlogItems.splice(index, 1);
+      backlogItem.unsubscribe(this);
     }
   }
 
@@ -79,7 +79,6 @@ export class Sprint implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onCreate();
       this.message.content = `Sprint ${this.name} created`;
-      this.notify(this.message);
     }
   }
 
@@ -87,7 +86,6 @@ export class Sprint implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onStart();
       this.message.content = `Sprint ${this.name} started`;
-      this.notify(this.message);
     }
   }
 
@@ -95,7 +93,6 @@ export class Sprint implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onFinish();
       this.message.content = `Sprint ${this.name} completed`;
-      this.notify(this.message);
     }
   }
 
@@ -103,7 +100,6 @@ export class Sprint implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onReview();
       this.message.content = `Sprint ${this.name} released`;
-      this.notify(this.message);
     }
   }
 
@@ -111,7 +107,6 @@ export class Sprint implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onComplete();
       this.message.content = `Sprint ${this.name} completed`;
-      this.notify(this.message);
     }
   }
 
@@ -119,29 +114,16 @@ export class Sprint implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onClose();
       this.message.content = `Sprint ${this.name} released`;
-      this.notify(this.message);
     }
   }
 
-  // Attach an observer to the list of observers
-  public subscribe(observer: IObserver) {
-    this.observers.push(observer);
-  }
-
-  // Detach an observer from the list of observers
-  public unsubscribe(observer: IObserver) {
-    const index = this.observers.indexOf(observer);
-    if (index !== -1) {
-      this.observers.splice(index, 1);
+  update(data: { message: string, notifyScrumMaster: boolean }): void {
+    if (data.notifyScrumMaster) {
+      this.messageService.sendMessage({
+        content: data.message,
+        recipient: this.scrumMaster?.name
+      })
     }
-  }
-
-  // Notify all observers of a change in the Thread
-  public notify(message: IMessage) {
-    for (const observer of this.observers) {
-      observer.update(this);
-    }
-    this.messageService.sendMessage(message);
   }
 
   // public log(): void {

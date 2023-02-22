@@ -1,11 +1,14 @@
 import { BacklogItem } from "../../../models/backlogItem.model";
+import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
+import { ISubject } from "../../../observer-pattern/interfaces/ISubject";
 import { IBacklogItemState } from "../../interface/IBacklogItemState";
 import { BacklogDoingState } from "./doing.state";
 import { BacklogTestingState } from "./testing.state";
 import { BacklogToDoState } from "./toDo.state";
 
-export class BacklogReadyForTestingState implements IBacklogItemState {
+export class BacklogReadyForTestingState implements IBacklogItemState, ISubject {
   private backlogItem: BacklogItem;
+  private observers: Array<IObserver> = [];
 
   constructor(backlogItem: BacklogItem) {
     this.backlogItem = backlogItem;
@@ -52,4 +55,21 @@ export class BacklogReadyForTestingState implements IBacklogItemState {
       "Cannot move backlog Done to the Doing from ReadyForTesting state"
     );
   }
+
+    public subscribe(observer: IObserver) {
+      this.observers.push(observer);
+    }
+  
+    public unsubscribe(observer: IObserver) {
+      const index = this.observers.indexOf(observer);
+      if (index !== -1) {
+        this.observers.splice(index, 1);
+      }
+    }
+  
+     public notify(state: IBacklogItemState) {
+      for (const observer of this.observers) {
+        observer.update(state);
+      }
+    }
 }

@@ -70,7 +70,7 @@ export class Sprint extends Composite implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onCreate();
       this.message.content = `Sprint ${this.name} created`;
-      this.notifyObservers(this.message);
+      this.notify(this.message);
     }
   }
 
@@ -78,7 +78,7 @@ export class Sprint extends Composite implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onStart();
       this.message.content = `Sprint ${this.name} started`;
-      this.notifyObservers(this.message);
+      this.notify(this.message);
     }
   }
 
@@ -86,7 +86,7 @@ export class Sprint extends Composite implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onFinish();
       this.message.content = `Sprint ${this.name} completed`;
-      this.notifyObservers(this.message);
+      this.notify(this.message);
     }
   }
 
@@ -94,7 +94,7 @@ export class Sprint extends Composite implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onReview();
       this.message.content = `Sprint ${this.name} released`;
-      this.notifyObservers(this.message);
+      this.notify(this.message);
     }
   }
 
@@ -102,7 +102,7 @@ export class Sprint extends Composite implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onComplete();
       this.message.content = `Sprint ${this.name} completed`;
-      this.notifyObservers(this.message);
+      this.notify(this.message);
     }
   }
 
@@ -110,7 +110,7 @@ export class Sprint extends Composite implements ISubject {
     if (user instanceof ScrumMaster) {
       this.state.onClose();
       this.message.content = `Sprint ${this.name} released`;
-      this.notifyObservers(this.message);
+      this.notify(this.message);
     }
   }
 
@@ -128,13 +128,10 @@ export class Sprint extends Composite implements ISubject {
   }
 
   // Notify all observers of a change in the Thread
-  public notify() {
+  public notify(message: IMessage) {
     for (const observer of this.observers) {
       observer.update(this);
     }
-  }
-
-  public notifyObservers(message: IMessage) {
     this.messageService.sendMessage(message);
   }
 }

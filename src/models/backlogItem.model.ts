@@ -1,3 +1,5 @@
+import { IMessage } from "../adapter-pattern/interfaces/IMessage";
+import { MessagingServiceAdapter } from "../adapter-pattern/message.adapter";
 import { Composite } from "../composite-pattern/models/composite.model";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
@@ -13,6 +15,8 @@ export class BacklogItem extends Composite implements ISubject {
   public description: string;
   private observers: Array<IObserver>;
   private state: IBacklogItemState;
+  private messageService!: MessagingServiceAdapter;
+  private message!: IMessage;
 
   constructor(id: string, name: string, description: string) {
     super();
@@ -56,26 +60,38 @@ export class BacklogItem extends Composite implements ISubject {
   }
 
   public toDo(): void {
+    this.message.content = `Backlog Item: ${this.name} is back in To Do`;
+    this.notify(this.message);
     this.state.toDo();
   }
 
   public doing(): void {
+    this.message.content = `Backlog Item: ${this.name} is in progress`;
+    this.notify(this.message);
     this.state.doing();
   }
 
   public readyForTesting(): void {
+    this.message.content = `Backlog Item: ${this.name} ready for testing`;
+    this.notify(this.message);
     this.state.readyForTesting();
   }
 
   public testing(): void {
+    this.message.content = `Backlog Item: ${this.name} is testing`;
+    this.notify(this.message);
     this.state.testing();
   }
 
   public tested(): void {
+    this.message.content = `Backlog Item: ${this.name} is tested`;
+    this.notify(this.message);
     this.state.tested();
   }
 
   public done(): void {
+    this.message.content = `Backlog Item: ${this.name} is done`;
+    this.notify(this.message);
     this.state.done();
   }
 
@@ -93,10 +109,11 @@ export class BacklogItem extends Composite implements ISubject {
   }
 
   // Notify all observers of a change in the Thread
-  notify() {
+  public notify(message: IMessage) {
     for (const observer of this.observers) {
       observer.update(this);
     }
+    this.messageService.sendMessage(message);
   }
 
   getId(): string {

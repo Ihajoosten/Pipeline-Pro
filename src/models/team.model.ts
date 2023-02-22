@@ -1,24 +1,32 @@
-import { Composite } from "../composite-pattern/models/composite.model";
 import { User } from "./abstract-user.model";
+import { ProductOwner, ScrumMaster } from "./users.model";
 
-// Team class
-export class Team extends Composite {
+export class Team  {
   name: string;
-  users: User[];
+  members: User[] = [];
 
-  constructor(name: string, users: User[]) {
-    super();
+  constructor(name: string) {
     this.name = name;
-    this.users = users;
   }
 
-  public log(): void {
-    throw new Error("Method not implemented.");
-  }
-
-  public override add(component: Composite): void {
-    if (component instanceof User) {
-      this.children.push(component);
+  public addMember(member: User) {
+    if (!(member instanceof ProductOwner || ScrumMaster)) {
+      this.members.push(member);
     }
   }
+
+  public removeUser(member: User) {
+    const index = this.members.indexOf(member);
+    if (index !== -1) {
+      this.members.splice(index, 1);
+    }
+  }
+
+  public getMembers(): User[] {
+    return this.members;
+  }
+
+  // public log(): void {
+  //   throw new Error("Method not implemented.");
+  // }
 }

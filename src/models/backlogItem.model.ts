@@ -1,6 +1,4 @@
 import { IMessage } from "../adapter-pattern/interfaces/IMessage";
-import { MessagingServiceAdapter } from "../adapter-pattern/message.adapter";
-import { Composite } from "../composite-pattern/models/composite.model";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IBacklogItemState } from "../state-pattern/interface/IBacklogItemState";
@@ -9,17 +7,18 @@ import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
 import { Developer, LeadDeveloper } from "./users.model"; // Mag ik hier een referenties hebben?
 
-export class BacklogItem extends Composite implements ISubject {
+export class BacklogItem implements ISubject {
   public id: string;
   public name: string;
   public description: string;
   private observers: Array<IObserver>;
   private state: IBacklogItemState;
-  private messageService!: MessagingServiceAdapter;
-  private message!: IMessage;
+  private message: IMessage = { content: "" };
+  private developer?: Developer | LeadDeveloper
+  private activities: Activity[] = [];
+  private thread?: Thread;
 
   constructor(id: string, name: string, description: string) {
-    super();
     this.id = id;
     this.name = name;
     this.description = description;
@@ -27,27 +26,50 @@ export class BacklogItem extends Composite implements ISubject {
     this.state = new BacklogToDoState(this);
   }
 
-  public override log(): void {
-    console.log(`Backlog item: ${this.name}`);
-    this.children.forEach((child) => child.log());
+  public setDeveloper(developer: Developer | LeadDeveloper) {
+    if (!this.developer) {
+      this.developer = developer;
+    }
   }
 
-  public override add(component: Composite): void {
-    if (
-      !(component instanceof Developer || LeadDeveloper || Activity || Thread)
-    ) {
-      return;
+  public removeDeveloper() {
+    this.developer = undefined;
+  }
+
+  public getDeveloper(): Developer | LeadDeveloper | void {
+    if (this.developer) {
+      return this.developer;
     }
+  }
 
-    let containsDeveloper = false;
-    this.children.forEach((child) => {
-      if (child instanceof Developer || LeadDeveloper) {
-        containsDeveloper = true;
-      }
-    });
+  public addActivity(activity: Activity) {
+    this.activities.push(activity);
+  }
 
-    if (containsDeveloper && component instanceof Activity) {
-      this.children.push(component);
+  public removeActivity(activity: Activity) {
+    const index = this.activities.indexOf(activity);
+    if (index !== -1) {
+      this.activities.splice(index, 1);
+    }
+  }
+
+  public getActivities(): Activity[] {
+    return this.activities;
+  }
+
+  public attachThread(thread: Thread) {
+    if (!thread) {
+      this.thread = thread;
+    }
+  }
+
+  public removeThread() {
+    this.thread = undefined;
+  }
+
+  public getThread(): Thread | void {
+    if (this.thread) {
+      return this.thread;
     }
   }
 
@@ -96,27 +118,31 @@ export class BacklogItem extends Composite implements ISubject {
   }
 
   // Attach an observer to the list of observers
-  subscribe(observer: IObserver) {
+  public subscribe(observer: IObserver) {
     this.observers.push(observer);
   }
 
   // Detach an observer from the list of observers
-  unsubscribe(observer: IObserver) {
+  public unsubscribe(observer: IObserver) {
     const index = this.observers.indexOf(observer);
     if (index !== -1) {
       this.observers.splice(index, 1);
     }
   }
 
-  // Notify all observers of a change in the Thread
-  public notify(message: IMessage) {
+  // Notify all observers of a change in the backlogItem
+   public notify(message: IMessage) {
     for (const observer of this.observers) {
-      observer.update(this);
+      observer.update(message);
     }
-    this.messageService.sendMessage(message);
   }
 
-  getId(): string {
+  public getId(): string {
     return this.id;
   }
+
+  // public override log(): void {
+  //   console.log(`Backlog item: ${this.name}`);
+  //   this.children.forEach((child) => child.log());
+  // }
 }

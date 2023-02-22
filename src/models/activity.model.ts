@@ -1,35 +1,29 @@
-import { Composite } from "../composite-pattern/models/composite.model";
 import { Developer, LeadDeveloper } from "./users.model";
 
-export class Activity extends Composite {
+export class Activity {
   public name: string;
   public description: string;
+  private developer?: Developer | LeadDeveloper
 
   public constructor(name: string, description: string) {
-    super();
     this.name = name;
     this.description = description;
   }
 
-  public log(): void {
-    console.log(`Activity: ${this.name}`);
-    this.children.forEach((child) => child.log());
-  }
-
-  public override add(component: Composite): void {
-    if (!(component instanceof Developer || LeadDeveloper)) {
-      return;
-    }
-
-    let containsDeveloper = false;
-    this.children.forEach((child) => {
-      if (child instanceof Developer || LeadDeveloper) {
-        containsDeveloper = true;
-      }
-    });
-
-    if (!containsDeveloper) {
-      this.children.push(component);
+  public setDeveloper(developer: Developer | LeadDeveloper) {
+    if (!developer) {
+      this.developer = developer;
     }
   }
+
+  public getDeveloper(): Developer | LeadDeveloper | void {
+    if (this.developer) {
+      return this.developer;
+    }
+  }
+
+  // public log(): void {
+  //   console.log(`Activity: ${this.name}`);
+  //   this.children.forEach((child) => child.log());
+  // }
 }

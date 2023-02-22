@@ -4,12 +4,11 @@ import { ISprintState } from "../state-pattern/interface/ISprintState";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { BacklogItem } from "./backlogItem.model";
-import { Composite } from "../composite-pattern/models/composite.model";
 import { ScrumMaster } from "./users.model";
 import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
 import { User } from "./abstract-user.model";
 
-export class Sprint extends Composite implements ISubject {
+export class Sprint implements ISubject {
   private name: string;
   private startDate: Date;
   private endDate: Date;
@@ -17,9 +16,10 @@ export class Sprint extends Composite implements ISubject {
   private message!: IMessage;
   private observers: Array<IObserver>;
   private state: ISprintState;
+  private scrumMaster?: ScrumMaster;
+  private backlogItems: BacklogItem[] = [];
 
   constructor(name: string, startDate: Date, endDate: Date) {
-    super();
     this.name = name;
     this.startDate = startDate;
     this.endDate = endDate;
@@ -27,26 +27,35 @@ export class Sprint extends Composite implements ISubject {
     this.state = new SprintActiveState(this);
   }
 
-  public log(): void {
-    console.log(`Sprint: ${this.name}`);
-    this.children.forEach((child) => child.log());
+  public setScrumMaster(scrumMaster: ScrumMaster) {
+    if (!this.scrumMaster) {
+      this.scrumMaster = scrumMaster;
+    }
   }
 
-  public override add(component: Composite): void {
-    if (!(component instanceof BacklogItem || ScrumMaster)) {
-      return;
-    }
+  public removeScrumMaster() {
+    this.scrumMaster = undefined;
+  }
 
-    let containsScrumMaster = false;
-    this.children.forEach((child) => {
-      if (child instanceof ScrumMaster) {
-        containsScrumMaster = true;
-      }
-    });
-
-    if (containsScrumMaster && component instanceof BacklogItem) {
-      this.children.push(component);
+  public getScrumMaster(): ScrumMaster | void {
+    if (this.scrumMaster) {
+      return this.scrumMaster;
     }
+  }
+
+  public addBacklogItem(backlogItem: BacklogItem) {
+    this.backlogItems.push(backlogItem);
+  }
+
+  public removeBacklogItem(backlogItem: BacklogItem) {
+    const index = this.backlogItems.indexOf(backlogItem);
+    if (index !== -1) {
+      this.backlogItems.splice(index, 1);
+    }
+  }
+
+  public getBacklogItems(): BacklogItem[] {
+    return this.backlogItems;
   }
 
   public setState(state: ISprintState): void {
@@ -134,4 +143,9 @@ export class Sprint extends Composite implements ISubject {
     }
     this.messageService.sendMessage(message);
   }
+
+  // public log(): void {
+  //   console.log(`Sprint: ${this.name}`);
+  //   this.children.forEach((child) => child.log());
+  // }
 }

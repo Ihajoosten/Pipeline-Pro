@@ -194,10 +194,4 @@ describe('MessagingServiceAdapter', () => {
     whatsappAdapter.sendMessage(message);
     expect(mockWhatsappService.sendMessage).toHaveBeenCalled();
   });
-
-  // it('should throw an error if recipient is not valid', () => {
-  //   const message = { sender: 'test', recipient: 'test', content: 'test' };
-  //   emailAdapter.sendMessage(message);
-  //   expect(mockWhatsappService.sendMessage).toThrow('Invalid recipient.');
-  // });
 });

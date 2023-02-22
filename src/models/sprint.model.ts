@@ -1,20 +1,18 @@
 import { IMessage } from "../adapter-pattern/interfaces/IMessage";
 import { MessagingServiceAdapter } from "../adapter-pattern/message.adapter";
 import { ISprintState } from "../state-pattern/interface/ISprintState";
-import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { BacklogItem } from "./backlogItem.model";
 import { Composite } from "../composite-pattern/models/composite.model";
 import { ScrumMaster } from "./users.model";
+import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
+import { User } from "./abstract-user.model";
 
 export class Sprint extends Composite implements ISubject {
-  public name: string;
-  public startDate: Date;
-  public endDate: Date;
-  public backlogItems: Array<BacklogItem>;
-  public activities: Array<string>;
-  public currentPhase: string;
+  private name: string;
+  private startDate: Date;
+  private endDate: Date;
   private messageService!: MessagingServiceAdapter;
   private message!: IMessage;
   private observers: Array<IObserver>;
@@ -25,11 +23,8 @@ export class Sprint extends Composite implements ISubject {
     this.name = name;
     this.startDate = startDate;
     this.endDate = endDate;
-    this.currentPhase = "created";
-    this.backlogItems = new Array<BacklogItem>();
-    this.activities = new Array<string>();
     this.observers = new Array<IObserver>();
-    this.state = new SprintCreatedState(this);
+    this.state = new SprintActiveState(this);
   }
 
   public log(): void {
@@ -62,24 +57,61 @@ export class Sprint extends Composite implements ISubject {
     return this.state;
   }
 
-  public create(): void {
-    this.state.create();
+  public updateSprint(name: string, endDate: Date, startDate: Date): void {
+    if (this.state instanceof SprintActiveState) {
+      console.log("Cannot update Sprint because it has already started");
+    }
+    this.name = name;
+    this.endDate = endDate;
+    this.startDate = startDate;
   }
 
-  public start(): void {
-    this.state.start();
+  public create(user: User): void {
+    if (user instanceof ScrumMaster) {
+      this.state.onCreate();
+      this.message.content = `Sprint ${this.name} created`;
+      this.notifyObservers(this.message);
+    }
   }
 
-  public complete(): void {
-    this.state.complete();
+  public start(user: User): void {
+    if (user instanceof ScrumMaster) {
+      this.state.onStart();
+      this.message.content = `Sprint ${this.name} started`;
+      this.notifyObservers(this.message);
+    }
   }
 
-  public release(): void {
-    this.state.release();
+  public finish(user: User): void {
+    if (user instanceof ScrumMaster) {
+      this.state.onFinish();
+      this.message.content = `Sprint ${this.name} completed`;
+      this.notifyObservers(this.message);
+    }
   }
 
-  public fail(): void {
-    this.state.fail();
+  public review(user: User): void {
+    if (user instanceof ScrumMaster) {
+      this.state.onReview();
+      this.message.content = `Sprint ${this.name} released`;
+      this.notifyObservers(this.message);
+    }
+  }
+
+  public complete(user: User): void {
+    if (user instanceof ScrumMaster) {
+      this.state.onComplete();
+      this.message.content = `Sprint ${this.name} completed`;
+      this.notifyObservers(this.message);
+    }
+  }
+
+  public release(user: User): void {
+    if (user instanceof ScrumMaster) {
+      this.state.onClose();
+      this.message.content = `Sprint ${this.name} released`;
+      this.notifyObservers(this.message);
+    }
   }
 
   // Attach an observer to the list of observers
@@ -100,18 +132,6 @@ export class Sprint extends Composite implements ISubject {
     for (const observer of this.observers) {
       observer.update(this);
     }
-  }
-
-  public startSprint() {
-    this.currentPhase = "active";
-    this.message.content = `Sprint ${this.name} started`;
-    this.notifyObservers(this.message);
-  }
-
-  public completeSprint() {
-    this.currentPhase = "active";
-    this.message.content = `Sprint ${this.name} completed`;
-    this.notifyObservers(this.message);
   }
 
   public notifyObservers(message: IMessage) {

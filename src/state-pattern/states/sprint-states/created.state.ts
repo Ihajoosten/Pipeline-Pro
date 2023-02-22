@@ -2,7 +2,7 @@ import { Sprint } from "../../../models/sprint.model";
 import { ISprintState } from "../../interface/ISprintState";
 import { SprintActiveState } from "./active.state";
 
-export class SprintCompletedState implements ISprintState {
+export class SprintCreatedState implements ISprintState {
   constructor(private sprint: Sprint) { }
   onCreate(): void {
     console.log("Sprint is already created");

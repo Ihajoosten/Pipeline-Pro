@@ -4,8 +4,9 @@ import { ISprintState } from "../state-pattern/interface/ISprintState";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { BacklogItem } from "./backlogItem.model";
 import { ScrumMaster } from "./users.model";
-import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
 import { User } from "./abstract-user.model";
+import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
+import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
 
 export class Sprint implements IObserver {
   private name: string;
@@ -21,7 +22,7 @@ export class Sprint implements IObserver {
     this.name = name;
     this.startDate = startDate;
     this.endDate = endDate;
-    this.state = new SprintActiveState(this);
+    this.state = new SprintCreatedState(this);
   }
 
   public getName(): string {

@@ -16,6 +16,10 @@ export class Activity {
     }
   }
 
+  public removeDeveloper() {
+    this.developer = undefined;
+  }
+
   public getDeveloper(): Developer | LeadDeveloper | void {
     if (this.developer) {
       return this.developer;

@@ -2,7 +2,6 @@ import { IMessage } from "../adapter-pattern/interfaces/IMessage";
 import { MessagingServiceAdapter } from "../adapter-pattern/message.adapter";
 import { ISprintState } from "../state-pattern/interface/ISprintState";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
-import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { BacklogItem } from "./backlogItem.model";
 import { ScrumMaster } from "./users.model";
 import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
@@ -117,13 +116,10 @@ export class Sprint implements IObserver {
     }
   }
 
-  update(data: { message: string, notifyScrumMaster: boolean }): void {
-    if (data.notifyScrumMaster) {
+  update(message: string): void {
       this.messageService.sendMessage({
-        content: data.message,
-        recipient: this.scrumMaster?.name
+        content: message
       })
-    }
   }
 
   // public log(): void {

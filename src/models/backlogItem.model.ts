@@ -8,7 +8,7 @@ import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
 import { Developer, LeadDeveloper } from "./users.model";
 
-export class BacklogItem implements ISubject {
+export class BacklogItem implements ISubject, IObserver {
   public id: string;
   public name: string;
   public description: string;
@@ -57,14 +57,18 @@ export class BacklogItem implements ISubject {
     return this.activities;
   }
 
-  public attachThread(thread: Thread) {
-    if (!thread) {
+  public addThread(thread: Thread) {
+    if (!this.thread) {
       this.thread = thread;
+      thread.subscribe(this);
     }
   }
 
   public removeThread() {
-    this.thread = undefined;
+    if (this.thread) {
+      this.thread.unsubscribe(this);
+      this.thread = undefined;
+    }
   }
 
   public getThread(): Thread | void {
@@ -83,34 +87,30 @@ export class BacklogItem implements ISubject {
 
   public toDo(): void {
     if (this.state instanceof BacklogReadyForTestingState || BacklogDoneState) {
-      this.notifyScrumMaster = true;
+      this.state.toDo();
+      this.notify(`Backlog item: ${this.name} moved from the 'ready for testing/done' to the 'to do' stage!`);
     }
-    this.notify("Backlog item moved from 'ready for testing/done' state to 'to do' state.");
     this.state.toDo();
   }
 
   public doing(): void {
-    this.notify("");
     this.state.doing();
   }
 
   public readyForTesting(): void {
-    this.notify("");
     this.state.readyForTesting();
+    this.notify(`Backlog item: ${this.name} moved to the 'ready for testing' stage!`)
   }
 
   public testing(): void {
-    this.notify("");
     this.state.testing();
   }
 
   public tested(): void {
-    this.notify("");
     this.state.tested();
   }
 
   public done(): void {
-    this.notify("");
     this.state.done();
   }
 
@@ -125,14 +125,16 @@ export class BacklogItem implements ISubject {
     }
   }
 
-   public notify(message: string) {
+  public notify(message: string) {
     for (const observer of this.observers) {
       observer.update({ message, notifyScrumMaster: this.notifyScrumMaster });
     }
   }
 
-  public getId(): string {
-    return this.id;
+  public update(thread: Thread): void {
+    const messages = thread.getMessages();
+    const lastMessage = messages[messages.length - 1]; // -1 of niet?
+    this.notify(`A new message was added to ${thread.getTitle()}: ${lastMessage}`)
   }
 
   // public override log(): void {

@@ -1,16 +1,13 @@
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
-import { BacklogItem } from "./backlogItem.model";
 import { Message } from "./message.model";
 
 export class Thread implements ISubject {
-  private backlogItem: BacklogItem;
   private title: string;
   private messages: Message[] = [];
   private observers: Array<IObserver>;
 
-  constructor(backlogItem: BacklogItem, title: string) {
-    this.backlogItem = backlogItem;
+  constructor(title: string) {
     this.observers = new Array<IObserver>();
     this.title = title;
   }
@@ -21,6 +18,7 @@ export class Thread implements ISubject {
 
   public addMessage(message: Message) {
     this.messages.push(message);
+    this.notify();
   }
 
   public removeMessage(message: Message) {
@@ -34,12 +32,10 @@ export class Thread implements ISubject {
     return this.messages;
   }
 
-  // Attach an observer to the list of observers
   public subscribe(observer: IObserver) {
     this.observers.push(observer);
   }
 
-  // Detach an observer from the list of observers
   public unsubscribe(observer: IObserver) {
     const index = this.observers.indexOf(observer);
     if (index !== -1) {
@@ -47,16 +43,10 @@ export class Thread implements ISubject {
     }
   }
 
-  // Notify all observers of a change in the Thread
   public notify() {
     for (const observer of this.observers) {
       observer.update(this);
     }
-  }
-
-  // Get the BacklogItem associated with the Thread
-  public getBacklogItem() {
-    return this.backlogItem;
   }
 
   // public log(): void {

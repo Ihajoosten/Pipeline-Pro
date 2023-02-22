@@ -3,6 +3,7 @@ import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { BacklogItem } from "./backlogItem.model";
 import { Message } from "./message.model";
+import { BacklogDoneState } from "../state-pattern/states/backlog-states/done.state"
 
 // Implement the Subject interface in the Thread class
 export class Thread extends Composite implements ISubject {
@@ -52,8 +53,10 @@ export class Thread extends Composite implements ISubject {
 
   // Add a message to the Thread
   public addMessage(message: string) {
-    this.messages.push(message);
-    this.notify();
+    if (!(this.backlogItem.getState() instanceof BacklogDoneState)) {
+      this.messages.push(message);
+      this.notify();
+    }
   }
 
   // Get the BacklogItem associated with the Thread

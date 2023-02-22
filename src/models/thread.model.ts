@@ -48,10 +48,4 @@ export class Thread implements ISubject {
       observer.update(this);
     }
   }
-
-  // public log(): void {
-  //   console.log(`Thread: ${this.title}`);
-  //   this.children.forEach((child) => child.log());
-  // }
-
 }

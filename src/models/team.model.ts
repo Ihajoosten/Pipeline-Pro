@@ -15,7 +15,7 @@ export class Team  {
     }
   }
 
-  public removeUser(member: User) {
+  public removeMember(member: User) {
     const index = this.members.indexOf(member);
     if (index !== -1) {
       this.members.splice(index, 1);
@@ -25,8 +25,4 @@ export class Team  {
   public getMembers(): User[] {
     return this.members;
   }
-
-  // public log(): void {
-  //   throw new Error("Method not implemented.");
-  // }
 }

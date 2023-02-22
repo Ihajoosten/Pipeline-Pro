@@ -11,11 +11,11 @@ export class Sprint implements IObserver {
   private name: string;
   private startDate: Date;
   private endDate: Date;
+  private scrumMaster?: ScrumMaster;
+  private backlogItems: BacklogItem[] = [];
   private messageService!: MessagingServiceAdapter;
   private message!: IMessage;
   private state: ISprintState;
-  private scrumMaster?: ScrumMaster;
-  private backlogItems: BacklogItem[] = [];
 
   constructor(name: string, startDate: Date, endDate: Date) {
     this.name = name;
@@ -24,14 +24,16 @@ export class Sprint implements IObserver {
     this.state = new SprintActiveState(this);
   }
 
-  public setScrumMaster(scrumMaster: ScrumMaster) {
-    if (!this.scrumMaster) {
-      this.scrumMaster = scrumMaster;
-    }
+  public getName(): string {
+    return this.name;
   }
 
-  public removeScrumMaster() {
-    this.scrumMaster = undefined;
+  public getStartDate(): Date {
+    return this.startDate;
+  }
+
+  public getEndDate(): Date {
+    return this.endDate;
   }
 
   public getScrumMaster(): ScrumMaster | void {
@@ -65,13 +67,15 @@ export class Sprint implements IObserver {
     return this.state;
   }
 
-  public updateSprint(name: string, endDate: Date, startDate: Date): void {
+  public updateSprint(name?: string, startDate?: Date, endDate?: Date, scrumMaster?: ScrumMaster): void {
     if (this.state instanceof SprintActiveState) {
       console.log("Cannot update Sprint because it has already started");
+    } else {
+      if (name) this.name = name;
+      if (startDate) this.startDate = startDate;
+      if (endDate) this.endDate = endDate;
+      if (scrumMaster) this.scrumMaster = scrumMaster;
     }
-    this.name = name;
-    this.endDate = endDate;
-    this.startDate = startDate;
   }
 
   public create(user: User): void {
@@ -121,9 +125,4 @@ export class Sprint implements IObserver {
         content: message
       })
   }
-
-  // public log(): void {
-  //   console.log(`Sprint: ${this.name}`);
-  //   this.children.forEach((child) => child.log());
-  // }
 }

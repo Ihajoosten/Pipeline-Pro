@@ -11,7 +11,7 @@ export class Activity {
   }
 
   public setDeveloper(developer: Developer | LeadDeveloper) {
-    if (!developer) {
+    if (!this.developer) {
       this.developer = developer;
     }
   }
@@ -20,14 +20,7 @@ export class Activity {
     this.developer = undefined;
   }
 
-  public getDeveloper(): Developer | LeadDeveloper | void {
-    if (this.developer) {
+  public getDeveloper(): Developer | LeadDeveloper | undefined {
       return this.developer;
-    }
   }
-
-  // public log(): void {
-  //   console.log(`Activity: ${this.name}`);
-  //   this.children.forEach((child) => child.log());
-  // }
 }

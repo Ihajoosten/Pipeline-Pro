@@ -13,19 +13,19 @@ export class Project {
     this.productOwner = productOwner;
   }
 
-  public getProductOwner() {
-    return this.productOwner;
-  }
-
   public getName(): string {
     return this.name
+  }
+
+  public getProductOwner(): ProductOwner {
+    return this.productOwner;
   }
 
   public addSprint(sprint: Sprint): void {
     this.sprints.push(sprint);
   }
 
-  public removeSprint(sprint: Sprint) {
+  public removeSprint(sprint: Sprint): void {
     const index = this.sprints.indexOf(sprint);
     if (index !== -1) {
       this.sprints.splice(index, 1);
@@ -36,18 +36,17 @@ export class Project {
     return this.sprints;
   }
 
-  public setTeam(team: Team) {
+  public addTeam(team: Team): void {
     if (!this.team) {
       this.team = team;
     }
   }
 
-  public removeTeam() {
+  public removeTeam(): void {
     this.team = undefined;
   }
 
-  // public log(): void {
-  //   console.log(`Project: ${this.name}`);
-  //   this.children.forEach((child) => child.log());
-  // }
+  public getTeam(): Team | undefined {
+    return this.team;
+  }
 }

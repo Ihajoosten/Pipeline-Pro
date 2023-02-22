@@ -36,10 +36,8 @@ export class BacklogItem implements ISubject, IObserver {
     this.developer = undefined;
   }
 
-  public getDeveloper(): Developer | LeadDeveloper | void {
-    if (this.developer) {
+  public getDeveloper(): Developer | LeadDeveloper | undefined {
       return this.developer;
-    }
   }
 
   public addActivity(activity: Activity) {
@@ -136,9 +134,4 @@ export class BacklogItem implements ISubject, IObserver {
     const lastMessage = messages[messages.length - 1]; // -1 of niet?
     this.notify(`A new message was added to ${thread.getTitle()}: ${lastMessage}`)
   }
-
-  // public override log(): void {
-  //   console.log(`Backlog item: ${this.name}`);
-  //   this.children.forEach((child) => child.log());
-  // }
 }

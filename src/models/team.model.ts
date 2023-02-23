@@ -1,7 +1,7 @@
-import { User } from "./abstract-user.model";
-import { ProductOwner, ScrumMaster } from "./users.model";
+import { User } from "./user/abstract-user.model";
+import { ProductOwner, ScrumMaster } from "./user/users.model";
 
-export class Team  {
+export class Team {
   name: string;
   members: User[] = [];
 

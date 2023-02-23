@@ -3,10 +3,10 @@ import { MessagingServiceAdapter } from "../adapter-pattern/message.adapter";
 import { ISprintState } from "../state-pattern/interface/ISprintState";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { BacklogItem } from "./backlogItem.model";
-import { ScrumMaster } from "./users.model";
-import { User } from "./abstract-user.model";
+import { User } from "./user/abstract-user.model";
 import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
 import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
+import { ScrumMaster } from "./user/users.model";
 
 export class Sprint implements IObserver {
   private name: string;
@@ -68,7 +68,12 @@ export class Sprint implements IObserver {
     return this.state;
   }
 
-  public updateSprint(name?: string, startDate?: Date, endDate?: Date, scrumMaster?: ScrumMaster): void {
+  public updateSprint(
+    name?: string,
+    startDate?: Date,
+    endDate?: Date,
+    scrumMaster?: ScrumMaster
+  ): void {
     if (this.state instanceof SprintActiveState) {
       console.log("Cannot update Sprint because it has already started");
     } else {
@@ -122,8 +127,8 @@ export class Sprint implements IObserver {
   }
 
   update(message: string): void {
-      this.messageService.sendMessage({
-        content: message
-      })
+    this.messageService.sendMessage({
+      content: message,
+    });
   }
 }

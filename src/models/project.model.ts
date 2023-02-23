@@ -1,6 +1,6 @@
-import { ProductOwner } from "./users.model";
 import { Sprint } from "./sprint.model";
 import { Team } from "./team.model";
+import { ProductOwner } from "./user/users.model";
 
 export class Project {
   private name: string;
@@ -14,7 +14,7 @@ export class Project {
   }
 
   public getName(): string {
-    return this.name
+    return this.name;
   }
 
   public getProductOwner(): ProductOwner {

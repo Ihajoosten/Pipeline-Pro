@@ -1,4 +1,4 @@
-import { User } from "../models/abstract-user.model";
+import { User } from "../models/user/abstract-user.model";
 import { Team } from "../models/team.model";
 import { UserFactory } from "./user-factory";
 
@@ -16,7 +16,7 @@ export class TeamFactory {
         UserFactory.createUser(`User ${i}`, `user${i}@example.com`, role)
       );
     }
-    return new Team(teamName, users);
+    return new Team(teamName);
   }
 
   // static createTeamWithDefaultName(userRoles: string[], numMembers: number): Team {

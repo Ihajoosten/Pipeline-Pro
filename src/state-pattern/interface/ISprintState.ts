@@ -7,7 +7,6 @@ export interface ISprintState {
   onClose(): void;
 }
 
-
 /**
  * - initialization --> onCreate();
  * - active (daily scrum) --> onStart();

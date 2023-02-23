@@ -1,10 +1,10 @@
-import { User } from "../models/abstract-user.model";
+import { User } from "../models/user/abstract-user.model";
 import {
   Developer,
   LeadDeveloper,
   ScrumMaster,
   ProductOwner,
-} from "../models/users.model";
+} from "../models/user/users.model";
 
 // UserFactory class
 export class UserFactory {

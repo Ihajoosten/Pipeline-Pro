@@ -6,7 +6,9 @@ import { BacklogDoingState } from "./doing.state";
 import { BacklogTestingState } from "./testing.state";
 import { BacklogToDoState } from "./toDo.state";
 
-export class BacklogReadyForTestingState implements IBacklogItemState, ISubject {
+export class BacklogReadyForTestingState
+  implements IBacklogItemState, ISubject
+{
   private backlogItem: BacklogItem;
   private observers: Array<IObserver> = [];
 
@@ -56,20 +58,20 @@ export class BacklogReadyForTestingState implements IBacklogItemState, ISubject 
     );
   }
 
-    public subscribe(observer: IObserver) {
-      this.observers.push(observer);
+  public subscribe(observer: IObserver) {
+    this.observers.push(observer);
+  }
+
+  public unsubscribe(observer: IObserver) {
+    const index = this.observers.indexOf(observer);
+    if (index !== -1) {
+      this.observers.splice(index, 1);
     }
-  
-    public unsubscribe(observer: IObserver) {
-      const index = this.observers.indexOf(observer);
-      if (index !== -1) {
-        this.observers.splice(index, 1);
-      }
+  }
+
+  public notify(state: IBacklogItemState) {
+    for (const observer of this.observers) {
+      observer.update(state);
     }
-  
-     public notify(state: IBacklogItemState) {
-      for (const observer of this.observers) {
-        observer.update(state);
-      }
-    }
+  }
 }

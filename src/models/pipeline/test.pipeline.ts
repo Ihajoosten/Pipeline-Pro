@@ -1,0 +1,3 @@
+import { AbstractDevelopmentPipeline } from "./abstract-development-pipeline.model";
+
+export class TestPipeline extends AbstractDevelopmentPipeline {}

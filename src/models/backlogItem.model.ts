@@ -6,7 +6,7 @@ import { BacklogReadyForTestingState } from "../state-pattern/states/backlog-sta
 import { BacklogToDoState } from "../state-pattern/states/backlog-states/toDo.state";
 import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
-import { Developer, LeadDeveloper } from "./users.model";
+import { Developer, LeadDeveloper } from "./user/users.model";
 
 export class BacklogItem implements ISubject, IObserver {
   public id: string;
@@ -15,7 +15,7 @@ export class BacklogItem implements ISubject, IObserver {
   public notifyScrumMaster = false;
   private observers: IObserver[] = [];
   private state: IBacklogItemState;
-  private developer?: Developer | LeadDeveloper
+  private developer?: Developer | LeadDeveloper;
   private activities: Activity[] = [];
   private thread?: Thread;
 
@@ -37,7 +37,7 @@ export class BacklogItem implements ISubject, IObserver {
   }
 
   public getDeveloper(): Developer | LeadDeveloper | undefined {
-      return this.developer;
+    return this.developer;
   }
 
   public addActivity(activity: Activity) {
@@ -86,7 +86,9 @@ export class BacklogItem implements ISubject, IObserver {
   public toDo(): void {
     if (this.state instanceof BacklogReadyForTestingState || BacklogDoneState) {
       this.state.toDo();
-      this.notify(`Backlog item: ${this.name} moved from the 'ready for testing/done' to the 'to do' stage!`);
+      this.notify(
+        `Backlog item: ${this.name} moved from the 'ready for testing/done' to the 'to do' stage!`
+      );
     }
     this.state.toDo();
   }
@@ -97,7 +99,9 @@ export class BacklogItem implements ISubject, IObserver {
 
   public readyForTesting(): void {
     this.state.readyForTesting();
-    this.notify(`Backlog item: ${this.name} moved to the 'ready for testing' stage!`)
+    this.notify(
+      `Backlog item: ${this.name} moved to the 'ready for testing' stage!`
+    );
   }
 
   public testing(): void {
@@ -132,6 +136,8 @@ export class BacklogItem implements ISubject, IObserver {
   public update(thread: Thread): void {
     const messages = thread.getMessages();
     const lastMessage = messages[messages.length - 1]; // -1 of niet?
-    this.notify(`A new message was added to ${thread.getTitle()}: ${lastMessage}`)
+    this.notify(
+      `A new message was added to ${thread.getTitle()}: ${lastMessage}`
+    );
   }
 }

@@ -3,7 +3,7 @@ import { ISprintState } from "../../interface/ISprintState";
 import { SprintClosedState } from "./closed.state";
 
 export class SprintCompletedState implements ISprintState {
-  constructor(private sprint: Sprint) { }
+  constructor(private sprint: Sprint) {}
   onCreate(): void {
     console.log("Sprint is already completed");
     throw new Error("Cannot change state from Completed to Created");

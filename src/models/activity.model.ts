@@ -1,9 +1,9 @@
-import { Developer, LeadDeveloper } from "./users.model";
+import { Developer, LeadDeveloper } from "./user/users.model";
 
 export class Activity {
   public name: string;
   public description: string;
-  private developer?: Developer | LeadDeveloper
+  private developer?: Developer | LeadDeveloper;
 
   public constructor(name: string, description: string) {
     this.name = name;
@@ -21,6 +21,6 @@ export class Activity {
   }
 
   public getDeveloper(): Developer | LeadDeveloper | undefined {
-      return this.developer;
+    return this.developer;
   }
 }

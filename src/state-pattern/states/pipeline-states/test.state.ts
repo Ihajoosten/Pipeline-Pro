@@ -1,9 +1,39 @@
-import { AbstractDevelopmentPipeline } from "../../../models/pipeline/abstract-development-pipeline.model";
+import { Pipeline } from "../../../models/pipeline/pipeline";
+import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
+import { IPipelineVisitor } from "../../../visitor-pattern/visitors/IPipelineVisitor";
 import { IPipelineState } from "../../interface/IPipelineState";
 import { PipelineAnalyzeState } from "./analyze.state";
 
 export class PipelineTestState implements IPipelineState {
-  constructor(private pipeline: AbstractDevelopmentPipeline) {}
+  constructor(
+    private pipeline: Pipeline,
+    private observers: IObserver[] = []
+  ) {}
+  public subscribe(observer: IObserver): void {
+    this.observers.push(observer);
+  }
+
+  public unsubscribe(observer: IObserver): void {
+    const index = this.observers.indexOf(observer);
+    if (index > -1) {
+      this.observers.splice(index, 1);
+    }
+  }
+
+  public notify(message: string): void {
+    this.observers.forEach((observer: IObserver) => {
+      observer.update(this);
+    });
+  }
+  getName(): string {
+    return "Test Stage";
+  }
+  getAction(): string {
+    return "Testing...";
+  }
+  acceptVisitor(visitor: IPipelineVisitor): void {
+    visitor.visit(this);
+  }
   onSource(): void {
     console.log("Pipeline is already testing project");
     throw new Error("Cannot change to Source State from Test State");
@@ -21,10 +51,14 @@ export class PipelineTestState implements IPipelineState {
     throw new Error("Cannot change to Package State from Test State");
   }
   onAnalyze(): void {
-    console.log(
-      "All tests have succeeded. Next job is analyzing code on coverage"
-    );
-    this.pipeline.setState(new PipelineAnalyzeState(this.pipeline));
+    try {
+      console.log(
+        "All tests have succeeded. Next job is analyzing code on coverage"
+      );
+      this.pipeline.setState(new PipelineAnalyzeState(this.pipeline));
+    } catch (error) {
+      this.notify(JSON.stringify(error));
+    }
   }
   onDeploy(): void {
     console.log("Pipeline is already testing project");

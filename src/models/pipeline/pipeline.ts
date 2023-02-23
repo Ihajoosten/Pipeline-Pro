@@ -1,37 +1,42 @@
 import { IObserver } from "../../observer-pattern/interfaces/IObserver";
-import { ISubject } from "../../observer-pattern/interfaces/ISubject";
 import { IPipelineState } from "../../state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../../state-pattern/states/pipeline-states/source.state";
+import { IPipelineVisitor } from "../../visitor-pattern/visitors/IPipelineVisitor";
 
-export abstract class AbstractDevelopmentPipeline implements ISubject {
-  private state: IPipelineState;
-  private observers: Array<IObserver>;
+export class Pipeline implements IObserver {
   private name: string;
+  private state: IPipelineState;
+  private tasks: IPipelineState[] = [];
+  private visitor!: IPipelineVisitor;
 
   constructor(name: string) {
     this.state = new PipelineSourceState(this);
-    this.observers = new Array<IObserver>();
     this.name = name;
   }
 
-  // Observer methods
-  public subscribe(observer: IObserver): void {
-    this.observers.push(observer);
+  update(data: any): void {
+    // NOTIFICATIE VERSTUREN.
   }
 
-  public unsubscribe(observer: IObserver): void {
-    const index = this.observers.indexOf(observer);
-    if (index > -1) {
-      this.observers.splice(index, 1);
+  public getName(): string {
+    return this.name;
+  }
+
+  public addTask(pipelineTask: IPipelineState) {
+    this.tasks.push(pipelineTask);
+  }
+
+  public setVisitor(visitor: IPipelineVisitor) {
+    this.visitor = visitor;
+  }
+
+  public execute(): void {
+    if (this.visitor) {
+      this.tasks.forEach((task) => {
+        task.acceptVisitor(this.visitor);
+      });
     }
   }
-
-  public notify(): void {
-    this.observers.forEach((observer: IObserver) => {
-      observer.update(this.state);
-    });
-  }
-
 
   public getState(): IPipelineState {
     return this.state;

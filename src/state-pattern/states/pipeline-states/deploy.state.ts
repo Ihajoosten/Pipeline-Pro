@@ -1,41 +1,11 @@
 import { Pipeline } from "../../../models/pipeline";
-import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
-import { IPipelineVisitor } from "../../../visitor-pattern/visitors/IPipelineVisitor";
 import { IPipelineState } from "../../interface/IPipelineState";
 import { PipelineCancelledState } from "./cancelled.state";
 
-export class PipelineDeployState implements IPipelineState {
-  constructor(private pipeline: Pipeline, private observers: IObserver[] = []) {
+export class PipelineDeployState extends IPipelineState {
+  constructor(private pipeline: Pipeline) {
+    super("Deployment Stage", "Deploying...");
     this.notify("Pipeline executing deployment");
-  }
-
-  public subscribe(observer: IObserver): void {
-    this.observers.push(observer);
-  }
-
-  public unsubscribe(observer: IObserver): void {
-    const index = this.observers.indexOf(observer);
-    if (index > -1) {
-      this.observers.splice(index, 1);
-    }
-  }
-
-  public notify(message: string): void {
-    this.observers.forEach((observer: IObserver) => {
-      observer.update(this);
-    });
-  }
-
-  getName(): string {
-    return "Deploy Stage";
-  }
-
-  getAction(): string {
-    return "Deploying...";
-  }
-
-  acceptVisitor(visitor: IPipelineVisitor): void {
-    visitor.visit(this);
   }
 
   onSource(): void {
@@ -67,7 +37,7 @@ export class PipelineDeployState implements IPipelineState {
     this.logMessage();
     throw new Error("Cannot change to Deploy State from Deploy State");
   }
-  onCancelled(): void {
+  onCancel(): void {
     try {
       console.log("Scrum Master Cancelled Pipeline");
       this.pipeline.setState(new PipelineCancelledState(this.pipeline));

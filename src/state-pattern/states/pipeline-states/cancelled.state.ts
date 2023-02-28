@@ -5,7 +5,6 @@ import { PipelineSourceState } from "./source.state";
 export class PipelineCancelledState extends IPipelineState {
   constructor(private pipeline: Pipeline) {
     super("Cancelled Stage", "Cancelled.");
-    
     this.notify("Development Pipeline cancelled");
   }
 
@@ -43,7 +42,7 @@ export class PipelineCancelledState extends IPipelineState {
     this.logMessage();
     throw new Error("Cannot change to Deploy State from Cancelled State");
   }
-  
+
   onCancel(): void {
     this.logMessage();
     throw new Error("Cannot change to Cancelled State from Cancelled State");

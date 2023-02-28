@@ -3,18 +3,10 @@ import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { Message } from "./message.model";
 
 export class Thread implements ISubject {
-  private title: string;
   private messages: Message[] = [];
-  private observers: Array<IObserver>;
+  private observers: IObserver[] = [];
 
-  constructor(title: string) {
-    this.observers = new Array<IObserver>();
-    this.title = title;
-  }
-
-  public getTitle(): string {
-    return this.title;
-  }
+  constructor(public title: string) { }
 
   public addMessage(message: Message) {
     this.messages.push(message);

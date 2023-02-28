@@ -9,24 +9,14 @@ import { SprintActiveState } from "../state-pattern/states/sprint-states/active.
 import { ScrumMaster } from "./user/users.model";
 
 export class Sprint implements IObserver {
-  private name: string;
-  private startDate: Date;
-  private endDate: Date;
   private scrumMaster?: ScrumMaster;
   private backlogItems: Array<BacklogItem> = new Array<BacklogItem>();
   private messageService!: MessagingServiceAdapter;
   private message!: IMessage;
   private state: ISprintState;
 
-  constructor(name: string, startDate: Date, endDate: Date) {
-    this.name = name;
-    this.startDate = startDate;
-    this.endDate = endDate;
+  constructor(private name: string, private startDate: Date, private endDate: Date) {
     this.state = new SprintCreatedState(this);
-  }
-
-  public getName(): string {
-    return this.name;
   }
 
   public getStartDate(): Date {

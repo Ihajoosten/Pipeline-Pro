@@ -9,9 +9,6 @@ import { Thread } from "./thread.model";
 import { Developer, LeadDeveloper } from "./user/users.model";
 
 export class BacklogItem implements ISubject, IObserver {
-  public id: string;
-  public name: string;
-  public description: string;
   public notifyScrumMaster = false;
   private observers: Array<IObserver> = new Array<IObserver>();
   private state: IBacklogItemState;
@@ -19,10 +16,7 @@ export class BacklogItem implements ISubject, IObserver {
   private activities: Array<Activity> = new Array<Activity>();
   private thread?: Thread;
 
-  constructor(id: string, name: string, description: string) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
+  constructor(public id: string, public name: string, public description: string) {
     this.state = new BacklogToDoState(this);
   }
 
@@ -137,7 +131,7 @@ export class BacklogItem implements ISubject, IObserver {
     const messages = thread.getMessages();
     const lastMessage = messages[messages.length - 1]; // -1 of niet?
     this.notify(
-      `A new message was added to ${thread.getTitle()}: ${lastMessage}`
+      `A new message was added to ${thread.title}: ${lastMessage}`
     );
   }
 }

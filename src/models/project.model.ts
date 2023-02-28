@@ -3,18 +3,12 @@ import { Team } from "./team.model";
 import { ProductOwner } from "./user/users.model";
 
 export class Project {
-  private name: string;
   private productOwner: ProductOwner;
   private sprints: Sprint[] = [];
   private team?: Team;
 
-  public constructor(name: string, productOwner: ProductOwner) {
-    this.name = name;
+  public constructor(public name: string, productOwner: ProductOwner) {
     this.productOwner = productOwner;
-  }
-
-  public getName(): string {
-    return this.name;
   }
 
   public getProductOwner(): ProductOwner {

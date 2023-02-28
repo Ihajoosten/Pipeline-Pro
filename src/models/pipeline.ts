@@ -3,21 +3,16 @@ import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../state-pattern/states/pipeline-states/source.state";
 import { IPipelineVisitor } from "../visitor-pattern/visitors/IPipelineVisitor";
-import { Sprint } from "./sprint.model";
+import { GitIntegration } from "./gitIntegration.model";
 
 export class Pipeline implements ISubject {
-  private name: string;
-  private state: IPipelineState;
-  private tasks: Array<IPipelineState> = new Array<IPipelineState>();
-  private visitor!: IPipelineVisitor;
-  private observers: Array<IObserver> = new Array<IObserver>();
-  public hasSucceeded: boolean;
+  private state: IPipelineState = new PipelineSourceState(this);
+  private tasks: IPipelineState[] = [];
+  private observers: IObserver[] = [];
+  private visitor?: IPipelineVisitor;
+  public hasSucceeded: boolean = false;
 
-  constructor(name: string) {
-    this.state = new PipelineSourceState(this);
-    this.name = name;
-    this.hasSucceeded = false;
-  }
+  constructor(private name: string, private gitIntegration: GitIntegration) { }
 
   public subscribe(observer: IObserver) {
     this.observers.push(observer);
@@ -52,7 +47,7 @@ export class Pipeline implements ISubject {
     try {
       if (this.visitor) {
         this.tasks.forEach((task) => {
-          task.acceptVisitor(this.visitor);
+          task.acceptVisitor(this.visitor!);
         });
       }
     } catch (err) {

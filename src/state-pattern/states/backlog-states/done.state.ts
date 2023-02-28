@@ -2,11 +2,7 @@ import { BacklogItem } from "../../../models/backlogItem.model";
 import { IBacklogItemState } from "../../interface/IBacklogItemState";
 
 export class BacklogDoneState implements IBacklogItemState {
-  private backlogItem: BacklogItem;
-
-  constructor(backlogItem: BacklogItem) {
-    this.backlogItem = backlogItem;
-  }
+  constructor(private backlogItem: BacklogItem) {  }
 
   toDo(): void {
     console.log("Cannot move backlog item to the ToDo state from Done state");

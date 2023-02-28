@@ -1,7 +1,6 @@
 import { IMessage } from "../interfaces/IMessage";
 import { IMessagingService } from "../interfaces/IMessagingService";
 
-// Implementation of the MessagingService for slack
 export class SlackService implements IMessagingService {
   public constructor(public name: string) {}
 

@@ -1,14 +1,9 @@
 import { Developer, LeadDeveloper } from "./user/users.model";
 
 export class Activity {
-  public name: string;
-  public description: string;
   private developer?: Developer | LeadDeveloper;
 
-  public constructor(name: string, description: string) {
-    this.name = name;
-    this.description = description;
-  }
+  public constructor(public name: string, public description: string) {}
 
   public setDeveloper(developer: Developer | LeadDeveloper) {
     if (!this.developer) {

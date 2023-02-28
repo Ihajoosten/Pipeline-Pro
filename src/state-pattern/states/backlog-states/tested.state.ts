@@ -5,11 +5,7 @@ import { BacklogReadyForTestingState } from "./readyForTesting.state";
 import { BacklogToDoState } from "./toDo.state";
 
 export class BacklogTestedState implements IBacklogItemState {
-  private backlogItem: BacklogItem;
-
-  constructor(backlogItem: BacklogItem) {
-    this.backlogItem = backlogItem;
-  }
+  constructor(private backlogItem: BacklogItem) { }
 
   toDo(): void {
     this.backlogItem.setState(new BacklogToDoState(this.backlogItem));

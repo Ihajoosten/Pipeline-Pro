@@ -2,12 +2,9 @@ import { User } from "./user/abstract-user.model";
 import { ProductOwner, ScrumMaster } from "./user/users.model";
 
 export class Team {
-  name: string;
-  members: User[] = [];
+  private members: User[] = [];
 
-  constructor(name: string) {
-    this.name = name;
-  }
+  constructor(public name: string) { }
 
   public addMember(member: User) {
     if (!(member instanceof ProductOwner || ScrumMaster)) {

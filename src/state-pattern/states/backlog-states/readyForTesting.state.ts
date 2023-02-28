@@ -9,12 +9,9 @@ import { BacklogToDoState } from "./toDo.state";
 export class BacklogReadyForTestingState
   implements IBacklogItemState, ISubject
 {
-  private backlogItem: BacklogItem;
   private observers: Array<IObserver> = [];
 
-  constructor(backlogItem: BacklogItem) {
-    this.backlogItem = backlogItem;
-  }
+  constructor(private backlogItem: BacklogItem) { }
 
   toDo(): void {
     console.log('Moving backlog item to the "ToDo" state.');

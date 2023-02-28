@@ -19,12 +19,8 @@ export class PipelinePackageState extends IPipelineState {
   }
 
   onBuild(): void {
-    try {
       console.log("Packages/Libraries installed, now building the pipeline");
       this.pipeline.setState(new PipelineBuildState(this.pipeline));
-    } catch (error) {
-      this.notify(JSON.stringify(error));
-    }
   }
 
   onTest(): void {
@@ -43,12 +39,8 @@ export class PipelinePackageState extends IPipelineState {
   }
 
   onCancel(): void {
-    try {
       console.log("Scrum Master Cancelled Pipeline");
       this.pipeline.setState(new PipelineCancelledState(this.pipeline));
-    } catch (error) {
-      this.notify(JSON.stringify(error));
-    }
   }
 
   private logMessage(): void {

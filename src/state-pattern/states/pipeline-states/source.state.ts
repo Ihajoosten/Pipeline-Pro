@@ -14,14 +14,10 @@ export class PipelineSourceState extends IPipelineState {
   }
 
   onPackage(): void {
-    try {
       console.log(
         "Source Code Fetched, now installing 3rd party packages/libraries"
       );
       this.pipeline.setState(new PipelinePackageState(this.pipeline));
-    } catch (error) {
-      this.notify(JSON.stringify(error));
-    }
   }
 
   onBuild(): void {
@@ -45,12 +41,8 @@ export class PipelineSourceState extends IPipelineState {
   }
 
   onCancel(): void {
-    try {
       console.log("Scrum Master Cancelled Pipeline");
       this.pipeline.setState(new PipelineCancelledState(this.pipeline));
-    } catch (error) {
-      this.notify(JSON.stringify(error));
-    }
   }
 
   private logMessage(): void {

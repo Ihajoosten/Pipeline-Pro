@@ -1,17 +1,14 @@
 import { IMessage } from "../adapter-pattern/interfaces/IMessage";
-import { MessagingServiceAdapter } from "../adapter-pattern/message.adapter";
 import { ISprintState } from "../state-pattern/interface/ISprintState";
-import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { BacklogItem } from "./backlogItem.model";
-import { User } from "./user/abstract-user.model";
+import { User } from "./user/user.model";
 import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
 import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
 import { Role } from "./user/roles";
 
-export class Sprint implements IObserver {
+export class Sprint {
   private scrumMaster?: User;
-  private backlogItems: Array<BacklogItem> = new Array<BacklogItem>();
-  private messageService!: MessagingServiceAdapter;
+  private backlogItems: BacklogItem[] = [];
   private message!: IMessage;
   private state: ISprintState;
 
@@ -34,7 +31,6 @@ export class Sprint implements IObserver {
   }
 
   public addBacklogItem(backlogItem: BacklogItem) {
-    backlogItem.subscribe(this);
     this.backlogItems.push(backlogItem);
   }
 
@@ -42,7 +38,6 @@ export class Sprint implements IObserver {
     const index = this.backlogItems.indexOf(backlogItem);
     if (index !== -1) {
       this.backlogItems.splice(index, 1);
-      backlogItem.unsubscribe(this);
     }
   }
 
@@ -70,55 +65,49 @@ export class Sprint implements IObserver {
       if (name) this.name = name;
       if (startDate) this.startDate = startDate;
       if (endDate) this.endDate = endDate;
-      if (user && user.getRole() == Role.ScrumMaster) this.scrumMaster = user;
+      if (user && user.role == Role.ScrumMaster) this.scrumMaster = user;
     }
   }
 
   public create(user: User): void {
-    if (user.getRole() == Role.ScrumMaster) {
-      this.state.onCreate();
-      this.message.content = `Sprint ${this.name} created`;
-    }
+      if (user.role == Role.ScrumMaster) {
+        this.state.onCreate();
+        this.message.message = `Sprint ${this.name} created`;
+      }
   }
 
   public start(user: User): void {
-    if (user.getRole() == Role.ScrumMaster) {
+    if (user.role == Role.ScrumMaster) {
       this.state.onStart();
-      this.message.content = `Sprint ${this.name} started`;
+      this.message.message = `Sprint ${this.name} started`;
     }
   }
 
   public finish(user: User): void {
-    if (user.getRole() == Role.ScrumMaster) {
+    if (user.role == Role.ScrumMaster) {
       this.state.onFinish();
-      this.message.content = `Sprint ${this.name} completed`;
+      this.message.message = `Sprint ${this.name} completed`;
     }
   }
 
   public review(user: User): void {
-    if (user.getRole() == Role.ScrumMaster) {
+    if (user.role == Role.ScrumMaster) {
       this.state.onReview();
-      this.message.content = `Sprint ${this.name} released`;
+      this.message.message = `Sprint ${this.name} released`;
     }
   }
 
   public complete(user: User): void {
-    if (user.getRole() == Role.ScrumMaster) {
+    if (user.role == Role.ScrumMaster) {
       this.state.onComplete();
-      this.message.content = `Sprint ${this.name} completed`;
+      this.message.message = `Sprint ${this.name} completed`;
     }
   }
 
   public release(user: User): void {
-    if (user.getRole() == Role.ScrumMaster) {
+    if (user.role == Role.ScrumMaster) {
       this.state.onClose();
-      this.message.content = `Sprint ${this.name} released`;
+      this.message.message = `Sprint ${this.name} released`;
     }
-  }
-
-  update(message: string): void {
-    this.messageService.sendMessage({
-      content: message,
-    });
   }
 }

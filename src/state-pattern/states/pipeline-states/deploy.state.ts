@@ -5,7 +5,6 @@ import { PipelineCancelledState } from "./cancelled.state";
 export class PipelineDeployState extends IPipelineState {
   constructor(private pipeline: Pipeline) {
     super("Deployment Stage", "Deploying...");
-    this.notify("Pipeline executing deployment");
   }
 
   onSource(): void {
@@ -38,12 +37,8 @@ export class PipelineDeployState extends IPipelineState {
     throw new Error("Cannot change to Deploy State from Deploy State");
   }
   onCancel(): void {
-    try {
       console.log("Scrum Master Cancelled Pipeline");
       this.pipeline.setState(new PipelineCancelledState(this.pipeline));
-    } catch (error) {
-      this.notify(JSON.stringify(error));
-    }
   }
 
   private logMessage(): void {

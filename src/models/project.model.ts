@@ -1,9 +1,9 @@
 import { Sprint } from "./sprint.model";
 import { Team } from "./team.model";
-import { User } from "./user/abstract-user.model";
+import { User } from "./user/user.model";
 import { Role } from "./user/roles";
 
-export class Project {
+export class Project  {
   private productOwner?: User;
   private sprints: Sprint[] = [];
   private team?: Team;
@@ -11,7 +11,7 @@ export class Project {
   public constructor(public name: string) { }
 
   public setProductOwner(user: User) {
-    if (user.getRole() == Role.ProductOwner) {
+    if (user.role == Role.ProductOwner) {
       this.productOwner = user;
     }
   }

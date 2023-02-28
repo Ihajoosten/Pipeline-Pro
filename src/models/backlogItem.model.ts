@@ -1,4 +1,4 @@
-import { IObserver } from "../observer-pattern/interfaces/IObserver";
+import { Observer } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IBacklogItemState } from "../state-pattern/interface/IBacklogItemState";
 import { BacklogDoneState } from "../state-pattern/states/backlog-states/done.state";
@@ -6,23 +6,24 @@ import { BacklogReadyForTestingState } from "../state-pattern/states/backlog-sta
 import { BacklogToDoState } from "../state-pattern/states/backlog-states/toDo.state";
 import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
-import { User } from "./user/abstract-user.model";
+import { User } from "./user/user.model";
 import { Role } from "./user/roles";
 
-export class BacklogItem implements ISubject, IObserver {
+export class BacklogItem implements ISubject {
   public notifyScrumMaster = false;
-  private observers: Array<IObserver> = new Array<IObserver>();
+  private observers: Observer[] = [];
   private state: IBacklogItemState;
   private developer?: User;
-  private activities: Array<Activity> = new Array<Activity>();
+  private tester?: User;
+  private activities: Activity[] = [];
   private thread?: Thread;
 
-  constructor(public id: string, public name: string, public description: string) {
+  constructor(public id: string, public name: string, public description: string, private scrumMaster: User) {
     this.state = new BacklogToDoState(this);
   }
 
   public setDeveloper(user: User) {
-    if (!this.developer && user.getRole() == Role.Developer || Role.LeadDeveloper) {
+    if (!this.developer && user.role == Role.Developer || Role.LeadDeveloper) {
       this.developer = user;
     }
   }
@@ -32,6 +33,20 @@ export class BacklogItem implements ISubject, IObserver {
   }
 
   public getDeveloper(): User | undefined {
+    return this.developer;
+  }
+
+  public setTester(user: User) {
+    if (!this.tester && user.role == Role.Developer || Role.LeadDeveloper) {
+      this.tester = user;
+    }
+  }
+
+  public removeTester() {
+    this.tester = undefined;
+  }
+
+  public getTester(): User | undefined {
     return this.developer;
   }
 
@@ -53,13 +68,11 @@ export class BacklogItem implements ISubject, IObserver {
   public addThread(thread: Thread) {
     if (!this.thread) {
       this.thread = thread;
-      thread.subscribe(this);
     }
   }
 
   public removeThread() {
     if (this.thread) {
-      this.thread.unsubscribe(this);
       this.thread = undefined;
     }
   }
@@ -81,9 +94,9 @@ export class BacklogItem implements ISubject, IObserver {
   public toDo(): void {
     if (this.state instanceof BacklogReadyForTestingState || BacklogDoneState) {
       this.state.toDo();
-      this.notify(
-        `Backlog item: ${this.name} moved from the 'ready for testing/done' to the 'to do' stage!`
-      );
+      const observer = new Observer(this.scrumMaster, `Backlog item: ${this.name} moved from the 'ready for testing/done' to the 'to do' stage!`);
+      this.observers.push(observer);
+      this.notify();
     }
     this.state.toDo();
   }
@@ -94,9 +107,11 @@ export class BacklogItem implements ISubject, IObserver {
 
   public readyForTesting(): void {
     this.state.readyForTesting();
-    this.notify(
-      `Backlog item: ${this.name} moved to the 'ready for testing' stage!`
-    );
+    if (this.tester) {
+      const observer = new Observer(this.tester, `Backlog item: ${this.name} moved to the 'ready for testing' stage!`)
+      this.observers.push(observer);
+      this.notify();
+    }
   }
 
   public testing(): void {
@@ -111,28 +126,10 @@ export class BacklogItem implements ISubject, IObserver {
     this.state.done();
   }
 
-  public subscribe(observer: IObserver) {
-    this.observers.push(observer);
-  }
-
-  public unsubscribe(observer: IObserver) {
-    const index = this.observers.indexOf(observer);
-    if (index !== -1) {
-      this.observers.splice(index, 1);
-    }
-  }
-
-  public notify(message: string) {
+  public notify() {
     for (const observer of this.observers) {
-      observer.update({ message, notifyScrumMaster: this.notifyScrumMaster });
+      observer.sendMessage();
+      this.observers.splice(0); // IS DIT NOODZAKELIJK?
     }
-  }
-
-  public update(thread: Thread): void {
-    const messages = thread.getMessages();
-    const lastMessage = messages[messages.length - 1]; // -1 of niet?
-    this.notify(
-      `A new message was added to ${thread.title}: ${lastMessage}`
-    );
   }
 }

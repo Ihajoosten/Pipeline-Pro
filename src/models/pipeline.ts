@@ -1,33 +1,22 @@
-import { IObserver } from "../observer-pattern/interfaces/IObserver";
+import { Observer } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../state-pattern/states/pipeline-states/source.state";
 import { IPipelineVisitor } from "../visitor-pattern/visitors/IPipelineVisitor";
 import { GitIntegration } from "./gitIntegration.model";
+import { User } from "./user/user.model";
 
 export class Pipeline implements ISubject {
   private state: IPipelineState = new PipelineSourceState(this);
   private tasks: IPipelineState[] = [];
-  private observers: IObserver[] = [];
+  private observers: Observer[] = [];
   private visitor?: IPipelineVisitor;
-  public hasSucceeded: boolean = false;
 
-  constructor(private name: string, private gitIntegration: GitIntegration) { }
+  constructor(private name: string, private scrumMaster: User, private gitIntegration: GitIntegration) { }
 
-  public subscribe(observer: IObserver) {
-    this.observers.push(observer);
-  }
-
-  public unsubscribe(observer: IObserver) {
-    const index = this.observers.indexOf(observer);
-    if (index !== -1) {
-      this.observers.splice(index, 1);
-    }
-  }
-
-  public notify(message: string) {
+  public notify() {
     for (const observer of this.observers) {
-      observer.update({ message });
+      observer.sendMessage();
     }
   }
 
@@ -50,11 +39,10 @@ export class Pipeline implements ISubject {
           task.acceptVisitor(this.visitor!);
         });
       }
-    } catch (err) {
-      this.hasSucceeded = false;
-      this.notify(
-        `There was an error during the pipeline tasks - error message: ${err}`
-      );
+    } catch (error) {
+      const observer = new Observer(this.scrumMaster, `There was an error during one of the pipeline tasks!`)
+      this.observers.push(observer);
+      this.notify();
     }
   }
 

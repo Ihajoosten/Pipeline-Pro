@@ -1,5 +1,5 @@
-import { IMessage } from "../adapter-pattern/interfaces/IMessage";
+import { User } from "./user/user.model";
 
-export class Message implements IMessage {
-  constructor(public content: string, public sender?: string, public recipient?: string) { }
+export class Message {
+  constructor(public content: string, public sender: User) { }
 }

@@ -1,4 +1,4 @@
-import { User } from "./user/abstract-user.model";
+import { User } from "./user/user.model";
 import { Role } from "./user/roles";
 
 
@@ -8,7 +8,7 @@ export class Activity {
   public constructor(public name: string, public description: string) {}
 
   public setDeveloper(user: User) {
-    if (!this.developer && user.getRole() == Role.Developer || Role.LeadDeveloper) {
+    if (!this.developer && user.role == Role.Developer || Role.LeadDeveloper) {
       this.developer = user;
     }
   }

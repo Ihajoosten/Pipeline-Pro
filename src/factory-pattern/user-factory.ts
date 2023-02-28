@@ -1,25 +1,19 @@
-import { User } from "../models/user/abstract-user.model";
-import {
-  Developer,
-  LeadDeveloper,
-  ScrumMaster,
-  ProductOwner,
-} from "../models/user/users.model";
+// import { User } from "../models/user/user.model";
 
-// UserFactory class
-export class UserFactory {
-  static createUser(name: string, email: string, role: string): User {
-    switch (role) {
-      case "Developer":
-        return new Developer(name, email, role);
-      case "LeadDeveloper":
-        return new LeadDeveloper(name, email, role);
-      case "ScrumMaster":
-        return new ScrumMaster(name, email, role);
-      case "ProductOwner":
-        return new ProductOwner(name, email, role);
-      default:
-        throw new Error(`Unknown role: ${role}`);
-    }
-  }
-}
+// // UserFactory class
+// export class UserFactory {
+//   static createUser(user: User): User {
+//     switch (user.role) {
+//       case "Developer":
+//         return new Developer(name, email, role);
+//       case "LeadDeveloper":
+//         return new LeadDeveloper(name, email, role);
+//       case "ScrumMaster":
+//         return new ScrumMaster(name, email, role);
+//       case "ProductOwner":
+//         return new ProductOwner(name, email, role);
+//       default:
+//         throw new Error(`Unknown role: ${role}`);
+//     }
+//   }
+// }

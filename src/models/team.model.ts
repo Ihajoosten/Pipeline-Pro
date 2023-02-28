@@ -1,4 +1,4 @@
-import { User } from "./user/abstract-user.model";
+import { User } from "./user/user.model";
 import { Role } from "./user/roles";
 
 export class Team {
@@ -7,7 +7,7 @@ export class Team {
   constructor(public name: string) { }
 
   public addMember(user: User) {
-    if (!(user.getRole() == Role.ProductOwner || Role.ScrumMaster)) {
+    if (!(user.role == Role.ProductOwner || Role.ScrumMaster)) {
       this.members.push(user);
     }
   }

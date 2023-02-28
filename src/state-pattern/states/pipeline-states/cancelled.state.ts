@@ -5,17 +5,12 @@ import { PipelineSourceState } from "./source.state";
 export class PipelineCancelledState extends IPipelineState {
   constructor(private pipeline: Pipeline) {
     super("Cancelled Stage", "Cancelled.");
-    this.notify("Development Pipeline cancelled");
   }
 
   onSource(): void {
     // Only to this state to restart
-    try {
       console.log("Pipeline cancelled, now restarting tasks");
       this.pipeline.setState(new PipelineSourceState(this.pipeline));
-    } catch (error) {
-      this.notify(JSON.stringify(error));
-    }
   }
 
   onPackage(): void {

@@ -14,12 +14,6 @@ export class Pipeline implements ISubject {
 
   constructor(private name: string, private scrumMaster: User, private gitIntegration: GitIntegration) { }
 
-  public notify() {
-    for (const observer of this.observers) {
-      observer.sendMessage();
-    }
-  }
-
   public getName(): string {
     return this.name;
   }
@@ -73,5 +67,12 @@ export class Pipeline implements ISubject {
 
   public moveToDeploy(): void {
     this.state.onDeploy();
+  }
+
+  public notify() {
+    for (const observer of this.observers) {
+      observer.sendMessage();
+      this.observers.splice(0);
+    }
   }
 }

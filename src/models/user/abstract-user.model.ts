@@ -1,9 +1,11 @@
+import { Role } from "./roles";
+
 export abstract class User {
   private name: string;
   private email: string;
-  private role: string;
+  private role: Role;
 
-  constructor(name: string, email: string, role: string) {
+  constructor(name: string, email: string, role: Role) {
     this.name = name;
     this.email = email;
     this.role = role;
@@ -25,7 +27,7 @@ export abstract class User {
     return this.email;
   }
 
-  public setRole(role: string) {
+  public setRole(role: Role) {
     this.role = role;
   }
 

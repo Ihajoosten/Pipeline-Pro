@@ -6,10 +6,10 @@ import { BacklogItem } from "./backlogItem.model";
 import { User } from "./user/abstract-user.model";
 import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
 import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
-import { ScrumMaster } from "./user/users.model";
+import { Role } from "./user/roles";
 
 export class Sprint implements IObserver {
-  private scrumMaster?: ScrumMaster;
+  private scrumMaster?: User;
   private backlogItems: Array<BacklogItem> = new Array<BacklogItem>();
   private messageService!: MessagingServiceAdapter;
   private message!: IMessage;
@@ -27,7 +27,7 @@ export class Sprint implements IObserver {
     return this.endDate;
   }
 
-  public getScrumMaster(): ScrumMaster | void {
+  public getScrumMaster(): User | void {
     if (this.scrumMaster) {
       return this.scrumMaster;
     }
@@ -62,7 +62,7 @@ export class Sprint implements IObserver {
     name?: string,
     startDate?: Date,
     endDate?: Date,
-    scrumMaster?: ScrumMaster
+    user?: User
   ): void {
     if (this.state instanceof SprintActiveState) {
       console.log("Cannot update Sprint because it has already started");
@@ -70,47 +70,47 @@ export class Sprint implements IObserver {
       if (name) this.name = name;
       if (startDate) this.startDate = startDate;
       if (endDate) this.endDate = endDate;
-      if (scrumMaster) this.scrumMaster = scrumMaster;
+      if (user && user.getRole() == Role.ScrumMaster) this.scrumMaster = user;
     }
   }
 
   public create(user: User): void {
-    if (user instanceof ScrumMaster) {
+    if (user.getRole() == Role.ScrumMaster) {
       this.state.onCreate();
       this.message.content = `Sprint ${this.name} created`;
     }
   }
 
   public start(user: User): void {
-    if (user instanceof ScrumMaster) {
+    if (user.getRole() == Role.ScrumMaster) {
       this.state.onStart();
       this.message.content = `Sprint ${this.name} started`;
     }
   }
 
   public finish(user: User): void {
-    if (user instanceof ScrumMaster) {
+    if (user.getRole() == Role.ScrumMaster) {
       this.state.onFinish();
       this.message.content = `Sprint ${this.name} completed`;
     }
   }
 
   public review(user: User): void {
-    if (user instanceof ScrumMaster) {
+    if (user.getRole() == Role.ScrumMaster) {
       this.state.onReview();
       this.message.content = `Sprint ${this.name} released`;
     }
   }
 
   public complete(user: User): void {
-    if (user instanceof ScrumMaster) {
+    if (user.getRole() == Role.ScrumMaster) {
       this.state.onComplete();
       this.message.content = `Sprint ${this.name} completed`;
     }
   }
 
   public release(user: User): void {
-    if (user instanceof ScrumMaster) {
+    if (user.getRole() == Role.ScrumMaster) {
       this.state.onClose();
       this.message.content = `Sprint ${this.name} released`;
     }

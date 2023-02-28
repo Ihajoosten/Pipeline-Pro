@@ -6,13 +6,14 @@ import { BacklogReadyForTestingState } from "../state-pattern/states/backlog-sta
 import { BacklogToDoState } from "../state-pattern/states/backlog-states/toDo.state";
 import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
-import { Developer, LeadDeveloper } from "./user/users.model";
+import { User } from "./user/abstract-user.model";
+import { Role } from "./user/roles";
 
 export class BacklogItem implements ISubject, IObserver {
   public notifyScrumMaster = false;
   private observers: Array<IObserver> = new Array<IObserver>();
   private state: IBacklogItemState;
-  private developer?: Developer | LeadDeveloper;
+  private developer?: User;
   private activities: Array<Activity> = new Array<Activity>();
   private thread?: Thread;
 
@@ -20,9 +21,9 @@ export class BacklogItem implements ISubject, IObserver {
     this.state = new BacklogToDoState(this);
   }
 
-  public setDeveloper(developer: Developer | LeadDeveloper) {
-    if (!this.developer) {
-      this.developer = developer;
+  public setDeveloper(user: User) {
+    if (!this.developer && user.getRole() == Role.Developer || Role.LeadDeveloper) {
+      this.developer = user;
     }
   }
 
@@ -30,7 +31,7 @@ export class BacklogItem implements ISubject, IObserver {
     this.developer = undefined;
   }
 
-  public getDeveloper(): Developer | LeadDeveloper | undefined {
+  public getDeveloper(): User | undefined {
     return this.developer;
   }
 

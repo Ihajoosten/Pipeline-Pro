@@ -1,18 +1,25 @@
 import { Sprint } from "./sprint.model";
 import { Team } from "./team.model";
-import { ProductOwner } from "./user/users.model";
+import { User } from "./user/abstract-user.model";
+import { Role } from "./user/roles";
 
 export class Project {
-  private productOwner: ProductOwner;
+  private productOwner?: User;
   private sprints: Sprint[] = [];
   private team?: Team;
 
-  public constructor(public name: string, productOwner: ProductOwner) {
-    this.productOwner = productOwner;
+  public constructor(public name: string) { }
+
+  public setProductOwner(user: User) {
+    if (user.getRole() == Role.ProductOwner) {
+      this.productOwner = user;
+    }
   }
 
-  public getProductOwner(): ProductOwner {
-    return this.productOwner;
+  public getProductOwner(): User | undefined {
+    if (this.productOwner) {
+      return this.productOwner;
+    }
   }
 
   public addSprint(sprint: Sprint): void {

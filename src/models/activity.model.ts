@@ -1,13 +1,15 @@
-import { Developer, LeadDeveloper } from "./user/users.model";
+import { User } from "./user/abstract-user.model";
+import { Role } from "./user/roles";
+
 
 export class Activity {
-  private developer?: Developer | LeadDeveloper;
+  private developer?: User;
 
   public constructor(public name: string, public description: string) {}
 
-  public setDeveloper(developer: Developer | LeadDeveloper) {
-    if (!this.developer) {
-      this.developer = developer;
+  public setDeveloper(user: User) {
+    if (!this.developer && user.getRole() == Role.Developer || Role.LeadDeveloper) {
+      this.developer = user;
     }
   }
 
@@ -15,7 +17,7 @@ export class Activity {
     this.developer = undefined;
   }
 
-  public getDeveloper(): Developer | LeadDeveloper | undefined {
+  public getDeveloper(): User | undefined {
     return this.developer;
   }
 }

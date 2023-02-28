@@ -1,14 +1,16 @@
-import { Pipeline } from "../../../models/pipeline/pipeline";
+import { Pipeline } from "../../../models/pipeline";
 import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
 import { IPipelineVisitor } from "../../../visitor-pattern/visitors/IPipelineVisitor";
 import { IPipelineState } from "../../interface/IPipelineState";
+import { PipelineCancelledState } from "./cancelled.state";
 import { PipelineDeployState } from "./deploy.state";
 
 export class PipelineAnalyzeState implements IPipelineState {
   constructor(
     private pipeline: Pipeline,
     private observers: IObserver[] = []
-  ) {}
+  ) { }
+
   public subscribe(observer: IObserver): void {
     this.observers.push(observer);
   }
@@ -39,22 +41,22 @@ export class PipelineAnalyzeState implements IPipelineState {
   }
 
   onSource(): void {
-    console.log("Pipeline is already analyzing project");
+    this.logMessage();
     throw new Error("Cannot change to Source State from Analyze State");
   }
 
   onPackage(): void {
-    console.log("Pipeline is already analyzing project");
+    this.logMessage();
     throw new Error("Cannot change to Source State from Analyze State");
   }
 
   onBuild(): void {
-    console.log("Pipeline is already analyzing project");
+    this.logMessage();
     throw new Error("Cannot change to Build State from Analyze State");
   }
 
   onTest(): void {
-    console.log("Pipeline is already analyzing project");
+    this.logMessage();
     throw new Error("Cannot change to Test State from Analyze State");
   }
 
@@ -70,5 +72,18 @@ export class PipelineAnalyzeState implements IPipelineState {
     } catch (error) {
       this.notify(JSON.stringify(error));
     }
+  }
+
+  onCancelled(): void {
+    try {
+      console.log("Scrum Master Cancelled Pipeline");
+      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    } catch (error) {
+      this.notify(JSON.stringify(error));
+    }
+  }
+
+  private logMessage(): void {
+    console.log("Pipeline is already analyzing project");
   }
 }

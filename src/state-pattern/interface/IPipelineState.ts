@@ -9,6 +9,7 @@ export interface IPipelineState extends ISubject {
   onAnalyze(): void;
   onDeploy(): void;
   acceptVisitor(visitor: IPipelineVisitor): void;
+  onCancelled(): void;
 
   getName(): string;
   getAction(): string;

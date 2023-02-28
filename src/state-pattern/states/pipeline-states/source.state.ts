@@ -1,14 +1,15 @@
-import { Pipeline } from "../../../models/pipeline/pipeline";
+import { Pipeline } from "../../../models/pipeline";
 import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
 import { IPipelineVisitor } from "../../../visitor-pattern/visitors/IPipelineVisitor";
 import { IPipelineState } from "../../interface/IPipelineState";
+import { PipelineCancelledState } from "./cancelled.state";
 import { PipelinePackageState } from "./package.state";
 
 export class PipelineSourceState implements IPipelineState {
   constructor(
     private pipeline: Pipeline,
     private observers: IObserver[] = []
-  ) {}
+  ) { }
   public subscribe(observer: IObserver): void {
     this.observers.push(observer);
   }
@@ -39,7 +40,7 @@ export class PipelineSourceState implements IPipelineState {
   }
 
   onSource(): void {
-    console.log("Pipeline still fetching source code");
+    this.logMessage();
     throw new Error("Cannot change to Source State from Source State");
   }
 
@@ -55,22 +56,34 @@ export class PipelineSourceState implements IPipelineState {
   }
 
   onBuild(): void {
-    console.log("Pipeline still fetching source code");
+    this.logMessage();
     throw new Error("Cannot change to Build State from Source State");
   }
 
   onTest(): void {
-    console.log("Pipeline still fetching source code");
+    this.logMessage();
     throw new Error("Cannot change to Test State from Source State");
   }
 
   onAnalyze(): void {
-    console.log("Pipeline still fetching source code");
+    this.logMessage();
     throw new Error("Cannot change to Analyze State from Source State");
   }
 
   onDeploy(): void {
-    console.log("Pipeline still fetching source code");
+    this.logMessage();
     throw new Error("Cannot change to Deploy State from Source State");
+  }
+  onCancelled(): void {
+    try {
+      console.log("Scrum Master Cancelled Pipeline");
+      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    } catch (error) {
+      this.notify(JSON.stringify(error));
+    }
+  }
+
+  private logMessage(): void {
+    console.log("Pipeline still fetching source code");
   }
 }

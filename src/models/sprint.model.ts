@@ -13,7 +13,7 @@ export class Sprint implements IObserver {
   private startDate: Date;
   private endDate: Date;
   private scrumMaster?: ScrumMaster;
-  private backlogItems: BacklogItem[] = [];
+  private backlogItems: Array<BacklogItem> = new Array<BacklogItem>();
   private messageService!: MessagingServiceAdapter;
   private message!: IMessage;
   private state: ISprintState;

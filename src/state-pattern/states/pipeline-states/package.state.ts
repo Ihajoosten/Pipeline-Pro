@@ -1,14 +1,15 @@
-import { Pipeline } from "../../../models/pipeline/pipeline";
+import { Pipeline } from "../../../models/pipeline";
 import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
 import { IPipelineVisitor } from "../../../visitor-pattern/visitors/IPipelineVisitor";
 import { IPipelineState } from "../../interface/IPipelineState";
 import { PipelineBuildState } from "./build.state";
+import { PipelineCancelledState } from "./cancelled.state";
 
 export class PipelinePackageState implements IPipelineState {
   constructor(
     private pipeline: Pipeline,
     private observers: IObserver[] = []
-  ) {}
+  ) { }
   public subscribe(observer: IObserver): void {
     this.observers.push(observer);
   }
@@ -39,12 +40,12 @@ export class PipelinePackageState implements IPipelineState {
   }
 
   onSource(): void {
-    console.log("Pipeline still installing 3rd party libraries / packages");
+    this.logMessage();
     throw new Error("Cannot change to Source State from Package State");
   }
 
   onPackage(): void {
-    console.log("Pipeline still installing 3rd party libraries / packages");
+    this.logMessage();
     throw new Error("Cannot change to Package State from Package State");
   }
 
@@ -58,17 +59,29 @@ export class PipelinePackageState implements IPipelineState {
   }
 
   onTest(): void {
-    console.log("Pipeline still installing 3rd party libraries / packages");
+    this.logMessage();
     throw new Error("Cannot change to Test State from Package State");
   }
 
   onAnalyze(): void {
-    console.log("Pipeline still installing 3rd party libraries / packages");
+    this.logMessage();
     throw new Error("Cannot change to Analyze State from Package State");
   }
 
   onDeploy(): void {
-    console.log("Pipeline still installing 3rd party libraries / packages");
+    this.logMessage();
     throw new Error("Cannot change to Deploy State from Package State");
+  }
+  onCancelled(): void {
+    try {
+      console.log("Scrum Master Cancelled Pipeline");
+      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    } catch (error) {
+      this.notify(JSON.stringify(error));
+    }
+  }
+
+  private logMessage(): void {
+    console.log("Pipeline still installing 3rd party libraries / packages");
   }
 }

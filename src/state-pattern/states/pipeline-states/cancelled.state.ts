@@ -2,11 +2,11 @@ import { Pipeline } from "../../../models/pipeline";
 import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
 import { IPipelineVisitor } from "../../../visitor-pattern/visitors/IPipelineVisitor";
 import { IPipelineState } from "../../interface/IPipelineState";
-import { PipelineCancelledState } from "./cancelled.state";
+import { PipelineSourceState } from "./source.state";
 
-export class PipelineDeployState implements IPipelineState {
+export class PipelineCancelledState implements IPipelineState {
   constructor(private pipeline: Pipeline, private observers: IObserver[] = []) {
-    this.notify("Pipeline executing deployment");
+    this.notify("Development Pipeline cancelled");
   }
 
   public subscribe(observer: IObserver): void {
@@ -27,11 +27,11 @@ export class PipelineDeployState implements IPipelineState {
   }
 
   getName(): string {
-    return "Deploy Stage";
+    return "Cancel Stage";
   }
 
   getAction(): string {
-    return "Deploying...";
+    return "Canceling Pipeline...";
   }
 
   acceptVisitor(visitor: IPipelineVisitor): void {
@@ -39,44 +39,45 @@ export class PipelineDeployState implements IPipelineState {
   }
 
   onSource(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Source State from Deploy State");
-  }
-
-  onPackage(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Source State from Deploy State");
-  }
-
-  onBuild(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Build State from Deploy State");
-  }
-
-  onTest(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Test State from Deploy State");
-  }
-
-  onAnalyze(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Analyze State from Deploy State");
-  }
-
-  onDeploy(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Deploy State from Deploy State");
-  }
-  onCancelled(): void {
+    // only to this state to restart
     try {
-      console.log("Scrum Master Cancelled Pipeline");
-      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+      console.log("Pipeline cancelled, now restarting tasks");
+      this.pipeline.setState(new PipelineSourceState(this.pipeline));
     } catch (error) {
       this.notify(JSON.stringify(error));
     }
   }
 
+  onPackage(): void {
+    this.logMessage();
+    throw new Error("Cannot change to Package State from Cancelled State");
+  }
+
+  onBuild(): void {
+    this.logMessage();
+    throw new Error("Cannot change to Build State from Cancelled State");
+  }
+
+  onTest(): void {
+    this.logMessage();
+    throw new Error("Cannot change to Test State from Cancelled State");
+  }
+
+  onAnalyze(): void {
+    this.logMessage();
+    throw new Error("Cannot change to Analyze State from Cancelled State");
+  }
+
+  onDeploy(): void {
+    this.logMessage();
+    throw new Error("Cannot change to Deploy State from Cancelled State");
+  }
+  onCancelled(): void {
+    this.logMessage();
+    throw new Error("Cannot change to Cancelled State from Cancelled State");
+  }
+
   private logMessage(): void {
-    console.log("Project is deployed");
+    console.log("Project is cancelled");
   }
 }

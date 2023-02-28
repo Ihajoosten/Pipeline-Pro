@@ -1,14 +1,15 @@
-import { Pipeline } from "../../../models/pipeline/pipeline";
+import { Pipeline } from "../../../models/pipeline";
 import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
 import { IPipelineVisitor } from "../../../visitor-pattern/visitors/IPipelineVisitor";
 import { IPipelineState } from "../../interface/IPipelineState";
 import { PipelineAnalyzeState } from "./analyze.state";
+import { PipelineCancelledState } from "./cancelled.state";
 
 export class PipelineTestState implements IPipelineState {
   constructor(
     private pipeline: Pipeline,
     private observers: IObserver[] = []
-  ) {}
+  ) { }
   public subscribe(observer: IObserver): void {
     this.observers.push(observer);
   }
@@ -35,19 +36,19 @@ export class PipelineTestState implements IPipelineState {
     visitor.visit(this);
   }
   onSource(): void {
-    console.log("Pipeline is already testing project");
+    this.logMessage();
     throw new Error("Cannot change to Source State from Test State");
   }
   onPackage(): void {
-    console.log("Pipeline is already testing project");
+    this.logMessage();
     throw new Error("Cannot change to Package State from Test State");
   }
   onBuild(): void {
-    console.log("Pipeline is already testing project");
+    this.logMessage();
     throw new Error("Cannot change to Package State from Test State");
   }
   onTest(): void {
-    console.log("Pipeline is already testing project");
+    this.logMessage();
     throw new Error("Cannot change to Package State from Test State");
   }
   onAnalyze(): void {
@@ -61,7 +62,19 @@ export class PipelineTestState implements IPipelineState {
     }
   }
   onDeploy(): void {
-    console.log("Pipeline is already testing project");
+    this.logMessage();
     throw new Error("Cannot change to Deploy State from Test State");
+  }
+  onCancelled(): void {
+    try {
+      console.log("Scrum Master Cancelled Pipeline");
+      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    } catch (error) {
+      this.notify(JSON.stringify(error));
+    }
+  }
+
+  private logMessage(): void {
+    console.log("Pipeline is already testing project");
   }
 }

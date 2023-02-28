@@ -13,10 +13,10 @@ export class BacklogItem implements ISubject, IObserver {
   public name: string;
   public description: string;
   public notifyScrumMaster = false;
-  private observers: IObserver[] = [];
+  private observers: Array<IObserver> = new Array<IObserver>();
   private state: IBacklogItemState;
   private developer?: Developer | LeadDeveloper;
-  private activities: Activity[] = [];
+  private activities: Array<Activity> = new Array<Activity>();
   private thread?: Thread;
 
   constructor(id: string, name: string, description: string) {

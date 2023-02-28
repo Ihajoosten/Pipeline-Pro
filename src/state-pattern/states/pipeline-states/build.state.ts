@@ -1,14 +1,15 @@
-import { Pipeline } from "../../../models/pipeline/pipeline";
+import { Pipeline } from "../../../models/pipeline";
 import { IObserver } from "../../../observer-pattern/interfaces/IObserver";
 import { IPipelineVisitor } from "../../../visitor-pattern/visitors/IPipelineVisitor";
 import { IPipelineState } from "../../interface/IPipelineState";
+import { PipelineCancelledState } from "./cancelled.state";
 import { PipelineTestState } from "./test.state";
 
 export class PipelineBuildState implements IPipelineState {
   constructor(
     private pipeline: Pipeline,
     private observers: IObserver[] = []
-  ) {}
+  ) { }
   public subscribe(observer: IObserver): void {
     this.observers.push(observer);
   }
@@ -35,15 +36,15 @@ export class PipelineBuildState implements IPipelineState {
     visitor.visit(this);
   }
   onSource(): void {
-    console.log("Pipeline still building project");
+    this.logMessage();
     throw new Error("Cannot change to Source State from Build State");
   }
   onPackage(): void {
-    console.log("Pipeline still building project");
+    this.logMessage();
     throw new Error("Cannot change to Package State from Build State");
   }
   onBuild(): void {
-    console.log("Pipeline is already building project");
+    this.logMessage();
     throw new Error("Cannot change to Package State from Build State");
   }
   onTest(): void {
@@ -55,11 +56,23 @@ export class PipelineBuildState implements IPipelineState {
     }
   }
   onAnalyze(): void {
-    console.log("Pipeline still building project");
+    this.logMessage();
     throw new Error("Cannot change to Analyze State from Build State");
   }
   onDeploy(): void {
-    console.log("Pipeline still building project");
+    this.logMessage();
     throw new Error("Cannot change to Deploy State from Build State");
+  }
+  onCancelled(): void {
+    try {
+      console.log("Scrum Master Cancelled Pipeline");
+      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    } catch (error) {
+      this.notify(JSON.stringify(error));
+    }
+  }
+
+  private logMessage(): void {
+    console.log("Pipeline still building project");
   }
 }

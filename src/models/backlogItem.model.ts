@@ -1,4 +1,4 @@
-import { Observer } from "../observer-pattern/interfaces/IObserver";
+import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IBacklogItemState } from "../state-pattern/interface/IBacklogItemState";
 import { BacklogDoneState } from "../state-pattern/states/backlog-states/done.state";
@@ -8,10 +8,10 @@ import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
 import { User } from "./user/user.model";
 import { Role } from "./user/roles";
+import { Notification } from "./notification.model";
 
 export class BacklogItem implements ISubject {
-  public notifyScrumMaster = false;
-  private observers: Observer[] = [];
+  private observers: IObserver[] = [];
   private state: IBacklogItemState;
   private developer?: User;
   private tester?: User;
@@ -19,17 +19,20 @@ export class BacklogItem implements ISubject {
   private thread?: Thread;
 
   constructor(public id: string, public name: string, public description: string, private scrumMaster: User) {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Invalid scrum master!");
+    }
     this.state = new BacklogToDoState(this);
   }
 
-  public setDeveloper(user: User) {
-    if (!this.developer && user.role == Role.Developer || Role.LeadDeveloper) {
-      this.developer = user;
-    }
+  public getScrumMaster(): User {
+    return this.scrumMaster;
   }
 
-  public removeDeveloper() {
-    this.developer = undefined;
+  public setDeveloper(user: User) {
+    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
+      this.developer = user;
+    }
   }
 
   public getDeveloper(): User | undefined {
@@ -37,17 +40,13 @@ export class BacklogItem implements ISubject {
   }
 
   public setTester(user: User) {
-    if (!this.tester && user.role == Role.Developer || Role.LeadDeveloper) {
+    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
       this.tester = user;
     }
   }
 
-  public removeTester() {
-    this.tester = undefined;
-  }
-
   public getTester(): User | undefined {
-    return this.developer;
+    return this.tester;
   }
 
   public addActivity(activity: Activity) {
@@ -66,21 +65,20 @@ export class BacklogItem implements ISubject {
   }
 
   public addThread(thread: Thread) {
-    if (!this.thread) {
-      this.thread = thread;
-    }
-  }
-
-  public removeThread() {
     if (this.thread) {
-      this.thread = undefined;
+      throw new Error("Thread already exists!");
     }
+    this.thread = thread;
   }
 
   public getThread(): Thread | void {
     if (this.thread) {
       return this.thread;
     }
+  }
+
+  public removeThread() {
+    this.thread = undefined;
   }
 
   public getState(): IBacklogItemState {
@@ -92,13 +90,12 @@ export class BacklogItem implements ISubject {
   }
 
   public toDo(): void {
-    if (this.state instanceof BacklogReadyForTestingState || BacklogDoneState) {
-      this.state.toDo();
-      const observer = new Observer(this.scrumMaster, `Backlog item: ${this.name} moved from the 'ready for testing/done' to the 'to do' stage!`);
-      this.observers.push(observer);
-      this.notify();
-    }
     this.state.toDo();
+    if (this.state instanceof BacklogReadyForTestingState || this.state instanceof BacklogDoneState) {
+      const notificationMessage = `Backlog item: ${this.name} moved from the 'ready for testing/done' stage to the 'to do' stage!`;
+      const notification = new Notification(this.scrumMaster, notificationMessage);
+      this.notify(notification);
+    }
   }
 
   public doing(): void {
@@ -108,9 +105,9 @@ export class BacklogItem implements ISubject {
   public readyForTesting(): void {
     this.state.readyForTesting();
     if (this.tester) {
-      const observer = new Observer(this.tester, `Backlog item: ${this.name} moved to the 'ready for testing' stage!`)
-      this.observers.push(observer);
-      this.notify();
+      const notificationMessage = `Backlog item: ${this.name} moved to the 'ready for testing' stage!`
+      const notification = new Notification(this.tester, notificationMessage);
+      this.notify(notification);
     }
   }
 
@@ -126,10 +123,20 @@ export class BacklogItem implements ISubject {
     this.state.done();
   }
 
-  public notify() {
+  public subscribe(observer: IObserver) {
+    this.observers.push(observer);
+  }
+
+  public unsubscribe(observer: IObserver) {
+    const index = this.observers.indexOf(observer);
+    if (index !== -1) {
+      this.observers.splice(index, 1);
+    }
+  }
+
+  public notify(notification: Notification) {
     for (const observer of this.observers) {
-      observer.sendMessage();
-      this.observers.splice(0); // IS DIT NOODZAKELIJK?
+      observer.update(notification);
     }
   }
 }

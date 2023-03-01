@@ -1,4 +1,4 @@
-import { Pipeline } from "../../../models/pipeline";
+import { Pipeline } from "../../../models/pipeline.model";
 import { IPipelineState } from "../../interface/IPipelineState";
 import { PipelineSourceState } from "./source.state";
 

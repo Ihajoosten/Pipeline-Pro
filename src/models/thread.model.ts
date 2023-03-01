@@ -1,47 +1,47 @@
-import { Observer } from "../observer-pattern/interfaces/IObserver";
+import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
-import { Message } from "./message.model";
+import { ThreadMessage } from "./threadMessage";
+import { Notification } from "./notification.model";
 import { User } from "./user/user.model";
 
 export class Thread implements ISubject {
-  private messages: Message[] = [];
-  private observers: Observer[] = [];
+  private messages: ThreadMessage[] = [];
+  private observers: IObserver[] = [];
 
   constructor(public title: string, private owner: User) { }
 
-  public addMessage(message: Message, user: User) {
-    const observer = new Observer(this.owner, `${user.name} responded to your thread with: ${message}`);
-    this.observers.push(observer);
-    this.messages.push(message);
-    this.notify();
+  public addMessage(threadMessage: ThreadMessage) {
+    this.messages.push(threadMessage);
+    const notificationMessage = `${threadMessage.sender} responded to your thread with: ${threadMessage.content}`;
+    const notification = new Notification(this.owner, notificationMessage);
+    this.notify(notification);
   }
 
-  public removeMessage(message: Message) {
-    const index = this.messages.indexOf(message);
+  public removeMessage(threadMessage: ThreadMessage) {
+    const index = this.messages.indexOf(threadMessage);
     if (index !== -1) {
       this.messages.splice(index, 1);
     }
   }
 
-  public getMessages(): Message[] {
+  public getMessages(): ThreadMessage[] {
     return this.messages;
   }
 
-  // public subscribe(observer: Observer) {
-  //   this.observers.push(observer);
-  // }
+  public subscribe(observer: IObserver) {
+    this.observers.push(observer);
+  }
 
-  // public unsubscribe(observer: Observer) {
-  //   const index = this.observers.indexOf(observer);
-  //   if (index !== -1) {
-  //     this.observers.splice(index, 1);
-  //   }
-  // }
+  public unsubscribe(observer: IObserver) {
+    const index = this.observers.indexOf(observer);
+    if (index !== -1) {
+      this.observers.splice(index, 1);
+    }
+  }
 
-  public notify() {
+  public notify(notification: Notification) {
     for (const observer of this.observers) {
-      observer.sendMessage();
-      this.observers.splice(0); // IS DIT NOODZAKELIJK?
+      observer.update(notification);
     }
   }
 }

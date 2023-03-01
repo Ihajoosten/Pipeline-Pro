@@ -13,5 +13,5 @@ export interface ISprintState {
  * - finished --> onFinished();
  * - retrospective --> onReview();
  * - completed --> onComplete();
- * - closed  --> onClosed();
+ * - closed --> onClosed();
  */

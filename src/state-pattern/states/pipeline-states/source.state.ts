@@ -7,17 +7,17 @@ export class PipelineSourceState extends IPipelineState {
   constructor(private pipeline: Pipeline) {
     super("Sourcing Stage", "Sourcing...");
   }
- 
+
   onSource(): void {
     this.logMessage();
     throw new Error("Cannot change to Source State from Source State");
   }
 
   onPackage(): void {
-      console.log(
-        "Source Code Fetched, now installing 3rd party packages/libraries"
-      );
-      this.pipeline.setState(new PipelinePackageState(this.pipeline));
+    console.log(
+      "Source Code Fetched, now installing 3rd party packages/libraries"
+    );
+    this.pipeline.setState(new PipelinePackageState(this.pipeline));
   }
 
   onBuild(): void {
@@ -41,8 +41,8 @@ export class PipelineSourceState extends IPipelineState {
   }
 
   onCancel(): void {
-      console.log("Scrum Master Cancelled Pipeline");
-      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    console.log("Scrum Master Cancelled Pipeline");
+    this.pipeline.setState(new PipelineCancelledState(this.pipeline));
   }
 
   private logMessage(): void {

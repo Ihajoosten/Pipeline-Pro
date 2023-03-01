@@ -4,10 +4,8 @@ import { BacklogDoingState } from "./doing.state";
 import { BacklogTestingState } from "./testing.state";
 import { BacklogToDoState } from "./toDo.state";
 
-export class BacklogReadyForTestingState
-  implements IBacklogItemState
-{
-  constructor(private backlogItem: BacklogItem) { }
+export class BacklogReadyForTestingState implements IBacklogItemState {
+  constructor(private backlogItem: BacklogItem) {}
 
   toDo(): void {
     console.log('Moving backlog item to the "ToDo" state.');
@@ -50,6 +48,4 @@ export class BacklogReadyForTestingState
       "Cannot move backlog Done to the Doing from ReadyForTesting state"
     );
   }
-
-
-  }
+}

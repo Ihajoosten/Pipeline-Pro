@@ -4,7 +4,7 @@ import { BacklogReadyForTestingState } from "./readyForTesting.state";
 import { BacklogToDoState } from "./toDo.state";
 
 export class BacklogDoingState implements IBacklogItemState {
-  constructor(private backlogItem: BacklogItem) {  }
+  constructor(private backlogItem: BacklogItem) {}
 
   toDo(): void {
     console.log('Moving backlog item to the "ToDo" state.');

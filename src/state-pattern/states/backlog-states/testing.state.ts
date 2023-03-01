@@ -3,8 +3,7 @@ import { IBacklogItemState } from "../../interface/IBacklogItemState";
 import { BacklogTestedState } from "./tested.state";
 
 export class BacklogTestingState implements IBacklogItemState {
-
-  constructor(private backlogItem: BacklogItem) { }
+  constructor(private backlogItem: BacklogItem) {}
 
   toDo(): void {
     console.log(

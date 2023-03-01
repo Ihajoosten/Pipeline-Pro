@@ -3,17 +3,21 @@ import { Team } from "./team.model";
 import { User } from "./user/user.model";
 import { Role } from "./user/roles";
 
-export class Project  {
+export class Project {
   private sprints: Sprint[] = [];
 
-  public constructor(public name: string, private productOwner: User, private team: Team) {
+  public constructor(
+    public name: string,
+    private productOwner: User,
+    private team: Team
+  ) {
     if (productOwner.role !== Role.ProductOwner) {
       throw new Error("Invalid product owner!");
     }
   }
 
   public getProductOwner(): User {
-      return this.productOwner;
+    return this.productOwner;
   }
 
   public addSprint(sprint: Sprint): void {

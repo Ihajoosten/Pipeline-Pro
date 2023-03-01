@@ -37,8 +37,8 @@ export class PipelineDeployState extends IPipelineState {
     throw new Error("Cannot change to Deploy State from Deploy State");
   }
   onCancel(): void {
-      console.log("Scrum Master Cancelled Pipeline");
-      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    console.log("Scrum Master Cancelled Pipeline");
+    this.pipeline.setState(new PipelineCancelledState(this.pipeline));
   }
 
   private logMessage(): void {

@@ -18,7 +18,12 @@ export class BacklogItem implements ISubject {
   private activities: Activity[] = [];
   private thread?: Thread;
 
-  constructor(public id: string, public name: string, public description: string, private scrumMaster: User) {
+  constructor(
+    public id: string,
+    public name: string,
+    public description: string,
+    private scrumMaster: User
+  ) {
     if (scrumMaster.role !== Role.ScrumMaster) {
       throw new Error("Invalid scrum master!");
     }
@@ -91,9 +96,15 @@ export class BacklogItem implements ISubject {
 
   public toDo(): void {
     this.state.toDo();
-    if (this.state instanceof BacklogReadyForTestingState || this.state instanceof BacklogDoneState) {
+    if (
+      this.state instanceof BacklogReadyForTestingState ||
+      this.state instanceof BacklogDoneState
+    ) {
       const notificationMessage = `Backlog item: ${this.name} moved from the 'ready for testing/done' stage to the 'to do' stage!`;
-      const notification = new Notification(this.scrumMaster, notificationMessage);
+      const notification = new Notification(
+        this.scrumMaster,
+        notificationMessage
+      );
       this.notify(notification);
     }
   }
@@ -105,7 +116,7 @@ export class BacklogItem implements ISubject {
   public readyForTesting(): void {
     this.state.readyForTesting();
     if (this.tester) {
-      const notificationMessage = `Backlog item: ${this.name} moved to the 'ready for testing' stage!`
+      const notificationMessage = `Backlog item: ${this.name} moved to the 'ready for testing' stage!`;
       const notification = new Notification(this.tester, notificationMessage);
       this.notify(notification);
     }

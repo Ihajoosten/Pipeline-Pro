@@ -34,13 +34,13 @@ export class PipelineAnalyzeState extends IPipelineState {
   }
 
   onDeploy(): void {
-      console.log("Analysis complete, now deploying project");
-      this.pipeline.setState(new PipelineDeployState(this.pipeline));
+    console.log("Analysis complete, now deploying project");
+    this.pipeline.setState(new PipelineDeployState(this.pipeline));
   }
 
   onCancel(): void {
-      console.log("Scrum Master Cancelled Pipeline");
-      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    console.log("Scrum Master Cancelled Pipeline");
+    this.pipeline.setState(new PipelineCancelledState(this.pipeline));
   }
 
   private logMessage(): void {

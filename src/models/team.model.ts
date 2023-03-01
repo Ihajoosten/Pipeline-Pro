@@ -4,7 +4,7 @@ import { Role } from "./user/roles";
 export class Team {
   private members: User[] = [];
 
-  constructor(public name: string) { }
+  constructor(public name: string) {}
 
   public addMember(user: User) {
     if (!(user.role == Role.ProductOwner || Role.ScrumMaster)) {

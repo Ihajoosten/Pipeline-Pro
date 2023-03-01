@@ -8,7 +8,7 @@ export class Thread implements ISubject {
   private messages: ThreadMessage[] = [];
   private observers: IObserver[] = [];
 
-  constructor(public title: string, private owner: User) { }
+  constructor(public title: string, private owner: User) {}
 
   public addMessage(threadMessage: ThreadMessage) {
     this.messages.push(threadMessage);

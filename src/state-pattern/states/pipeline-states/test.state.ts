@@ -7,7 +7,7 @@ export class PipelineTestState extends IPipelineState {
   constructor(private pipeline: Pipeline) {
     super("Testing Stage", "Testing...");
   }
-  
+
   onSource(): void {
     this.logMessage();
     throw new Error("Cannot change to Source State from Test State");
@@ -29,10 +29,10 @@ export class PipelineTestState extends IPipelineState {
   }
 
   onAnalyze(): void {
-      console.log(
-        "All tests have succeeded. Next job is analyzing code on coverage"
-      );
-      this.pipeline.setState(new PipelineAnalyzeState(this.pipeline));
+    console.log(
+      "All tests have succeeded. Next job is analyzing code on coverage"
+    );
+    this.pipeline.setState(new PipelineAnalyzeState(this.pipeline));
   }
 
   onDeploy(): void {
@@ -41,8 +41,8 @@ export class PipelineTestState extends IPipelineState {
   }
 
   onCancel(): void {
-      console.log("Scrum Master Cancelled Pipeline");
-      this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+    console.log("Scrum Master Cancelled Pipeline");
+    this.pipeline.setState(new PipelineCancelledState(this.pipeline));
   }
 
   private logMessage(): void {

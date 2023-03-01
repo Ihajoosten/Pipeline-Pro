@@ -13,7 +13,11 @@ export class Pipeline implements ISubject {
   private observers: IObserver[] = [];
   private visitor?: IPipelineVisitor;
 
-  constructor(private name: string, private scrumMaster: User, private gitIntegration: GitIntegration) { }
+  constructor(
+    private name: string,
+    private scrumMaster: User,
+    private gitIntegration: GitIntegration
+  ) {}
 
   public getName(): string {
     return this.name;
@@ -27,7 +31,7 @@ export class Pipeline implements ISubject {
     const index = this.tasks.indexOf(pipelineTask);
     if (index !== -1) {
       this.tasks.splice(index, 1);
-    } 
+    }
   }
 
   public setVisitor(visitor: IPipelineVisitor) {
@@ -37,16 +41,22 @@ export class Pipeline implements ISubject {
   public execute(): void {
     try {
       if (this.visitor) {
-        this.tasks.forEach(task => {
+        this.tasks.forEach((task) => {
           task.acceptVisitor(this.visitor!);
         });
         const notificationMessage = `Pipeline tasks were successfully executed!`;
-        const notification = new Notification(this.scrumMaster, notificationMessage);
+        const notification = new Notification(
+          this.scrumMaster,
+          notificationMessage
+        );
         this.notify(notification);
       }
     } catch (error) {
       const notificationMessage = `There was an error during one of the pipeline tasks!`;
-      const notification = new Notification(this.scrumMaster, notificationMessage);
+      const notification = new Notification(
+        this.scrumMaster,
+        notificationMessage
+      );
       this.notify(notification);
     }
   }

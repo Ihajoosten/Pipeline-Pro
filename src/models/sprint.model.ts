@@ -12,7 +12,13 @@ export class Sprint {
   private state: ISprintState;
   // private message: IMessage = { address: "", message: "" };
 
-  constructor(private name: string, private startDate: Date, private endDate: Date, private scrumMaster: User, private pipeline: Pipeline) {
+  constructor(
+    private name: string,
+    private startDate: Date,
+    private endDate: Date,
+    private scrumMaster: User,
+    private pipeline: Pipeline
+  ) {
     if (scrumMaster.role !== Role.ScrumMaster) {
       throw new Error("Invalid scrum master!");
     }
@@ -78,7 +84,7 @@ export class Sprint {
       throw new Error("Only the scrum master can perform this action!");
     }
     this.state.onCreate();
-      // this.message.message = `Sprint ${this.name} created`;
+    // this.message.message = `Sprint ${this.name} created`;
   }
 
   public start(scrumMaster: User): void {

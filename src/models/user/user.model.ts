@@ -9,8 +9,8 @@ export class User {
     public name: string,
     public email: string,
     public role: Role,
-    private notificationPreference: NotificationPreference[]
-  ) {}
+    private notificationPreference: NotificationPreference[] = []
+  ) { }
 
   public addNotificationPreference(
     notificationType: NotificationType,

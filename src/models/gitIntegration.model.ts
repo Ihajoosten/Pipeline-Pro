@@ -55,17 +55,6 @@ export class Repository {
 
   public merge(fromBranchName: string, toBranchName: string): void {
 
-
-
-    // let development = this.branches.forEach(b => { if (b.name == fromBranchName) return b })
-    // let master = this.branches.forEach(b => { if (b.name == toBranchName) return b })
-
-    // console.warn(development)
-    // console.warn(master)
-
-    // // console.warn("From: " + this.getBranch(fromBranchName).name)
-    // // console.warn("To: " + this.getBranch(toBranchName).name)
-
     const fromBranch = this.getBranch(fromBranchName);
     const toBranch = this.getBranch(toBranchName);
     const lastCommitFrom = fromBranch.commits[0];
@@ -127,5 +116,15 @@ export class GitIntegration {
 
   public merge(fromBranchName: string, toBranchName: string): void {
     this.repository.merge(fromBranchName, toBranchName);
+  }
+
+  public push(branchName: string): void {
+    this.repository.push(branchName);
+  }
+  public pull(branchName: string): void {
+    this.repository.push(branchName);
+  }
+  public fetch(branchName: string): void {
+    this.repository.push(branchName);
   }
 }

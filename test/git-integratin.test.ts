@@ -1,7 +1,7 @@
-import { Branch, Repository } from "../src/models/gitIntegration.model";
+import { Branch, GitIntegration, Repository } from "../src/models/gitIntegration.model";
 
 
-describe("The User can work with git integration", () => {
+describe("The User can create Repository and work in it", () => {
 
   let repository: Repository
   beforeEach(() => {
@@ -86,11 +86,13 @@ describe("The User can work with git integration", () => {
     expect(mockFunction).toBeCalled()
   });
 
-  it.only("User merges development into master", () => {
+  it("User merges development into master", () => {
     repository.createBranch("development");
 
     repository.commit("development", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
     repository.commit("development", "Second commit", { name: "Luc Joosten", email: "luc@gmail.com" });
+
+    repository.commit("master", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
 
     let development: Branch = repository.getBranch("development");
     let master: Branch = repository.getBranch("master");
@@ -98,18 +100,84 @@ describe("The User can work with git integration", () => {
     expect(development.commits).toHaveLength(2)
     expect(repository.getBranches()).toHaveLength(2)
 
-    console.warn(development.name)
-    console.warn(master.name)
+    repository.merge(development.name, master.name)
 
-    //repository.merge(development.name, master.name)
+    expect(master.commits).toHaveLength(2);
+    expect(development.commits).toHaveLength(2);
+  });
+});
 
-    // const mockFunction = jest.fn(repository.merge);
+describe("The User can utilize GitIntegration", () => {
 
-    // mockFunction(development.name, master.name);
+  let git: GitIntegration
+  let repository: Repository;
+  beforeEach(() => {
+    git = new GitIntegration();
+    repository = new Repository();
+  });
 
-    // expect(mockFunction).toBeCalled()
+  it("User merges development into master", () => {
+    git.createBranch("development")
 
-    // expect(master.commits).toHaveLength(2);
-    // expect(development.commits).toHaveLength(0);
+    expect(git.getBranches()).toHaveLength(2);
+
+    let branch1: Branch = git.getBranches()[0]
+    let branch2: Branch = git.getBranches()[1]
+    expect(branch1.name).toEqual("master");
+    expect(branch2.name).toEqual("development");
+  });
+
+  it("User calls commit()", () => {
+
+    git.commit("master", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
+
+    let branch = git.getBranch("master");
+
+    expect(branch.commits).toHaveLength(1)
+  });
+
+  it("User calls push()", () => {
+
+    git.commit("master", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
+
+    let branch = git.getBranch("master");
+
+    expect(branch.commits).toHaveLength(1)
+
+    const mockFunction = jest.fn(git.push);
+
+    mockFunction(branch.name);
+
+    expect(mockFunction).toBeCalled()
+  });
+
+  it("User calls pull()", () => {
+
+    git.commit("master", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
+
+    let branch = git.getBranch("master");
+
+    expect(branch.commits).toHaveLength(1)
+
+    const mockFunction = jest.fn(git.pull);
+
+    mockFunction(branch.name);
+
+    expect(mockFunction).toBeCalled()
+  });
+
+  it("User calls fetch()", () => {
+
+    git.commit("master", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
+
+    let branch = git.getBranch("master");
+
+    expect(branch.commits).toHaveLength(1)
+
+    const mockFunction = jest.fn(git.fetch);
+
+    mockFunction(branch.name);
+
+    expect(mockFunction).toBeCalled()
   });
 });

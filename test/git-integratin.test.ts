@@ -1,6 +1,5 @@
 import { Branch, GitIntegration, Repository } from "../src/models/gitIntegration.model";
 
-
 describe("The User can create Repository and work in it", () => {
 
   let repository: Repository
@@ -136,7 +135,7 @@ describe("The User can utilize GitIntegration", () => {
     expect(branch.commits).toHaveLength(1)
   });
 
-  it("User calls push()", () => {
+  it("User calls git push()", () => {
 
     git.commit("master", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
 
@@ -144,14 +143,14 @@ describe("The User can utilize GitIntegration", () => {
 
     expect(branch.commits).toHaveLength(1)
 
-    const mockFunction = jest.fn(git.push);
+    const result = jest.spyOn(GitIntegration.prototype, 'push');
 
-    mockFunction(branch.name);
+    git.push(branch.name)
 
-    expect(mockFunction).toBeCalled()
+    expect(result).toBeCalled()
   });
 
-  it("User calls pull()", () => {
+  it("User calls git pull()", () => {
 
     git.commit("master", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
 
@@ -159,14 +158,14 @@ describe("The User can utilize GitIntegration", () => {
 
     expect(branch.commits).toHaveLength(1)
 
-    const mockFunction = jest.fn(git.pull);
+    const result = jest.spyOn(GitIntegration.prototype, 'pull');
 
-    mockFunction(branch.name);
+    git.pull(branch.name)
 
-    expect(mockFunction).toBeCalled()
+    expect(result).toBeCalled()
   });
 
-  it("User calls fetch()", () => {
+  it("User calls git fetch()", () => {
 
     git.commit("master", "initial commit", { name: "Luc Joosten", email: "luc@gmail.com" });
 
@@ -174,10 +173,9 @@ describe("The User can utilize GitIntegration", () => {
 
     expect(branch.commits).toHaveLength(1)
 
-    const mockFunction = jest.fn(git.fetch);
+    const result = jest.spyOn(GitIntegration.prototype, 'fetch');
+    git.fetch(branch.name)
 
-    mockFunction(branch.name);
-
-    expect(mockFunction).toBeCalled()
+    expect(result).toBeCalled()
   });
 });

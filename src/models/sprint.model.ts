@@ -68,7 +68,8 @@ export class Sprint {
     name?: string,
     startDate?: Date,
     endDate?: Date,
-    user?: User
+    scrumMaster?: User,
+    pipeline?: Pipeline
   ): void {
     if (this.sprintState instanceof SprintActiveState) {
       throw new Error("Cannot update Sprint because it has already started!");
@@ -76,7 +77,8 @@ export class Sprint {
     if (name) this.name = name;
     if (startDate) this.startDate = startDate;
     if (endDate) this.endDate = endDate;
-    if (user && user.role == Role.ScrumMaster) this.scrumMaster = user;
+    if (scrumMaster && scrumMaster.role == Role.ScrumMaster) this.scrumMaster = scrumMaster;
+    if (pipeline) this.pipeline = pipeline;
   }
 
   public start(scrumMaster: User): void {

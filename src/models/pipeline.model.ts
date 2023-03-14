@@ -3,7 +3,7 @@ import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../state-pattern/states/pipeline-states/source.state";
 import { IPipelineVisitor } from "../visitor-pattern/visitors/IPipelineVisitor";
-import { GitIntegration } from "./gitIntegration.model";
+import { GitIntegration } from "./repository";
 import { Notification } from "./notification.model";
 import { User } from "./user/user.model";
 

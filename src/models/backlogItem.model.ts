@@ -133,6 +133,7 @@ export class BacklogItem implements ISubject {
   }
 
   public done(): void {
+    // Check if all activities are done
     this.state.done();
   }
 

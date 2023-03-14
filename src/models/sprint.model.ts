@@ -1,4 +1,3 @@
-// import { IMessage } from "../adapter-pattern/interfaces/IMessage";
 import { ISprintState } from "../state-pattern/interface/ISprintState";
 import { BacklogItem } from "./backlogItem.model";
 import { User } from "./user/user.model";
@@ -9,8 +8,7 @@ import { Pipeline } from "./pipeline.model";
 
 export class Sprint {
   private backlogItems: BacklogItem[] = [];
-  private state: ISprintState;
-  // private message: IMessage = { address: "", message: "" };
+  private sprintState: ISprintState;
 
   constructor(
     private name: string,
@@ -22,7 +20,7 @@ export class Sprint {
     if (scrumMaster.role !== Role.ScrumMaster) {
       throw new Error("Invalid scrum master!");
     }
-    this.state = new SprintCreatedState(this);
+    this.sprintState = new SprintCreatedState(this);
   }
 
   public getName(): string {
@@ -41,7 +39,9 @@ export class Sprint {
     return this.scrumMaster;
   }
 
-  public addBacklogItem(backlogItem: BacklogItem) {
+  public addBacklogItem(partialBacklogItem: Omit<BacklogItem, "scrumMaster">) {
+    const backlogItem = 
+    new BacklogItem(partialBacklogItem.id, partialBacklogItem.name, partialBacklogItem.description, this.scrumMaster);
     this.backlogItems.push(backlogItem);
   }
 
@@ -57,11 +57,11 @@ export class Sprint {
   }
 
   public setState(state: ISprintState): void {
-    this.state = state;
+    this.sprintState = state;
   }
 
   public getState(): ISprintState {
-    return this.state;
+    return this.sprintState;
   }
 
   public updateSprint(
@@ -70,7 +70,7 @@ export class Sprint {
     endDate?: Date,
     user?: User
   ): void {
-    if (this.state instanceof SprintActiveState) {
+    if (this.sprintState instanceof SprintActiveState) {
       throw new Error("Cannot update Sprint because it has already started!");
     }
     if (name) this.name = name;
@@ -79,52 +79,39 @@ export class Sprint {
     if (user && user.role == Role.ScrumMaster) this.scrumMaster = user;
   }
 
-  public create(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
-    this.state.onCreate();
-    // this.message.message = `Sprint ${this.name} created`;
-  }
-
   public start(scrumMaster: User): void {
     if (scrumMaster.role !== Role.ScrumMaster) {
       throw new Error("Only the scrum master can perform this action!");
     }
-    this.state.onStart();
-    // this.message.message = `Sprint ${this.name} started`;
+    this.sprintState.start();
   }
 
   public finish(scrumMaster: User): void {
     if (scrumMaster.role !== Role.ScrumMaster) {
       throw new Error("Only the scrum master can perform this action!");
     }
-    this.state.onFinish();
-    // this.message.message = `Sprint ${this.name} completed`;
-  }
-
-  public review(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
-    this.state.onReview();
-    // this.message.message = `Sprint ${this.name} released`;
-  }
-
-  public complete(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
-    this.state.onComplete();
-    // this.message.message = `Sprint ${this.name} completed`;
+    this.sprintState.finish();
   }
 
   public release(scrumMaster: User): void {
     if (scrumMaster.role !== Role.ScrumMaster) {
       throw new Error("Only the scrum master can perform this action!");
     }
+    this.sprintState.release();
+  }
+
+  public review(scrumMaster: User): void {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Only the scrum master can perform this action!");
+    }
+    this.sprintState.review();
+  }
+
+  public close(scrumMaster: User): void {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Only the scrum master can perform this action!");
+    }
     this.pipeline.execute();
-    this.state.onClose();
-    // this.message.message = `Sprint ${this.name} released`;
+    this.sprintState.close();
   }
 }

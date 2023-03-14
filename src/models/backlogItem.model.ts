@@ -24,9 +24,6 @@ export class BacklogItem implements ISubject {
     public description: string,
     private scrumMaster: User
   ) {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Invalid scrum master!");
-    }
     this.state = new BacklogToDoState(this);
   }
 
@@ -44,8 +41,13 @@ export class BacklogItem implements ISubject {
     return this.developer;
   }
 
+  public removeDeveloper(): void {
+    this.developer = undefined;
+  }
+
   public setTester(user: User) {
-    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
+    if (this.getState() instanceof BacklogReadyForTestingState 
+    && user.role == Role.Developer || user.role == Role.LeadDeveloper) {
       this.tester = user;
     }
   }
@@ -95,7 +97,6 @@ export class BacklogItem implements ISubject {
   }
 
   public toDo(): void {
-    this.state.toDo();
     if (
       this.state instanceof BacklogReadyForTestingState ||
       this.state instanceof BacklogDoneState
@@ -107,6 +108,7 @@ export class BacklogItem implements ISubject {
       );
       this.notify(notification);
     }
+    this.state.toDo();
   }
 
   public doing(): void {

@@ -1,6 +1,4 @@
-// Interface for the message to be sent
 export interface IMessage {
-  sender: string;
-  recipient?: string;
-  content: string;
+  address: string;
+  message: string;
 }

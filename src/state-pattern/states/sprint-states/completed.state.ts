@@ -1,28 +1,26 @@
 import { Sprint } from "../../../models/sprint.model";
 import { ISprintState } from "../../interface/ISprintState";
-import { SprintReleasedState } from "./released.state";
+import { SprintClosedState } from "./closed.state";
 
 export class SprintCompletedState implements ISprintState {
   constructor(private sprint: Sprint) {}
-
-  public create(): void {
-    console.log("Sprint is already created.");
+  onCreate(): void {
+    throw new Error("Cannot change state from Completed to Created");
   }
-
-  public start(): void {
-    console.log("Sprint is already completed.");
+  onStart(): void {
+    throw new Error("Cannot change state from Completed to Active");
   }
-
-  public complete(): void {
-    console.log("Sprint is already completed.");
+  onFinish(): void {
+    throw new Error("Cannot change state from Completed to Finished");
   }
-
-  public release(): void {
-    console.log("Releasing the sprint...");
-    this.sprint.setState(new SprintReleasedState(this.sprint));
+  onReview(): void {
+    throw new Error("Cannot change state from Completed to Reviewed");
   }
-
-  public fail(): void {
-    console.log("Cannot fail a sprint that is already completed.");
+  onComplete(): void {
+    throw new Error("Cannot change state from Completed to Completed");
+  }
+  onClose(): void {
+    console.log("Scrum Master is closing the sprint!");
+    this.sprint.setState(new SprintClosedState(this.sprint));
   }
 }

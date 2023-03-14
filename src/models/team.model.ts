@@ -1,24 +1,25 @@
-import { Composite } from "../composite-pattern/models/composite.model";
-import { User } from "./abstract-user.model";
+import { User } from "./user/user.model";
+import { Role } from "./user/roles";
 
-// Team class
-export class Team extends Composite {
-  name: string;
-  users: User[];
+export class Team {
+  private members: User[] = [];
 
-  constructor(name: string, users: User[]) {
-    super();
-    this.name = name;
-    this.users = users;
-  }
+  constructor(public name: string) {}
 
-  public log(): void {
-    throw new Error("Method not implemented.");
-  }
-
-  public override add(component: Composite): void {
-    if (component instanceof User) {
-      this.children.push(component);
+  public addMember(user: User) {
+    if (!(user.role == Role.ProductOwner || Role.ScrumMaster)) {
+      this.members.push(user);
     }
+  }
+
+  public removeMember(member: User) {
+    const index = this.members.indexOf(member);
+    if (index !== -1) {
+      this.members.splice(index, 1);
+    }
+  }
+
+  public getMembers(): User[] {
+    return this.members;
   }
 }

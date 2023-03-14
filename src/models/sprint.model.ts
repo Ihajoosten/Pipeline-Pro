@@ -1,56 +1,58 @@
-import { IMessage } from "../adapter-pattern/interfaces/IMessage";
-import { MessagingServiceAdapter } from "../adapter-pattern/message.adapter";
+// import { IMessage } from "../adapter-pattern/interfaces/IMessage";
 import { ISprintState } from "../state-pattern/interface/ISprintState";
-import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
-import { IObserver } from "../observer-pattern/interfaces/IObserver";
-import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { BacklogItem } from "./backlogItem.model";
-import { Composite } from "../composite-pattern/models/composite.model";
-import { ScrumMaster } from "./users.model";
+import { User } from "./user/user.model";
+import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
+import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
+import { Role } from "./user/roles";
+import { Pipeline } from "./pipeline.model";
 
-export class Sprint extends Composite implements ISubject {
-  public name: string;
-  public startDate: Date;
-  public endDate: Date;
-  public backlogItems: Array<BacklogItem>;
-  public activities: Array<string>;
-  public currentPhase: string;
-  private messageService!: MessagingServiceAdapter;
-  private message!: IMessage;
-  private observers: Array<IObserver>;
+export class Sprint {
+  private backlogItems: BacklogItem[] = [];
   private state: ISprintState;
+  // private message: IMessage = { address: "", message: "" };
 
-  constructor(name: string, startDate: Date, endDate: Date) {
-    super();
-    this.name = name;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.currentPhase = "created";
-    this.backlogItems = new Array<BacklogItem>();
-    this.activities = new Array<string>();
-    this.observers = new Array<IObserver>();
+  constructor(
+    private name: string,
+    private startDate: Date,
+    private endDate: Date,
+    private scrumMaster: User,
+    private pipeline: Pipeline
+  ) {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Invalid scrum master!");
+    }
     this.state = new SprintCreatedState(this);
   }
 
-  public log(): void {
-    console.log(`Sprint: ${this.name}`);
-    this.children.forEach((child) => child.log());
+  public getName(): string {
+    return this.name;
   }
 
-  public override add(component: Composite): void {
-    if (!(component instanceof BacklogItem || ScrumMaster)) {
-      return;
-    }
+  public getStartDate(): Date {
+    return this.startDate;
+  }
 
-    let containsScrumMaster = false;
-    this.children.forEach((child) => {
-      if (child instanceof ScrumMaster) {
-        containsScrumMaster = true;
-      }
-    });
+  public getEndDate(): Date {
+    return this.endDate;
+  }
 
-    if (containsScrumMaster && component instanceof BacklogItem) {
-      this.children.push(component);
+  public getScrumMaster(): User {
+    return this.scrumMaster;
+  }
+
+  public addBacklogItem(backlogItem: BacklogItem) {
+    this.backlogItems.push(backlogItem);
+  }
+
+  public getBacklogItems(): BacklogItem[] {
+    return this.backlogItems;
+  }
+
+  public removeBacklogItem(backlogItem: BacklogItem) {
+    const index = this.backlogItems.indexOf(backlogItem);
+    if (index !== -1) {
+      this.backlogItems.splice(index, 1);
     }
   }
 
@@ -62,59 +64,67 @@ export class Sprint extends Composite implements ISubject {
     return this.state;
   }
 
-  public create(): void {
-    this.state.create();
-  }
-
-  public start(): void {
-    this.state.start();
-  }
-
-  public complete(): void {
-    this.state.complete();
-  }
-
-  public release(): void {
-    this.state.release();
-  }
-
-  public fail(): void {
-    this.state.fail();
-  }
-
-  // Attach an observer to the list of observers
-  public subscribe(observer: IObserver) {
-    this.observers.push(observer);
-  }
-
-  // Detach an observer from the list of observers
-  public unsubscribe(observer: IObserver) {
-    const index = this.observers.indexOf(observer);
-    if (index !== -1) {
-      this.observers.splice(index, 1);
+  public updateSprint(
+    name?: string,
+    startDate?: Date,
+    endDate?: Date,
+    user?: User
+  ): void {
+    if (this.state instanceof SprintActiveState) {
+      throw new Error("Cannot update Sprint because it has already started!");
     }
+    if (name) this.name = name;
+    if (startDate) this.startDate = startDate;
+    if (endDate) this.endDate = endDate;
+    if (user && user.role == Role.ScrumMaster) this.scrumMaster = user;
   }
 
-  // Notify all observers of a change in the Thread
-  public notify() {
-    for (const observer of this.observers) {
-      observer.update(this);
+  public create(scrumMaster: User): void {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Only the scrum master can perform this action!");
     }
+    this.state.onCreate();
+    // this.message.message = `Sprint ${this.name} created`;
   }
 
-  public startSprint() {
-    this.currentPhase = "active";
-    this.message.content = `Sprint ${this.name} started`;
-    this.notifyObservers(this.message);
+  public start(scrumMaster: User): void {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Only the scrum master can perform this action!");
+    }
+    this.state.onStart();
+    // this.message.message = `Sprint ${this.name} started`;
   }
 
-  public completeSprint() {
-    this.currentPhase = "active";
-    this.message.content = `Sprint ${this.name} completed`;
-    this.notifyObservers(this.message);
+  public finish(scrumMaster: User): void {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Only the scrum master can perform this action!");
+    }
+    this.state.onFinish();
+    // this.message.message = `Sprint ${this.name} completed`;
   }
 
-  public notifyObservers(message: IMessage) {
-    this.messageService.sendMessage(message);
+  public review(scrumMaster: User): void {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Only the scrum master can perform this action!");
+    }
+    this.state.onReview();
+    // this.message.message = `Sprint ${this.name} released`;
+  }
+
+  public complete(scrumMaster: User): void {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Only the scrum master can perform this action!");
+    }
+    this.state.onComplete();
+    // this.message.message = `Sprint ${this.name} completed`;
+  }
+
+  public release(scrumMaster: User): void {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Only the scrum master can perform this action!");
+    }
+    this.pipeline.execute();
+    this.state.onClose();
+    // this.message.message = `Sprint ${this.name} released`;
   }
 }

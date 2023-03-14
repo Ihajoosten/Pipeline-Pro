@@ -1,35 +1,22 @@
-import { Composite } from "../composite-pattern/models/composite.model";
-import { Developer, LeadDeveloper } from "./users.model";
+import { User } from "./user/user.model";
+import { Role } from "./user/roles";
 
-export class Activity extends Composite {
-  public name: string;
-  public description: string;
+export class Activity {
+  private developer?: User;
 
-  public constructor(name: string, description: string) {
-    super();
-    this.name = name;
-    this.description = description;
+  public constructor(public name: string, public description: string) {}
+
+  public setDeveloper(user: User) {
+    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
+      this.developer = user;
+    }
   }
 
-  public log(): void {
-    console.log(`Activity: ${this.name}`);
-    this.children.forEach((child) => child.log());
+  public getDeveloper(): User | undefined {
+    return this.developer;
   }
 
-  public override add(component: Composite): void {
-    if (!(component instanceof Developer || LeadDeveloper)) {
-      return;
-    }
-
-    let containsDeveloper = false;
-    this.children.forEach((child) => {
-      if (child instanceof Developer || LeadDeveloper) {
-        containsDeveloper = true;
-      }
-    });
-
-    if (!containsDeveloper) {
-      this.children.push(component);
-    }
+  public removeDeveloper() {
+    this.developer = undefined;
   }
 }

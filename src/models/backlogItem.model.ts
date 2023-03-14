@@ -1,50 +1,89 @@
-import { Composite } from "../composite-pattern/models/composite.model";
 import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IBacklogItemState } from "../state-pattern/interface/IBacklogItemState";
+import { BacklogDoneState } from "../state-pattern/states/backlog-states/done.state";
+import { BacklogReadyForTestingState } from "../state-pattern/states/backlog-states/readyForTesting.state";
 import { BacklogToDoState } from "../state-pattern/states/backlog-states/toDo.state";
 import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
-import { Developer, LeadDeveloper } from "./users.model"; // Mag ik hier een referenties hebben?
+import { User } from "./user/user.model";
+import { Role } from "./user/roles";
+import { Notification } from "./notification.model";
 
-export class BacklogItem extends Composite implements ISubject {
-  public id: string;
-  public name: string;
-  public description: string;
-  private observers: Array<IObserver>;
+export class BacklogItem implements ISubject {
+  private observers: IObserver[] = [];
   private state: IBacklogItemState;
+  private developer?: User;
+  private tester?: User;
+  private activities: Activity[] = [];
+  private thread?: Thread;
 
-  constructor(id: string, name: string, description: string) {
-    super();
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.observers = new Array<IObserver>();
+  constructor(
+    public id: string,
+    public name: string,
+    public description: string,
+    private scrumMaster: User
+  ) {
+    if (scrumMaster.role !== Role.ScrumMaster) {
+      throw new Error("Invalid scrum master!");
+    }
     this.state = new BacklogToDoState(this);
   }
 
-  public override log(): void {
-    console.log(`Backlog item: ${this.name}`);
-    this.children.forEach((child) => child.log());
+  public getScrumMaster(): User {
+    return this.scrumMaster;
   }
 
-  public override add(component: Composite): void {
-    if (
-      !(component instanceof Developer || LeadDeveloper || Activity || Thread)
-    ) {
-      return;
+  public setDeveloper(user: User) {
+    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
+      this.developer = user;
     }
+  }
 
-    let containsDeveloper = false;
-    this.children.forEach((child) => {
-      if (child instanceof Developer || LeadDeveloper) {
-        containsDeveloper = true;
-      }
-    });
+  public getDeveloper(): User | undefined {
+    return this.developer;
+  }
 
-    if (containsDeveloper && component instanceof Activity) {
-      this.children.push(component);
+  public setTester(user: User) {
+    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
+      this.tester = user;
     }
+  }
+
+  public getTester(): User | undefined {
+    return this.tester;
+  }
+
+  public addActivity(activity: Activity) {
+    this.activities.push(activity);
+  }
+
+  public removeActivity(activity: Activity) {
+    const index = this.activities.indexOf(activity);
+    if (index !== -1) {
+      this.activities.splice(index, 1);
+    }
+  }
+
+  public getActivities(): Activity[] {
+    return this.activities;
+  }
+
+  public addThread(thread: Thread) {
+    if (this.thread) {
+      throw new Error("Thread already exists!");
+    }
+    this.thread = thread;
+  }
+
+  public getThread(): Thread | void {
+    if (this.thread) {
+      return this.thread;
+    }
+  }
+
+  public removeThread() {
+    this.thread = undefined;
   }
 
   public getState(): IBacklogItemState {
@@ -57,6 +96,17 @@ export class BacklogItem extends Composite implements ISubject {
 
   public toDo(): void {
     this.state.toDo();
+    if (
+      this.state instanceof BacklogReadyForTestingState ||
+      this.state instanceof BacklogDoneState
+    ) {
+      const notificationMessage = `Backlog item: ${this.name} moved from the 'ready for testing/done' stage to the 'to do' stage!`;
+      const notification = new Notification(
+        this.scrumMaster,
+        notificationMessage
+      );
+      this.notify(notification);
+    }
   }
 
   public doing(): void {
@@ -65,6 +115,11 @@ export class BacklogItem extends Composite implements ISubject {
 
   public readyForTesting(): void {
     this.state.readyForTesting();
+    if (this.tester) {
+      const notificationMessage = `Backlog item: ${this.name} moved to the 'ready for testing' stage!`;
+      const notification = new Notification(this.tester, notificationMessage);
+      this.notify(notification);
+    }
   }
 
   public testing(): void {
@@ -79,27 +134,20 @@ export class BacklogItem extends Composite implements ISubject {
     this.state.done();
   }
 
-  // Attach an observer to the list of observers
-  subscribe(observer: IObserver) {
+  public subscribe(observer: IObserver) {
     this.observers.push(observer);
   }
 
-  // Detach an observer from the list of observers
-  unsubscribe(observer: IObserver) {
+  public unsubscribe(observer: IObserver) {
     const index = this.observers.indexOf(observer);
     if (index !== -1) {
       this.observers.splice(index, 1);
     }
   }
 
-  // Notify all observers of a change in the Thread
-  notify() {
+  public notify(notification: Notification) {
     for (const observer of this.observers) {
-      observer.update(this);
+      observer.update(notification);
     }
-  }
-
-  getId(): string {
-    return this.id;
   }
 }

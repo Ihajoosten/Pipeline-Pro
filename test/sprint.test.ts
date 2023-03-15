@@ -9,7 +9,7 @@ import { SprintFinishedState } from "../src/state-pattern/states/sprint-states/f
 import { SprintReleasedState } from "../src/state-pattern/states/sprint-states/released.state";
 import { SprintReviewedState } from "../src/state-pattern/states/sprint-states/reviewed.state";
 
-describe.only('Sprint', () => {
+describe('Sprint', () => {
   let sprint: Sprint;
   let scrumMaster: User;
   let productOwner: User;
@@ -100,47 +100,230 @@ describe.only('Sprint', () => {
     expect(sprint.getScrumMaster().name).toEqual("Luc");
   });
 
-  it("should not update sprint when sprint is in active state", () => {
-    sprint.setState(new SprintActiveState(sprint));
+  describe('Check Role', () => {
+    it("should not update sprint when sprint is in active state", () => {
+      sprint.setState(new SprintActiveState(sprint));
 
-    expect(() =>
-      sprint.updateSprint(
-        "New Sprint Name",
-        new Date("2023-04-02"),
-        new Date("2023-04-15"),
-        scrumMaster,
-        pipeline
-      )
-    ).toThrowError("Cannot update Sprint because it has already started!");
+      expect(() =>
+        sprint.updateSprint(
+          "New Sprint Name",
+          new Date("2023-04-02"),
+          new Date("2023-04-15"),
+          scrumMaster,
+          pipeline
+        )
+      ).toThrowError("Cannot update Sprint because it has already started!");
+    });
+
+    it("should not start sprint when called by non-scrum master user", () => {
+      expect(() => sprint.start(developer)).toThrowError(
+        "Only the scrum master can perform this action!"
+      );
+    });
+
+    it("should not finish sprint when called by non-scrum master user", () => {
+      expect(() => sprint.finish(developer)).toThrowError(
+        "Only the scrum master can perform this action!"
+      );
+    });
+
+    it("should not release sprint when called by non-scrum master user", () => {
+      expect(() => sprint.release(developer)).toThrowError(
+        "Only the scrum master can perform this action!"
+      );
+    });
+
+    it("should not review sprint when called by non-scrum master user", () => {
+      expect(() => sprint.review(developer)).toThrowError(
+        "Only the scrum master can perform this action!"
+      );
+    });
+
+    it("should not close sprint when called by non-scrum master user", () => {
+      expect(() => sprint.close(developer)).toThrowError(
+        "Only the scrum master can perform this action!"
+      );
+    });
+  })
+
+  describe('Sprint Created State Tests', () => {
+    it('should not move to Created state, should throw error', () => {
+      expect(() => { sprint.create(scrumMaster) }).toThrowError();
+    });
+
+    it('should move to Active state', () => {
+      sprint.start(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe('SprintActiveState');
+    });
+
+    it('should not move to Finshed state, should throw error', () => {
+      expect(() => { sprint.finish(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Released state, should throw error', () => {
+      expect(() => { sprint.release(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Reviewed state, should throw error', () => {
+      expect(() => { sprint.review(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Closed state, should throw error', () => {
+      expect(() => { sprint.close(scrumMaster) }).toThrowError();
+    });
   });
 
-  it("should not start sprint when called by non-scrum master user", () => {
-    expect(() => sprint.start(developer)).toThrowError(
-      "Only the scrum master can perform this action!"
-    );
+  describe('Sprint Active State Tests', () => {
+    beforeEach(() => {
+      sprint.start(scrumMaster)
+    });
+
+    it('should not move to Created state, should throw error', () => {
+      expect(() => { sprint.create(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Active state, should throw error', () => {
+      expect(() => { sprint.start(scrumMaster) }).toThrowError();
+    });
+
+    it('should move to Finshed state', () => {
+      sprint.finish(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe('SprintFinishedState');
+    });
+
+    it('should not move to Released state, should throw error', () => {
+      expect(() => { sprint.release(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Reviewed state, should throw error', () => {
+      expect(() => { sprint.review(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Closed state, should throw error', () => {
+      expect(() => { sprint.close(scrumMaster) }).toThrowError();
+    });
   });
 
-  it("should not finish sprint when called by non-scrum master user", () => {
-    expect(() => sprint.finish(developer)).toThrowError(
-      "Only the scrum master can perform this action!"
-    );
+  describe('Sprint Finished State Tests', () => {
+    beforeEach(() => {
+      sprint.setState(new SprintFinishedState(sprint))
+    });
+
+    it('should not move to Created state, should throw error', () => {
+      expect(() => { sprint.create(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Active state, should throw error', () => {
+      expect(() => { sprint.start(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Finshed state, should throw error', () => {
+      expect(() => { sprint.finish(scrumMaster) }).toThrowError();
+    });
+
+    it('should move to Released state', () => {
+      sprint.release(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe('SprintReleasedState');
+    });
+
+    it('should not move to Reviewed state, should throw error', () => {
+      expect(() => { sprint.review(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Closed state, should throw error', () => {
+      expect(() => { sprint.close(scrumMaster) }).toThrowError();
+    });
   });
 
-  it("should not release sprint when called by non-scrum master user", () => {
-    expect(() => sprint.release(developer)).toThrowError(
-      "Only the scrum master can perform this action!"
-    );
+  describe('Sprint Released State Tests', () => {
+    beforeEach(() => {
+      sprint.setState(new SprintReleasedState(sprint))
+    });
+
+    it('should not move to Created state, should throw error', () => {
+      expect(() => { sprint.create(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Active state, should throw error', () => {
+      expect(() => { sprint.start(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Finshed state, should throw error', () => {
+      expect(() => { sprint.finish(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Released state, should throw error', () => {
+      expect(() => { sprint.release(scrumMaster) }).toThrowError();
+    });
+
+    it('should move to Reviewed state', () => {
+      sprint.review(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe('SprintReviewedState');
+    });
+
+    it('should not move to Closed state, should throw error', () => {
+      expect(() => { sprint.close(scrumMaster) }).toThrowError();
+    });
   });
 
-  it("should not review sprint when called by non-scrum master user", () => {
-    expect(() => sprint.review(developer)).toThrowError(
-      "Only the scrum master can perform this action!"
-    );
+  describe('Sprint Review State Tests', () => {
+    beforeEach(() => {
+      sprint.setState(new SprintReviewedState(sprint))
+    });
+
+    it('should not move to Created state, should throw error', () => {
+      expect(() => { sprint.create(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Active state, should throw error', () => {
+      expect(() => { sprint.start(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Finshed state, should throw error', () => {
+      expect(() => { sprint.finish(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Released state, should throw error', () => {
+      expect(() => { sprint.release(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Review state, should throw error', () => {
+      expect(() => { sprint.review(scrumMaster) }).toThrowError();
+    });
+
+    it('should move to Closed state', () => {
+      sprint.close(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe('SprintClosedState');
+    });
   });
 
-  it("should not close sprint when called by non-scrum master user", () => {
-    expect(() => sprint.close(developer)).toThrowError(
-      "Only the scrum master can perform this action!"
-    );
+  describe('Sprint Closed State Tests', () => {
+    beforeEach(() => {
+      sprint.setState(new SprintClosedState(sprint))
+    });
+
+    it('should not move to Created state, should throw error', () => {
+      expect(() => { sprint.create(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Active state, should throw error', () => {
+      expect(() => { sprint.start(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Finshed state, should throw error', () => {
+      expect(() => { sprint.finish(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Released state, should throw error', () => {
+      expect(() => { sprint.release(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Review state, should throw error', () => {
+      expect(() => { sprint.review(scrumMaster) }).toThrowError();
+    });
+
+    it('should not move to Close state, should throw error', () => {
+      expect(() => { sprint.close(scrumMaster) }).toThrowError();
+    });
   });
 });

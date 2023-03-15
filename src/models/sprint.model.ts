@@ -81,6 +81,11 @@ export class Sprint {
     if (pipeline) this.pipeline = pipeline;
   }
 
+  public create(user: User): void {
+    this.checkRole(user.role)
+    this.sprintState.create();
+  }
+
   public start(user: User): void {
     this.checkRole(user.role)
     this.sprintState.start();
@@ -109,7 +114,6 @@ export class Sprint {
 
   private checkRole(role: ScrumRole): void {
     if (role !== ScrumRole.SCRUM_MASTER) {
-      // console.warn('Kankeroni dit mag niet')
       throw new Error("Only the scrum master can perform this action!");
     }
   }

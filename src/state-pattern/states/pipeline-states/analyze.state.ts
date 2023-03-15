@@ -8,30 +8,12 @@ export class PipelineAnalyzeState extends IPipelineState {
     super("Analyzing Stage", "Analyzing...");
   }
 
-  onSource(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Source State from Analyze State");
-  }
+  onSource(): () => void { return this.throwError('Source'); }
+  onPackage(): () => void { return this.throwError('Package'); }
+  onBuild(): () => void { return this.throwError('Build'); }
+  onTest(): () => void { return this.throwError('Test'); }
+  onAnalyze(): () => void { return this.throwError('Analyze'); }
 
-  onPackage(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Source State from Analyze State");
-  }
-
-  onBuild(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Build State from Analyze State");
-  }
-
-  onTest(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Test State from Analyze State");
-  }
-
-  onAnalyze(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Analyze State from Analyze State");
-  }
 
   onDeploy(): void {
     console.log("Analysis complete, now deploying project");
@@ -43,7 +25,9 @@ export class PipelineAnalyzeState extends IPipelineState {
     this.pipeline.setState(new PipelineCancelledState(this.pipeline));
   }
 
-  private logMessage(): void {
-    console.log("Pipeline is already analyzing project");
+  private throwError(to: string): any {
+    console.log('Pipeline is still performing Analysis on Coverage')
+    console.log(`Cannot change to ${to} State from Analyze State`);
+    throw new Error(`Cannot change to ${to} State from Analyze State`);
   }
 }

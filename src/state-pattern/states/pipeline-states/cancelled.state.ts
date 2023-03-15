@@ -9,41 +9,20 @@ export class PipelineCancelledState extends IPipelineState {
 
   onSource(): void {
     // Only to this state to restart
-    console.log("Pipeline cancelled, now restarting tasks");
+    console.log("Pipeline canceled, now restarting tasks");
     this.pipeline.setState(new PipelineSourceState(this.pipeline));
   }
 
-  onPackage(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Package State from Cancelled State");
-  }
+  onPackage(): () => void { return this.throwError('Package'); }
+  onBuild(): () => void { return this.throwError('Build'); }
+  onTest(): () => void { return this.throwError('Test'); }
+  onAnalyze(): () => void { return this.throwError('Analyze'); }
+  onDeploy(): () => void { return this.throwError('Deploy'); }
+  onCancel(): () => void { return this.throwError('Cancel'); }
 
-  onBuild(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Build State from Cancelled State");
-  }
-
-  onTest(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Test State from Cancelled State");
-  }
-
-  onAnalyze(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Analyze State from Cancelled State");
-  }
-
-  onDeploy(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Deploy State from Cancelled State");
-  }
-
-  onCancel(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Cancelled State from Cancelled State");
-  }
-
-  private logMessage(): void {
-    console.log("Project is cancelled");
+  private throwError(to: string): any {
+    console.log('Pipeline is canceled')
+    console.trace(`Cannot change to ${to} State from Cancel State`);
+    throw new Error(`Cannot change to ${to} State from Cancel State`);
   }
 }

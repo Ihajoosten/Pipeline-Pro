@@ -8,25 +8,11 @@ export class PipelineTestState extends IPipelineState {
     super("Testing Stage", "Testing...");
   }
 
-  onSource(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Source State from Test State");
-  }
-
-  onPackage(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Package State from Test State");
-  }
-
-  onBuild(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Package State from Test State");
-  }
-
-  onTest(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Package State from Test State");
-  }
+  onSource(): () => void { return this.throwError('Source'); }
+  onPackage(): () => void { return this.throwError('Package'); }
+  onBuild(): () => void { return this.throwError('Build'); }
+  onTest(): () => void { return this.throwError('Test'); }
+  onDeploy(): () => void { return this.throwError('Deploy'); }
 
   onAnalyze(): void {
     console.log(
@@ -35,17 +21,14 @@ export class PipelineTestState extends IPipelineState {
     this.pipeline.setState(new PipelineAnalyzeState(this.pipeline));
   }
 
-  onDeploy(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Deploy State from Test State");
-  }
-
   onCancel(): void {
     console.log("Scrum Master Cancelled Pipeline");
     this.pipeline.setState(new PipelineCancelledState(this.pipeline));
   }
 
-  private logMessage(): void {
-    console.log("Pipeline is already testing project");
+  private throwError(to: string): any {
+    console.log('Pipeline being Tested')
+    console.trace(`Cannot change to ${to} State from Test State`);
+    throw new Error(`Cannot change to ${to} State from Test State`);
   }
 }

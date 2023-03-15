@@ -3,39 +3,25 @@ import { IBacklogItemState } from "../../interface/IBacklogItemState";
 import { BacklogDoingState } from "./doing.state";
 
 export class BacklogToDoState implements IBacklogItemState {
-  constructor(private backlogItem: BacklogItem) {}
+  constructor(private backlogItem: BacklogItem) { }
 
-  toDo(): void {
-    console.log("Cannot move backlog item to the ToDo from ToDo state");
-    throw new Error("Cannot move backlog item to the ToDo from ToDo state");
-  }
+  toDo(): () => void { return this.throwError('ToDo'); }
 
   doing(): void {
     console.log('Moving backlog item to the "Doing" state.');
     this.backlogItem.setState(new BacklogDoingState(this.backlogItem));
   }
 
-  readyForTesting(): void {
-    console.log(
-      "Cannot move backlog item to the ReadyForTesting from ToDo state"
-    );
-    throw new Error(
-      "Cannot move backlog item to the ReadyForTesting from ToDo state"
-    );
-  }
+  readyForTesting(): () => void { return this.throwError('ReadyForTesting'); }
 
-  testing(): void {
-    console.log("Cannot move backlog item to the Testing from ToDo state");
-    throw new Error("Cannot move backlog item to the Testing from ToDo state");
-  }
+  testing(): () => void { return this.throwError('Testing'); }
 
-  tested(): void {
-    console.log("Cannot move backlog item to the Tested from ToDo state");
-    throw new Error("Cannot move backlog item to the Tested from ToDo state");
-  }
+  tested(): void { return this.throwError('Tested'); }
 
-  done(): void {
-    console.log("Cannot move backlog item to the Done from ToDo state");
-    throw new Error("Cannot move backlog item to the Done from ToDo state");
+  done(): () => void { return this.throwError('Done'); }
+
+  private throwError(to: string): any {
+    console.log(`Cannot move backlog item to the ${to} from ToDo state`);
+    throw new Error(`Cannot move backlog item to the ${to} from ToDo state`);
   }
 }

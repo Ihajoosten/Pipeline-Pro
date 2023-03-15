@@ -8,10 +8,11 @@ export class PipelineSourceState extends IPipelineState {
     super("Sourcing Stage", "Sourcing...");
   }
 
-  onSource(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Source State from Source State");
-  }
+  onSource(): () => void { return this.throwError('Source'); }
+  onBuild(): () => void { return this.throwError('Build'); }
+  onTest(): () => void { return this.throwError('Test'); }
+  onAnalyze(): () => void { return this.throwError('Analyze'); }
+  onDeploy(): () => void { return this.throwError('Deploy'); }
 
   onPackage(): void {
     console.log(
@@ -20,32 +21,14 @@ export class PipelineSourceState extends IPipelineState {
     this.pipeline.setState(new PipelinePackageState(this.pipeline));
   }
 
-  onBuild(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Build State from Source State");
-  }
-
-  onTest(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Test State from Source State");
-  }
-
-  onAnalyze(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Analyze State from Source State");
-  }
-
-  onDeploy(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Deploy State from Source State");
-  }
-
   onCancel(): void {
     console.log("Scrum Master Cancelled Pipeline");
     this.pipeline.setState(new PipelineCancelledState(this.pipeline));
   }
 
-  private logMessage(): void {
-    console.log("Pipeline still fetching source code");
+  private throwError(to: string): any {
+    console.log('Pipeline is fetching Source code')
+    console.trace(`Cannot change to ${to} State from Source State`);
+    throw new Error(`Cannot change to ${to} State from Source State`);
   }
 }

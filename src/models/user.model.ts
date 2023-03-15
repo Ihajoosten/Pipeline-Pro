@@ -14,8 +14,8 @@ export abstract class User {
     lastName: string,
     email: string,
     phoneNumber: string,
+    notificationPreference: Array<NotificationPreference>,
     role: ScrumRole,
-    notificationPreference: Array<NotificationPreference> = []
   ) {
     this._firstName = firstName;
     this._lastName = lastName;
@@ -69,15 +69,14 @@ export abstract class User {
     notificationType: NotificationType,
     address: string
   ) {
-    this._notificationPreference.push(
-      new NotificationPreference(notificationType, address)
-    );
+    let preference = new NotificationPreference(notificationType, address)
+    this._notificationPreference.push(preference);
   }
 
-  public removeNotificationPreference(
-    notificationPreference: NotificationPreference
-  ) {
-    const index = this._notificationPreference.indexOf(notificationPreference);
+  public removeNotificationPreference(notificationPreference: NotificationPreference) {
+    const index = this._notificationPreference.findIndex(preference =>
+      preference.equals(notificationPreference)
+    );
     if (index !== -1) {
       this._notificationPreference.splice(index, 1);
     }
@@ -90,9 +89,10 @@ export class ProductOwner extends User {
     lastname: string,
     email: string,
     phone: string,
+    preference: NotificationPreference[],
     role: ScrumRole = ScrumRole.PRODUCT_OWNER
   ) {
-    super(firstname, lastname, email, phone, role);
+    super(firstname, lastname, email, phone, preference, role);
   }
 }
 
@@ -102,10 +102,10 @@ export class ScrumMaster extends User {
     lastname: string,
     email: string,
     phone: string,
+    preference: NotificationPreference[],
     role: ScrumRole = ScrumRole.SCRUM_MASTER
   ) {
-    super(firstname, lastname, email, phone, role);
-    this._role = role;
+    super(firstname, lastname, email, phone, preference, role);
   }
 }
 
@@ -115,10 +115,10 @@ export class Developer extends User {
     lastname: string,
     email: string,
     phone: string,
+    preference: NotificationPreference[],
     role: ScrumRole = ScrumRole.DEVELOPER
   ) {
-    super(firstname, lastname, email, phone, role);
-    this._role = role;
+    super(firstname, lastname, email, phone, preference, role);
   }
 }
 
@@ -128,9 +128,10 @@ export class LeadDeveloper extends User {
     lastname: string,
     email: string,
     phone: string,
+    preference: NotificationPreference[],
     role: ScrumRole = ScrumRole.LEAD_DEVELOPER
   ) {
-    super(firstname, lastname, email, phone, role);
+    super(firstname, lastname, email, phone, preference, role);
   }
 }
 
@@ -140,9 +141,10 @@ export class Tester extends User {
     lastname: string,
     email: string,
     phone: string,
+    preference: NotificationPreference[],
     role: ScrumRole = ScrumRole.TESTER
   ) {
-    super(firstname, lastname, email, phone, role);
+    super(firstname, lastname, email, phone, preference, role);
   }
 }
 export { NotificationPreference };

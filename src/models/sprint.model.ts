@@ -1,16 +1,14 @@
-// import { IMessage } from "../adapter-pattern/interfaces/IMessage";
 import { ISprintState } from "../state-pattern/interface/ISprintState";
 import { BacklogItem } from "./backlogItem.model";
-import { User } from "./user/user.model";
+import { User } from "./user.model";
 import { SprintCreatedState } from "../state-pattern/states/sprint-states/created.state";
 import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
-import { Role } from "./user/roles";
 import { Pipeline } from "./pipeline.model";
+import { ScrumRole } from "./enumerations";
 
 export class Sprint {
   private backlogItems: BacklogItem[] = [];
-  private state: ISprintState;
-  // private message: IMessage = { address: "", message: "" };
+  private sprintState: ISprintState;
 
   constructor(
     private name: string,
@@ -19,10 +17,10 @@ export class Sprint {
     private scrumMaster: User,
     private pipeline: Pipeline
   ) {
-    if (scrumMaster.role !== Role.ScrumMaster) {
+    if (scrumMaster.role !== ScrumRole.SCRUM_MASTER) {
       throw new Error("Invalid scrum master!");
     }
-    this.state = new SprintCreatedState(this);
+    this.sprintState = new SprintCreatedState(this);
   }
 
   public getName(): string {
@@ -41,7 +39,9 @@ export class Sprint {
     return this.scrumMaster;
   }
 
-  public addBacklogItem(backlogItem: BacklogItem) {
+  public addBacklogItem(partialBacklogItem: Omit<BacklogItem, "scrumMaster">) {
+    const backlogItem =
+      new BacklogItem(partialBacklogItem.id, partialBacklogItem.name, partialBacklogItem.description, this.scrumMaster);
     this.backlogItems.push(backlogItem);
   }
 
@@ -57,74 +57,59 @@ export class Sprint {
   }
 
   public setState(state: ISprintState): void {
-    this.state = state;
+    this.sprintState = state;
   }
 
   public getState(): ISprintState {
-    return this.state;
+    return this.sprintState;
   }
 
   public updateSprint(
     name?: string,
     startDate?: Date,
     endDate?: Date,
-    user?: User
+    scrumMaster?: User,
+    pipeline?: Pipeline
   ): void {
-    if (this.state instanceof SprintActiveState) {
+    if (this.sprintState instanceof SprintActiveState) {
       throw new Error("Cannot update Sprint because it has already started!");
     }
     if (name) this.name = name;
     if (startDate) this.startDate = startDate;
     if (endDate) this.endDate = endDate;
-    if (user && user.role == Role.ScrumMaster) this.scrumMaster = user;
+    if (scrumMaster && scrumMaster.role == ScrumRole.SCRUM_MASTER) this.scrumMaster = scrumMaster;
+    if (pipeline) this.pipeline = pipeline;
   }
 
-  public create(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
-    this.state.onCreate();
-    // this.message.message = `Sprint ${this.name} created`;
+  public start(user: User): void {
+    this.checkRole(user.role)
+    this.sprintState.start();
   }
 
-  public start(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
-    this.state.onStart();
-    // this.message.message = `Sprint ${this.name} started`;
+  public finish(user: User): void {
+    this.checkRole(user.role)
+    this.sprintState.finish();
   }
 
-  public finish(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
-    this.state.onFinish();
-    // this.message.message = `Sprint ${this.name} completed`;
+  public release(user: User): void {
+    this.checkRole(user.role)
+    this.sprintState.release();
   }
 
-  public review(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
-    this.state.onReview();
-    // this.message.message = `Sprint ${this.name} released`;
+  public review(user: User): void {
+    this.checkRole(user.role)
+    this.sprintState.review();
   }
 
-  public complete(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
-    this.state.onComplete();
-    // this.message.message = `Sprint ${this.name} completed`;
-  }
-
-  public release(scrumMaster: User): void {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Only the scrum master can perform this action!");
-    }
+  public close(user: User): void {
+    this.checkRole(user.role)
     this.pipeline.execute();
-    this.state.onClose();
-    // this.message.message = `Sprint ${this.name} released`;
+    this.sprintState.close();
+  }
+
+  private checkRole(role: ScrumRole) {
+    if (role !== ScrumRole.SCRUM_MASTER) {
+      throw new Error("Only the scrum master can perform this action!");
+    }
   }
 }

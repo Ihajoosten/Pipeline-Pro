@@ -4,23 +4,23 @@ import { SprintActiveState } from "./active.state";
 
 export class SprintCreatedState implements ISprintState {
   constructor(private sprint: Sprint) {}
-  onCreate(): void {
+  create(): void {
     throw new Error("Cannot change state from Created to Created");
   }
-  onStart(): void {
+  start(): void {
     console.log("Scrum Master is starting the sprint!");
     this.sprint.setState(new SprintActiveState(this.sprint));
   }
-  onFinish(): void {
+  finish(): void {
     throw new Error("Cannot change state from Created to Finished");
   }
-  onReview(): void {
+  release(): void {
     throw new Error("Cannot change state from Created to Reviewed");
   }
-  onComplete(): void {
+  review(): void {
     throw new Error("Cannot change state from Created to Completed");
   }
-  onClose(): void {
+  close(): void {
     throw new Error("Cannot change state from Created to Closed");
   }
 }

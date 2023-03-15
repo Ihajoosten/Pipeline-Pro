@@ -6,9 +6,9 @@ import { BacklogReadyForTestingState } from "../state-pattern/states/backlog-sta
 import { BacklogToDoState } from "../state-pattern/states/backlog-states/toDo.state";
 import { Activity } from "./activity.model";
 import { Thread } from "./thread.model";
-import { User } from "./user/user.model";
-import { Role } from "./user/roles";
+import { User } from "./user.model";
 import { Notification } from "./notification.model";
+import { ScrumRole } from "./enumerations";
 
 export class BacklogItem implements ISubject {
   private observers: IObserver[] = [];
@@ -24,9 +24,6 @@ export class BacklogItem implements ISubject {
     public description: string,
     private scrumMaster: User
   ) {
-    if (scrumMaster.role !== Role.ScrumMaster) {
-      throw new Error("Invalid scrum master!");
-    }
     this.state = new BacklogToDoState(this);
   }
 
@@ -35,7 +32,7 @@ export class BacklogItem implements ISubject {
   }
 
   public setDeveloper(user: User) {
-    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
+    if (user.role == ScrumRole.DEVELOPER || user.role == ScrumRole.LEAD_DEVELOPER) {
       this.developer = user;
     }
   }
@@ -44,10 +41,15 @@ export class BacklogItem implements ISubject {
     return this.developer;
   }
 
-  public setTester(user: User) {
-    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
-      this.tester = user;
-    }
+  public removeDeveloper(): void {
+    this.developer = undefined;
+  }
+
+  public setTester(user: User, tester: User) {
+    if (this.getState() instanceof BacklogReadyForTestingState
+      && user.role == ScrumRole.DEVELOPER || user.role == ScrumRole.LEAD_DEVELOPER && tester.role == ScrumRole.TESTER) {
+      this.tester = tester;
+    } else console.warn('Backlog item is not ready for testing')
   }
 
   public getTester(): User | undefined {
@@ -95,7 +97,6 @@ export class BacklogItem implements ISubject {
   }
 
   public toDo(): void {
-    this.state.toDo();
     if (
       this.state instanceof BacklogReadyForTestingState ||
       this.state instanceof BacklogDoneState
@@ -107,6 +108,7 @@ export class BacklogItem implements ISubject {
       );
       this.notify(notification);
     }
+    this.state.toDo();
   }
 
   public doing(): void {
@@ -131,6 +133,7 @@ export class BacklogItem implements ISubject {
   }
 
   public done(): void {
+    // Check if all activities are done
     this.state.done();
   }
 

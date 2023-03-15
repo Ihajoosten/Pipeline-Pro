@@ -1,7 +1,7 @@
+import { ScrumRole } from "./enumerations";
 import { Sprint } from "./sprint.model";
 import { Team } from "./team.model";
-import { User } from "./user/user.model";
-import { Role } from "./user/roles";
+import { User } from "./user.model";
 
 export class Project {
   private sprints: Sprint[] = [];
@@ -11,7 +11,7 @@ export class Project {
     private productOwner: User,
     private team: Team
   ) {
-    if (productOwner.role !== Role.ProductOwner) {
+    if (productOwner.role !== ScrumRole.PRODUCT_OWNER) {
       throw new Error("Invalid product owner!");
     }
   }

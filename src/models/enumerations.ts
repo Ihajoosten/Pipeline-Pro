@@ -1,4 +1,4 @@
-export enum NotificationPreference {
+export enum NotificationType {
   SLACK = "Slack",
   EMAIL = "Email",
   DISCORD = "Discord",
@@ -10,6 +10,7 @@ export enum ScrumRole {
   SCRUM_MASTER = "Scrum Master",
   DEVELOPER = "Developer",
   LEAD_DEVELOPER = "Lead Developer",
+  TESTER = "Tester"
 }
 
 export enum SprintType {

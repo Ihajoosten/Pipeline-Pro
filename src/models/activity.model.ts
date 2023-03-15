@@ -1,13 +1,13 @@
-import { User } from "./user/user.model";
-import { Role } from "./user/roles";
+import { ScrumRole } from "./enumerations";
+import { User } from "./user.model";
 
 export class Activity {
   private developer?: User;
 
-  public constructor(public name: string, public description: string) {}
+  public constructor(public name: string, public description: string) { }
 
   public setDeveloper(user: User) {
-    if (user.role == Role.Developer || user.role == Role.LeadDeveloper) {
+    if (user.role == ScrumRole.DEVELOPER || user.role == ScrumRole.LEAD_DEVELOPER) {
       this.developer = user;
     }
   }

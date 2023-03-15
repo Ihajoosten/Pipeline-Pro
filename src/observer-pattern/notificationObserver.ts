@@ -4,8 +4,8 @@ import { EmailService } from "../adapter-pattern/services/email.service";
 import { SlackService } from "../adapter-pattern/services/slack.service";
 import { WhatsappService } from "../adapter-pattern/services/whatsapp.service";
 import { IMessage } from "../adapter-pattern/interfaces/IMessage";
-import { NotificationType } from "../models/user/notificationPreference";
 import { Notification } from "../models/notification.model";
+import { NotificationType } from "../models/enumerations";
 
 export class NotificationObserver implements IObserver {
   private sentNotifications: IMessage[] = []; // Wordt gebruikt voor testen
@@ -27,23 +27,24 @@ export class NotificationObserver implements IObserver {
       };
 
       switch (notificationPreference.notificationType) {
-        case NotificationType.Discord:
+        case NotificationType.DISCORD:
           discordService.sendMessage(message);
           this.sentNotifications.push(message);
           break;
-        case NotificationType.Email:
+        case NotificationType.EMAIL:
           emailService.sendMessage(message);
           this.sentNotifications.push(message);
           break;
-        case NotificationType.Slack:
+        case NotificationType.SLACK:
           slackService.sendMessage(message);
           this.sentNotifications.push(message);
           break;
-        case NotificationType.Whatsapp:
+        case NotificationType.WHATSAPP:
           whatsappService.sendMessage(message);
           this.sentNotifications.push(message);
           break;
-        // In geval van 0 preferences, error throwen of niets doen?
+        default:
+          throw new Error('Je moet een notificatie type kiezen')
       }
     }
   }

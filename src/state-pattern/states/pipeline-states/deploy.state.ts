@@ -7,41 +7,21 @@ export class PipelineDeployState extends IPipelineState {
     super("Deployment Stage", "Deploying...");
   }
 
-  onSource(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Source State from Deploy State");
-  }
+  onSource(): () => void { return this.throwError('Source'); }
+  onPackage(): () => void { return this.throwError('Package'); }
+  onBuild(): () => void { return this.throwError('Build'); }
+  onTest(): () => void { return this.throwError('Test'); }
+  onAnalyze(): () => void { return this.throwError('Analyze'); }
+  onDeploy(): () => void { return this.throwError('Deploy'); }
 
-  onPackage(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Source State from Deploy State");
-  }
-
-  onBuild(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Build State from Deploy State");
-  }
-
-  onTest(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Test State from Deploy State");
-  }
-
-  onAnalyze(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Analyze State from Deploy State");
-  }
-
-  onDeploy(): void {
-    this.logMessage();
-    throw new Error("Cannot change to Deploy State from Deploy State");
-  }
   onCancel(): void {
     console.log("Scrum Master Cancelled Pipeline");
     this.pipeline.setState(new PipelineCancelledState(this.pipeline));
   }
 
-  private logMessage(): void {
-    console.log("Project is deployed");
+  private throwError(to: string): any {
+    console.log('Pipeline is being deployed at a cloud provider')
+    console.trace(`Cannot change to ${to} State from Deploy State`);
+    throw new Error(`Cannot change to ${to} State from Deploy State`);
   }
 }

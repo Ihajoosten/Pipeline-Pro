@@ -4,7 +4,7 @@ import { User } from "../src/models/user.model";
 import { IPipelineState } from "../src/state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../src/state-pattern/states/pipeline-states/source.state";
 
-describe.only("The user should be able to create a pipeline and work in it.", () => {
+describe("The user should be able to create a pipeline and work in it.", () => {
 
   let pipeline: Pipeline;
   let sourceTask: IPipelineState;

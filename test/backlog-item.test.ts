@@ -1,15 +1,15 @@
-import { Activity } from "../../src/models/activity.model";
-import { BacklogItem } from "../../src/models/backlogItem.model"
-import { NotificationType, ScrumRole } from "../../src/models/enumerations";
-import { Notification } from "../../src/models/notification.model";
-import { Thread } from "../../src/models/thread.model";
-import { NotificationPreference, User } from "../../src/models/user.model";
-import { IObserver } from "../../src/observer-pattern/interfaces/IObserver";
-import { BacklogDoingState } from "../../src/state-pattern/states/backlog-states/doing.state";
-import { BacklogDoneState } from "../../src/state-pattern/states/backlog-states/done.state";
-import { BacklogReadyForTestingState } from "../../src/state-pattern/states/backlog-states/readyForTesting.state";
-import { BacklogTestedState } from "../../src/state-pattern/states/backlog-states/tested.state";
-import { BacklogTestingState } from "../../src/state-pattern/states/backlog-states/testing.state";
+import { Activity } from "../src/models/activity.model";
+import { BacklogItem } from "../src/models/backlogItem.model"
+import { NotificationType, ScrumRole } from "../src/models/enumerations";
+import { Notification } from "../src/models/notification.model";
+import { Thread } from "../src/models/thread.model";
+import { NotificationPreference, User } from "../src/models/user.model";
+import { IObserver } from "../src/observer-pattern/interfaces/IObserver";
+import { BacklogDoingState } from "../src/state-pattern/states/backlog-states/doing.state";
+import { BacklogDoneState } from "../src/state-pattern/states/backlog-states/done.state";
+import { BacklogReadyForTestingState } from "../src/state-pattern/states/backlog-states/readyForTesting.state";
+import { BacklogTestedState } from "../src/state-pattern/states/backlog-states/tested.state";
+import { BacklogTestingState } from "../src/state-pattern/states/backlog-states/testing.state";
 
 describe('Backlog Item Path Coverage Tests', () => {
 

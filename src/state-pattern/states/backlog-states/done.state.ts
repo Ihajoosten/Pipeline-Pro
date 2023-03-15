@@ -2,43 +2,22 @@ import { BacklogItem } from "../../../models/backlogItem.model";
 import { IBacklogItemState } from "../../interface/IBacklogItemState";
 
 export class BacklogDoneState implements IBacklogItemState {
-  constructor(private backlogItem: BacklogItem) {}
+  constructor(private backlogItem: BacklogItem) { }
 
-  toDo(): void {
-    console.log("Cannot move backlog item to the ToDo state from Done state");
-    throw new Error("Cannot move backlog item to the ToDo from Done state");
-  }
+  toDo(): () => void { return this.throwError('Done'); }
 
-  doing(): void {
-    console.log("Cannot move backlog item to the Doing state from Done state");
-    throw new Error("Cannot move backlog item to the Doing from Done state");
-  }
+  doing(): () => void { return this.throwError('Done'); }
 
-  readyForTesting(): void {
-    console.log(
-      "Cannot move backlog item to the ReadyForTesting state from Done state"
-    );
-    throw new Error(
-      "Cannot move backlog item to the ReadyForTesting from Done state"
-    );
-  }
+  readyForTesting(): () => void { return this.throwError('Done'); }
 
-  testing(): void {
-    console.log(
-      "Cannot move backlog item to the Testing state from Done state"
-    );
-    throw new Error("Cannot move backlog item to the Testing from Done state");
-  }
+  testing(): () => void { return this.throwError('Done'); }
 
-  tested(): void {
-    console.log("Cannot move backlog item to the Tested state from Done state");
-    throw new Error("Cannot move backlog item to the Tested from Done state");
-  }
+  tested(): () => void { return this.throwError('Done'); }
 
-  done(): void {
-    console.log("Cannot move backlog item to the Done state from Done state");
-    throw new Error(
-      "Cannot move backlog item to the Done state from Done state"
-    );
+  done(): () => void { return this.throwError('Done'); }
+
+  private throwError(to: string): any {
+    console.log(`Cannot move backlog item to the ${to} from Doing state`);
+    throw new Error(`Cannot move backlog item to the ${to} from Doing state`);
   }
 }

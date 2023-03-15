@@ -44,7 +44,7 @@ export class NotificationObserver implements IObserver {
           this.sentNotifications.push(message);
           break;
         default:
-          throw new Error('Je moet een notificatie type kiezen')
+          throw new Error("Je moet een notificatie type kiezen");
       }
     }
   }

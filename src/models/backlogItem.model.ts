@@ -35,13 +35,15 @@ export class BacklogItem implements ISubject {
     return this.name;
   }
 
-
   public getDescription(): string {
     return this.description;
   }
 
   public setDeveloper(user: User) {
-    if (user.role == ScrumRole.DEVELOPER || user.role == ScrumRole.LEAD_DEVELOPER) {
+    if (
+      user.role == ScrumRole.DEVELOPER ||
+      user.role == ScrumRole.LEAD_DEVELOPER
+    ) {
       this.developer = user;
     }
   }
@@ -55,10 +57,13 @@ export class BacklogItem implements ISubject {
   }
 
   public setTester(user: User, tester: User) {
-    if (this.getState() instanceof BacklogReadyForTestingState
-      && user.role == ScrumRole.DEVELOPER || user.role == ScrumRole.LEAD_DEVELOPER && tester.role == ScrumRole.TESTER) {
+    if (
+      (this.getState() instanceof BacklogReadyForTestingState &&
+        user.role == ScrumRole.DEVELOPER) ||
+      (user.role == ScrumRole.LEAD_DEVELOPER && tester.role == ScrumRole.TESTER)
+    ) {
       this.tester = tester;
-    } else console.warn('Backlog item is not ready for testing')
+    } else console.warn("Backlog item is not ready for testing");
   }
 
   public getTester(): User | undefined {

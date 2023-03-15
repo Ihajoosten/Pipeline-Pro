@@ -40,8 +40,12 @@ export class Sprint {
   }
 
   public addBacklogItem(partialBacklogItem: Omit<BacklogItem, "scrumMaster">) {
-    const backlogItem =
-      new BacklogItem(partialBacklogItem.id, partialBacklogItem.name, partialBacklogItem.description, this.scrumMaster);
+    const backlogItem = new BacklogItem(
+      partialBacklogItem.id,
+      partialBacklogItem.name,
+      partialBacklogItem.description,
+      this.scrumMaster
+    );
     this.backlogItems.push(backlogItem);
   }
 
@@ -77,37 +81,38 @@ export class Sprint {
     if (name) this.name = name;
     if (startDate) this.startDate = startDate;
     if (endDate) this.endDate = endDate;
-    if (scrumMaster && scrumMaster.role == ScrumRole.SCRUM_MASTER) this.scrumMaster = scrumMaster;
+    if (scrumMaster && scrumMaster.role == ScrumRole.SCRUM_MASTER)
+      this.scrumMaster = scrumMaster;
     if (pipeline) this.pipeline = pipeline;
   }
 
   public create(user: User): void {
-    this.checkRole(user.role)
+    this.checkRole(user.role);
     this.sprintState.create();
   }
 
   public start(user: User): void {
-    this.checkRole(user.role)
+    this.checkRole(user.role);
     this.sprintState.start();
   }
 
   public finish(user: User): void {
-    this.checkRole(user.role)
+    this.checkRole(user.role);
     this.sprintState.finish();
   }
 
   public release(user: User): void {
-    this.checkRole(user.role)
+    this.checkRole(user.role);
     this.sprintState.release();
   }
 
   public review(user: User): void {
-    this.checkRole(user.role)
+    this.checkRole(user.role);
     this.sprintState.review();
   }
 
   public close(user: User): void {
-    this.checkRole(user.role)
+    this.checkRole(user.role);
     this.pipeline.execute();
     this.sprintState.close();
   }

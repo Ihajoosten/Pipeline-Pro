@@ -14,7 +14,7 @@ export interface Branch {
 }
 
 export class Repository {
-  private branches: Branch[] = [{ name: 'master', commits: [] }];
+  private branches: Branch[] = [{ name: "master", commits: [] }];
 
   public createBranch(branchName: string): Branch {
     const newBranch: Branch = { name: branchName, commits: [] };
@@ -26,11 +26,13 @@ export class Repository {
     if (this.branches.length == 1) {
       throw new Error("Atleast 1 branch is required!");
     }
-    this.branches = this.branches.filter(branch => branch.name !== branchName);
+    this.branches = this.branches.filter(
+      (branch) => branch.name !== branchName
+    );
   }
 
   public getBranch(branchName: string): Branch {
-    const branch = this.branches.find(branch => branch.name === branchName);
+    const branch = this.branches.find((branch) => branch.name === branchName);
     if (!branch) {
       throw new Error(`Branch ${branchName} not found!`);
     }
@@ -41,17 +43,23 @@ export class Repository {
     return this.branches;
   }
 
-  public commit(branchName: string, message: string, author: { name: string, email: string }): void {
+  public commit(
+    branchName: string,
+    message: string,
+    author: { name: string; email: string }
+  ): void {
     const branch = this.getBranch(branchName);
     const lastCommit = branch.commits.length > 0 ? branch.commits[0] : null;
     const newCommit: Commit = {
-      hash: lastCommit ? `hash-${lastCommit.hash.slice(5, 12)}-${branch.commits.length + 1}` : `hash-0000001-${branch.commits.length + 1}`,
+      hash: lastCommit
+        ? `hash-${lastCommit.hash.slice(5, 12)}-${branch.commits.length + 1}`
+        : `hash-0000001-${branch.commits.length + 1}`,
       message,
       author: {
         name: author.name,
         email: author.email,
         date: new Date(),
-      }
+      },
     };
     branch.commits.unshift(newCommit);
   }
@@ -62,7 +70,9 @@ export class Repository {
     const lastCommitFrom = fromBranch.commits[0];
     const lastCommitTo = toBranch.commits[0];
     if (lastCommitFrom.hash === lastCommitTo.hash) {
-      throw new Error(`Branches ${fromBranchName} and ${toBranchName} are already up-to-date!`);
+      throw new Error(
+        `Branches ${fromBranchName} and ${toBranchName} are already up-to-date!`
+      );
     }
     const newCommit: Commit = {
       hash: `hash-0000001-${toBranch.commits.length + 1}`,
@@ -77,14 +87,14 @@ export class Repository {
   }
 
   public push(branchName: string): void {
-    console.log(`Pushing local branch ${branchName} to remote.`)
+    console.log(`Pushing local branch ${branchName} to remote.`);
   }
 
   public pull(branchName: string): void {
-    console.log(`Pulling remote branch ${branchName} to local.`)
+    console.log(`Pulling remote branch ${branchName} to local.`);
   }
 
   public fetch(branchName: string): void {
-    console.log(`Fetching remote branch ${branchName} to local.`)
+    console.log(`Fetching remote branch ${branchName} to local.`);
   }
 }

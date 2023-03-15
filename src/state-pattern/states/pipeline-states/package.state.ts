@@ -8,11 +8,21 @@ export class PipelinePackageState extends IPipelineState {
     super("Packaging Stage", "Packaging...");
   }
 
-  onSource(): () => void { return this.throwError('Source'); }
-  onPackage(): () => void { return this.throwError('Package'); }
-  onTest(): () => void { return this.throwError('Test'); }
-  onAnalyze(): () => void { return this.throwError('Analyze'); }
-  onDeploy(): () => void { return this.throwError('Deploy'); }
+  onSource(): () => void {
+    return this.throwError("Source");
+  }
+  onPackage(): () => void {
+    return this.throwError("Package");
+  }
+  onTest(): () => void {
+    return this.throwError("Test");
+  }
+  onAnalyze(): () => void {
+    return this.throwError("Analyze");
+  }
+  onDeploy(): () => void {
+    return this.throwError("Deploy");
+  }
 
   onBuild(): void {
     console.log("Packages/Libraries installed, now building the pipeline");
@@ -25,7 +35,7 @@ export class PipelinePackageState extends IPipelineState {
   }
 
   private throwError(to: string): any {
-    console.log('Pipeline is installing Packages / 3rd party libraries')
+    console.log("Pipeline is installing Packages / 3rd party libraries");
     console.trace(`Cannot change to ${to} State from Package State`);
     throw new Error(`Cannot change to ${to} State from Package State`);
   }

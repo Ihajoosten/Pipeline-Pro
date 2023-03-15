@@ -7,7 +7,6 @@ import { IPipelineState } from "../src/state-pattern/interface/IPipelineState";
 import { IPipelineVisitor } from "../src/visitor-pattern/visitors/IPipelineVisitor";
 
 describe("The user should be able to create a pipeline and work in it.", () => {
-
   let pipeline: Pipeline;
   const pipelineName = "pipeline";
   const scrumMaster = new User("Erdem P.", "erd@em.p", ScrumRole.SCRUM_MASTER);
@@ -22,15 +21,15 @@ describe("The user should be able to create a pipeline and work in it.", () => {
     task3 = { execute: jest.fn() };
   });
 
-  describe('addTask', () => {
-    it('should add a task to the pipeline', () => {
+  describe("addTask", () => {
+    it("should add a task to the pipeline", () => {
       pipeline.addTask(task1);
       expect(pipeline.getTasks()).toContain(task1);
     });
   });
 
-  describe('removeTask', () => {
-    it('should remove a task from the pipeline', () => {
+  describe("removeTask", () => {
+    it("should remove a task from the pipeline", () => {
       pipeline.addTask(task1);
       pipeline.addTask(task2);
       pipeline.addTask(task3);
@@ -38,36 +37,36 @@ describe("The user should be able to create a pipeline and work in it.", () => {
       expect(pipeline.getTasks()).toEqual([task1, task3]);
     });
 
-    it('should not remove a task if it is not in the pipeline', () => {
+    it("should not remove a task if it is not in the pipeline", () => {
       pipeline.addTask(task1);
       pipeline.removeTask(task2);
       expect(pipeline.getTasks()).toEqual([task1]);
     });
   });
 
-  describe('setVisitor', () => {
+  describe("setVisitor", () => {
     const mockVisitor: IPipelineVisitor = {
       visit: jest.fn(),
       log: jest.fn(),
-      getLog: jest.fn()
+      getLog: jest.fn(),
     };
 
-    it('should set the visitor of the pipeline', () => {
+    it("should set the visitor of the pipeline", () => {
       pipeline.setVisitor(mockVisitor);
-      expect(pipeline['visitor']).toEqual(mockVisitor);
+      expect(pipeline["visitor"]).toEqual(mockVisitor);
     });
   });
 
-  describe('subscribe', () => {
-    it('should subscribe an observer to the pipeline', () => {
+  describe("subscribe", () => {
+    it("should subscribe an observer to the pipeline", () => {
       const observer = { update: jest.fn() };
       pipeline.subscribe(observer);
-      expect(pipeline['observers']).toContain(observer);
+      expect(pipeline["observers"]).toContain(observer);
     });
   });
 
-  describe('unsubscribe', () => {
-    it('should unsubscribe an observer from the pipeline', () => {
+  describe("unsubscribe", () => {
+    it("should unsubscribe an observer from the pipeline", () => {
       const observer1 = { update: jest.fn() };
       const observer2 = { update: jest.fn() };
       const observer3 = { update: jest.fn() };
@@ -75,22 +74,22 @@ describe("The user should be able to create a pipeline and work in it.", () => {
       pipeline.subscribe(observer2);
       pipeline.subscribe(observer3);
       pipeline.unsubscribe(observer2);
-      expect(pipeline['observers']).toEqual([observer1, observer3]);
+      expect(pipeline["observers"]).toEqual([observer1, observer3]);
     });
 
-    it('should not unsubscribe an observer if it is not subscribed', () => {
+    it("should not unsubscribe an observer if it is not subscribed", () => {
       const observer1 = { update: jest.fn() };
       const observer2 = { update: jest.fn() };
       pipeline.subscribe(observer1);
       pipeline.unsubscribe(observer2);
-      expect(pipeline['observers']).toEqual([observer1]);
+      expect(pipeline["observers"]).toEqual([observer1]);
     });
   });
 
-  describe('notify', () => {
-    let notification = new Notification(scrumMaster, 'Test Notification');
+  describe("notify", () => {
+    let notification = new Notification(scrumMaster, "Test Notification");
 
-    it('should notify all observers with the given notification', () => {
+    it("should notify all observers with the given notification", () => {
       const observer1 = { update: jest.fn() };
       const observer2 = { update: jest.fn() };
       const observer3 = { update: jest.fn() };
@@ -110,11 +109,16 @@ describe("execute", () => {
   let mockVisitor: IPipelineVisitor;
   let mockNotification: Notification;
   let mockObserver: IObserver;
-  let user: User = new User('Luc', 'lhajoost@avans.nl', ScrumRole.SCRUM_MASTER, [new NotificationPreference(NotificationType.SLACK, 'lhajoost@avans.nl')]);
+  let user: User = new User(
+    "Luc",
+    "lhajoost@avans.nl",
+    ScrumRole.SCRUM_MASTER,
+    [new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl")]
+  );
 
   const mockTask1 = {
     acceptVisitor: jest.fn(),
-  } as unknown as IPipelineState
+  } as unknown as IPipelineState;
 
   const mockTask2 = {
     acceptVisitor: jest.fn(),
@@ -125,7 +129,7 @@ describe("execute", () => {
     mockVisitor = {
       visit: jest.fn(),
       log: jest.fn(),
-      getLog: jest.fn()
+      getLog: jest.fn(),
     };
     mockNotification = new Notification(user, "test notification");
     mockObserver = {
@@ -142,7 +146,7 @@ describe("execute", () => {
 
     pipeline.execute();
 
-    mockNotification['message'] = "Pipeline tasks were successfully executed!"
+    mockNotification["message"] = "Pipeline tasks were successfully executed!";
     expect(mockTask1.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
     expect(mockTask2.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
     expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
@@ -162,7 +166,8 @@ describe("execute", () => {
 
     pipeline.execute();
 
-    mockNotification['message'] = "There was an error during one of the pipeline tasks!"
+    mockNotification["message"] =
+      "There was an error during one of the pipeline tasks!";
 
     expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
   });

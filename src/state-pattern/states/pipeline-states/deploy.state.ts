@@ -7,12 +7,24 @@ export class PipelineDeployState extends IPipelineState {
     super("Deployment Stage", "Deploying...");
   }
 
-  onSource(): () => void { return this.throwError('Source'); }
-  onPackage(): () => void { return this.throwError('Package'); }
-  onBuild(): () => void { return this.throwError('Build'); }
-  onTest(): () => void { return this.throwError('Test'); }
-  onAnalyze(): () => void { return this.throwError('Analyze'); }
-  onDeploy(): () => void { return this.throwError('Deploy'); }
+  onSource(): () => void {
+    return this.throwError("Source");
+  }
+  onPackage(): () => void {
+    return this.throwError("Package");
+  }
+  onBuild(): () => void {
+    return this.throwError("Build");
+  }
+  onTest(): () => void {
+    return this.throwError("Test");
+  }
+  onAnalyze(): () => void {
+    return this.throwError("Analyze");
+  }
+  onDeploy(): () => void {
+    return this.throwError("Deploy");
+  }
 
   onCancel(): void {
     console.log("Scrum Master Cancelled Pipeline");
@@ -20,7 +32,7 @@ export class PipelineDeployState extends IPipelineState {
   }
 
   private throwError(to: string): any {
-    console.log('Pipeline is being deployed at a cloud provider')
+    console.log("Pipeline is being deployed at a cloud provider");
     console.trace(`Cannot change to ${to} State from Deploy State`);
     throw new Error(`Cannot change to ${to} State from Deploy State`);
   }

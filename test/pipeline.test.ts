@@ -4,6 +4,13 @@ import { Pipeline } from "../src/models/pipeline.model";
 import { NotificationPreference, User } from "../src/models/user.model";
 import { IObserver } from "../src/observer-pattern/interfaces/IObserver";
 import { IPipelineState } from "../src/state-pattern/interface/IPipelineState";
+import { PipelineAnalyzeState } from "../src/state-pattern/states/pipeline-states/analyze.state";
+import { PipelineBuildState } from "../src/state-pattern/states/pipeline-states/build.state";
+import { PipelineCancelledState } from "../src/state-pattern/states/pipeline-states/cancelled.state";
+import { PipelineDeployState } from "../src/state-pattern/states/pipeline-states/deploy.state";
+import { PipelinePackageState } from "../src/state-pattern/states/pipeline-states/package.state";
+import { PipelineSourceState } from "../src/state-pattern/states/pipeline-states/source.state";
+import { PipelineTestState } from "../src/state-pattern/states/pipeline-states/test.state";
 import { IPipelineVisitor } from "../src/visitor-pattern/visitors/IPipelineVisitor";
 
 describe("The user should be able to create a pipeline and work in it.", () => {
@@ -187,5 +194,386 @@ describe("execute", () => {
 
     expect(mockTask3.acceptVisitor).not.toHaveBeenCalled();
     expect(mockObserver.update).not.toHaveBeenCalled();
+  });
+});
+
+describe("Pipeline Source State Tests", () => {
+  let pipeline: Pipeline;
+  let user: User;
+
+  beforeEach(() => {
+    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
+      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
+    ]);
+    pipeline = new Pipeline("testPipeline", user);
+
+    pipeline.setState(new PipelineSourceState(pipeline));
+  });
+
+  it("should not move to Source state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToSource();
+    }).toThrowError();
+  });
+
+  it("should not move to Build state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToBuild();
+    }).toThrowError();
+  });
+
+  it("should not move to Test state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToTest();
+    }).toThrowError();
+  });
+
+  it("should not move to Analyze state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToAnalyze();
+    }).toThrowError();
+  });
+
+  it("should not move to Deploy state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToDeploy();
+    }).toThrowError();
+  });
+
+  it("should move to Package state ", () => {
+    pipeline.moveToPackage();
+    expect(pipeline.getState().constructor.name).toBe("PipelinePackageState");
+  });
+
+  it("should move to Cancel state ", () => {
+    pipeline.moveToCancel();
+    expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+  });
+});
+
+describe("Pipeline Package State Tests", () => {
+  let pipeline: Pipeline;
+  let user: User;
+
+  beforeEach(() => {
+    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
+      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
+    ]);
+    pipeline = new Pipeline("testPipeline", user);
+
+    pipeline.setState(new PipelinePackageState(pipeline));
+  });
+
+  it("should not move to Source state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToSource();
+    }).toThrowError();
+  });
+
+  it("should not move to Package state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToPackage();
+    }).toThrowError();
+  });
+
+  it("should not move to Test state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToTest();
+    }).toThrowError();
+  });
+
+  it("should not move to Analyze state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToAnalyze();
+    }).toThrowError();
+  });
+
+  it("should not move to Deploy state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToDeploy();
+    }).toThrowError();
+  });
+
+  it("should move to Build state ", () => {
+    pipeline.moveToBuild();
+    expect(pipeline.getState().constructor.name).toBe("PipelineBuildState");
+  });
+
+  it("should move to Cancel state ", () => {
+    pipeline.moveToCancel();
+    expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+  });
+});
+
+describe("Pipeline Build State Tests", () => {
+  let pipeline: Pipeline;
+  let user: User;
+
+  beforeEach(() => {
+    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
+      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
+    ]);
+    pipeline = new Pipeline("testPipeline", user);
+
+    pipeline.setState(new PipelineBuildState(pipeline));
+  });
+
+  it("should not move to Source state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToSource();
+    }).toThrowError();
+  });
+
+  it("should not move to Package state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToPackage();
+    }).toThrowError();
+  });
+
+  it("should not move to Build state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToBuild();
+    }).toThrowError();
+  });
+
+  it("should not move to Analyze state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToAnalyze();
+    }).toThrowError();
+  });
+
+  it("should not move to Deploy state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToDeploy();
+    }).toThrowError();
+  });
+
+  it("should move to Test state ", () => {
+    pipeline.moveToTest();
+    expect(pipeline.getState().constructor.name).toBe("PipelineTestState");
+  });
+
+  it("should move to Cancel state ", () => {
+    pipeline.moveToCancel();
+    expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+  });
+});
+
+describe("Pipeline Test State Tests", () => {
+  let pipeline: Pipeline;
+  let user: User;
+
+  beforeEach(() => {
+    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
+      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
+    ]);
+    pipeline = new Pipeline("testPipeline", user);
+
+    pipeline.setState(new PipelineTestState(pipeline));
+  });
+
+  it("should not move to Source state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToSource();
+    }).toThrowError();
+  });
+
+  it("should not move to Package state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToPackage();
+    }).toThrowError();
+  });
+
+  it("should not move to Build state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToBuild();
+    }).toThrowError();
+  });
+
+  it("should not move to Test state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToTest();
+    }).toThrowError();
+  });
+
+  it("should not move to Deploy state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToDeploy();
+    }).toThrowError();
+  });
+
+  it("should move to Analyze state ", () => {
+    pipeline.moveToAnalyze();
+    expect(pipeline.getState().constructor.name).toBe("PipelineAnalyzeState");
+  });
+
+  it("should move to Cancel state ", () => {
+    pipeline.moveToCancel();
+    expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+  });
+});
+
+describe("Pipeline Analyze State Tests", () => {
+  let pipeline: Pipeline;
+  let user: User;
+
+  beforeEach(() => {
+    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
+      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
+    ]);
+    pipeline = new Pipeline("testPipeline", user);
+
+    pipeline.setState(new PipelineAnalyzeState(pipeline));
+  });
+
+  it("should not move to Source state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToSource();
+    }).toThrowError();
+  });
+
+  it("should not move to Package state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToPackage();
+    }).toThrowError();
+  });
+
+  it("should not move to Build state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToBuild();
+    }).toThrowError();
+  });
+
+  it("should not move to Test state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToTest();
+    }).toThrowError();
+  });
+
+  it("should not move to Analyze state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToAnalyze();
+    }).toThrowError();
+  });
+
+  it("should move to Deploy state ", () => {
+    pipeline.moveToDeploy();
+    expect(pipeline.getState().constructor.name).toBe("PipelineDeployState");
+  });
+
+  it("should move to Cancel state ", () => {
+    pipeline.moveToCancel();
+    expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+  });
+});
+
+describe("Pipeline Deploy State Tests", () => {
+  let pipeline: Pipeline;
+  let user: User;
+
+  beforeEach(() => {
+    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
+      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
+    ]);
+    pipeline = new Pipeline("testPipeline", user);
+
+    pipeline.setState(new PipelineDeployState(pipeline));
+  });
+
+  it("should not move to Source state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToSource();
+    }).toThrowError();
+  });
+
+  it("should not move to Package state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToPackage();
+    }).toThrowError();
+  });
+
+  it("should not move to Build state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToBuild();
+    }).toThrowError();
+  });
+
+  it("should not move to Test state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToTest();
+    }).toThrowError();
+  });
+
+  it("should not move to Analyze state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToAnalyze();
+    }).toThrowError();
+  });
+
+  it("should not move to Deploy state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToDeploy();
+    }).toThrowError();
+  });
+
+  it("should move to Cancel state ", () => {
+    pipeline.moveToCancel();
+    expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+  });
+});
+
+describe("Pipeline Cancel State Tests", () => {
+  let pipeline: Pipeline;
+  let user: User;
+
+  beforeEach(() => {
+    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
+      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
+    ]);
+    pipeline = new Pipeline("testPipeline", user);
+
+    pipeline.setState(new PipelineCancelledState(pipeline));
+  });
+
+
+  it("should move to Source state ", () => {
+    pipeline.moveToSource();
+    expect(pipeline.getState().constructor.name).toBe("PipelineSourceState");
+  });
+
+  it("should not move to Package state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToPackage();
+    }).toThrowError();
+  });
+
+  it("should not move to Build state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToBuild();
+    }).toThrowError();
+  });
+
+  it("should not move to Test state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToTest();
+    }).toThrowError();
+  });
+
+  it("should not move to Analyze state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToAnalyze();
+    }).toThrowError();
+  });
+
+  it("should not move to Deploy state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToDeploy();
+    }).toThrowError();
+  });
+
+  it("should not move to Cancel state, should throw error", () => {
+    expect(() => {
+      pipeline.moveToCancel();
+    }).toThrowError();
   });
 });

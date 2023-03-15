@@ -12,7 +12,7 @@ export class Pipeline implements ISubject {
   private observers: IObserver[] = [];
   private visitor?: IPipelineVisitor;
 
-  constructor(private name: string, private scrumMaster: User) {}
+  constructor(private name: string, private scrumMaster: User) { }
 
   public getName(): string {
     return this.name;
@@ -72,6 +72,10 @@ export class Pipeline implements ISubject {
     this.state = state;
   }
 
+  public moveToSource(): void {
+    this.state.onSource();
+  }
+
   public moveToPackage(): void {
     this.state.onPackage();
   }
@@ -90,6 +94,10 @@ export class Pipeline implements ISubject {
 
   public moveToDeploy(): void {
     this.state.onDeploy();
+  }
+
+  public moveToCancel(): void {
+    this.state.onCancel();
   }
 
   public subscribe(observer: IObserver) {

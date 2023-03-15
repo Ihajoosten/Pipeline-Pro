@@ -3,7 +3,7 @@ import { ISprintState } from "../../interface/ISprintState";
 import { SprintClosedState } from "./closed.state";
 
 export class SprintReviewedState implements ISprintState {
-  constructor(private sprint: Sprint) {}
+  constructor(private sprint: Sprint) { }
   create(): void {
     throw new Error("Cannot change state from Reviewed to Created");
   }

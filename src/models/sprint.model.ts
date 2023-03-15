@@ -107,8 +107,9 @@ export class Sprint {
     this.sprintState.close();
   }
 
-  private checkRole(role: ScrumRole) {
+  private checkRole(role: ScrumRole): void {
     if (role !== ScrumRole.SCRUM_MASTER) {
+      // console.warn('Kankeroni dit mag niet')
       throw new Error("Only the scrum master can perform this action!");
     }
   }

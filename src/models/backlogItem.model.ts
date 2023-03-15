@@ -31,6 +31,15 @@ export class BacklogItem implements ISubject {
     return this.scrumMaster;
   }
 
+  public getName(): string {
+    return this.name;
+  }
+
+
+  public getDescription(): string {
+    return this.description;
+  }
+
   public setDeveloper(user: User) {
     if (user.role == ScrumRole.DEVELOPER || user.role == ScrumRole.LEAD_DEVELOPER) {
       this.developer = user;

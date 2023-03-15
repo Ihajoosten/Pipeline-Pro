@@ -3,7 +3,7 @@ import { ISprintState } from "../../interface/ISprintState";
 import { SprintReleasedState } from "./released.state";
 
 export class SprintFinishedState implements ISprintState {
-  constructor(private sprint: Sprint) {}
+  constructor(private sprint: Sprint) { }
   create(): void {
     throw new Error("Cannot change state from Finished to Created");
   }

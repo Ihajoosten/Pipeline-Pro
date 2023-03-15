@@ -1,13 +1,13 @@
-import { User } from "./user/user.model";
-import { Role } from "./user/roles";
+import { ScrumRole } from "./enumerations";
+import { User } from "./user.model";
 
 export class Team {
   private members: User[] = [];
 
-  constructor(public name: string) {}
+  constructor(public name: string) { }
 
   public addMember(user: User) {
-    if (!(user.role == Role.ProductOwner || Role.ScrumMaster)) {
+    if (!(user.role == ScrumRole.PRODUCT_OWNER || ScrumRole.SCRUM_MASTER)) {
       this.members.push(user);
     }
   }

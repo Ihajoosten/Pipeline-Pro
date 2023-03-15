@@ -2,13 +2,13 @@ import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { ThreadMessage } from "./threadMessage";
 import { Notification } from "./notification.model";
-import { User } from "./user/user.model";
+import { User } from "./user.model";
 
 export class Thread implements ISubject {
   private messages: ThreadMessage[] = [];
   private observers: IObserver[] = [];
 
-  constructor(public title: string, private owner: User) {}
+  constructor(public title: string, private owner: User) { }
 
   public addMessage(threadMessage: ThreadMessage) {
     this.messages.push(threadMessage);

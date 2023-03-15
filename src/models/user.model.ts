@@ -1,14 +1,10 @@
-import {
-  NotificationPreference,
-  NotificationType,
-} from "./notificationPreference";
-import { Role } from "./roles";
+import { NotificationType, ScrumRole } from "./enumerations";
 
 export class User {
   constructor(
     public name: string,
     public email: string,
-    public role: Role,
+    public role: ScrumRole,
     private notificationPreference: NotificationPreference[] = []
   ) { }
 
@@ -33,4 +29,11 @@ export class User {
   public getNotificationPreferences(): NotificationPreference[] {
     return this.notificationPreference;
   }
+}
+
+export class NotificationPreference {
+  constructor(
+    public notificationType: NotificationType,
+    public address: string
+  ) { }
 }

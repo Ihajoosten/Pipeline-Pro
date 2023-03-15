@@ -3,9 +3,9 @@ import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../state-pattern/states/pipeline-states/source.state";
 import { IPipelineVisitor } from "../visitor-pattern/visitors/IPipelineVisitor";
-import { GitIntegration } from "./repository";
+import { Repository } from "./repository";
 import { Notification } from "./notification.model";
-import { User } from "./user/user.model";
+import { User } from "./user.model";
 
 export class Pipeline implements ISubject {
   private state: IPipelineState = new PipelineSourceState(this);
@@ -16,8 +16,8 @@ export class Pipeline implements ISubject {
   constructor(
     private name: string,
     private scrumMaster: User,
-    private gitIntegration: GitIntegration
-  ) {}
+    private gitIntegration: Repository
+  ) { }
 
   public getName(): string {
     return this.name;

@@ -3,7 +3,6 @@ import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../state-pattern/states/pipeline-states/source.state";
 import { IPipelineVisitor } from "../visitor-pattern/visitors/IPipelineVisitor";
-import { Repository } from "./repository";
 import { Notification } from "./notification.model";
 import { User } from "./user.model";
 
@@ -13,18 +12,18 @@ export class Pipeline implements ISubject {
   private observers: IObserver[] = [];
   private visitor?: IPipelineVisitor;
 
-  constructor(
-    private name: string,
-    private scrumMaster: User,
-    private gitIntegration: Repository
-  ) { }
+  constructor(private name: string, private scrumMaster: User) { }
 
   public getName(): string {
     return this.name;
   }
 
-  public addTask(pipelineTask: IPipelineState) {
+  public addTask(pipelineTask: IPipelineState): void {
     this.tasks.push(pipelineTask);
+  }
+
+  public getTasks(): IPipelineState[] {
+    return this.tasks;
   }
 
   public removeTask(pipelineTask: IPipelineState) {
@@ -34,7 +33,7 @@ export class Pipeline implements ISubject {
     }
   }
 
-  public setVisitor(visitor: IPipelineVisitor) {
+  public setVisitor(visitor: IPipelineVisitor): void {
     this.visitor = visitor;
   }
 
@@ -69,7 +68,6 @@ export class Pipeline implements ISubject {
     this.state = state;
   }
 
-  // State change methods
   public moveToPackage(): void {
     this.state.onPackage();
   }

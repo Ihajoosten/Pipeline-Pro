@@ -10,7 +10,7 @@ export enum ScrumRole {
   SCRUM_MASTER = "Scrum Master",
   DEVELOPER = "Developer",
   LEAD_DEVELOPER = "Lead Developer",
-  TESTER = "Tester"
+  TESTER = "Tester",
 }
 
 export enum SprintType {

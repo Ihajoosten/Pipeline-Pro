@@ -13,15 +13,27 @@ export class PipelineCancelledState extends IPipelineState {
     this.pipeline.setState(new PipelineSourceState(this.pipeline));
   }
 
-  onPackage(): () => void { return this.throwError('Package'); }
-  onBuild(): () => void { return this.throwError('Build'); }
-  onTest(): () => void { return this.throwError('Test'); }
-  onAnalyze(): () => void { return this.throwError('Analyze'); }
-  onDeploy(): () => void { return this.throwError('Deploy'); }
-  onCancel(): () => void { return this.throwError('Cancel'); }
+  onPackage(): () => void {
+    return this.throwError("Package");
+  }
+  onBuild(): () => void {
+    return this.throwError("Build");
+  }
+  onTest(): () => void {
+    return this.throwError("Test");
+  }
+  onAnalyze(): () => void {
+    return this.throwError("Analyze");
+  }
+  onDeploy(): () => void {
+    return this.throwError("Deploy");
+  }
+  onCancel(): () => void {
+    return this.throwError("Cancel");
+  }
 
   private throwError(to: string): any {
-    console.log('Pipeline is canceled')
+    console.log("Pipeline is canceled");
     console.trace(`Cannot change to ${to} State from Cancel State`);
     throw new Error(`Cannot change to ${to} State from Cancel State`);
   }

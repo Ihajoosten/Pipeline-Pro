@@ -3,22 +3,28 @@ import { ISprintState } from "../../interface/ISprintState";
 
 export class SprintClosedState implements ISprintState {
   constructor(private sprint: Sprint) {}
-  create(): void {
-    throw new Error("Cannot change state from Closed to Created");
+  public create(): () => void {
+    return this.throwError("Created");
   }
-  start(): void {
-    throw new Error("Cannot change state from Closed to Active");
+  public start(): () => void {
+    return this.throwError("Active");
   }
-  finish(): void {
-    throw new Error("Cannot change state from Closed to Finished");
+  public release(): () => void {
+    return this.throwError("Released");
   }
-  release(): void {
-    throw new Error("Cannot change state from Closed to Reviewed");
+  public review(): () => void {
+    return this.throwError("Reviewed");
   }
-  review(): void {
-    throw new Error("Cannot change state from Closed to Completed");
+  public finish(): () => void {
+    return this.throwError("Finished");
   }
-  close(): void {
-    throw new Error("Cannot change state from Closed to Closed");
+  public close(): () => void {
+    return this.throwError("Closed");
+  }
+
+  private throwError(to: string): any {
+    console.log("Sprint is already Closed");
+    console.log(`Cannot change to ${to} State from Closed State`);
+    throw new Error(`Cannot change to ${to} State from Closed State`);
   }
 }

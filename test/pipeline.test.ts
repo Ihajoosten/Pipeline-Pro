@@ -1,3 +1,4 @@
+import { UserFactory } from "../src/factory-pattern/user-factory";
 import { NotificationType, ScrumRole } from "../src/models/enumerations";
 import { Notification } from "../src/models/notification.model";
 import { Pipeline } from "../src/models/pipeline.model";
@@ -16,7 +17,14 @@ import { IPipelineVisitor } from "../src/visitor-pattern/visitors/IPipelineVisit
 describe("The user should be able to create a pipeline and work in it.", () => {
   let pipeline: Pipeline;
   const pipelineName = "pipeline";
-  const scrumMaster = new User("Erdem P.", "erd@em.p", ScrumRole.SCRUM_MASTER);
+  const scrumMaster = new UserFactory().createUser(
+    "Erdem",
+    "Pekguzel",
+    "erdempekguzel@avans.nl",
+    "0697513489",
+    [],
+    ScrumRole.SCRUM_MASTER
+  );
   let task1: any;
   let task2: any;
   let task3: any;
@@ -116,11 +124,13 @@ describe("execute", () => {
   let mockVisitor: IPipelineVisitor;
   let mockNotification: Notification;
   let mockObserver: IObserver;
-  let user: User = new User(
-    "Luc",
-    "lhajoost@avans.nl",
-    ScrumRole.SCRUM_MASTER,
-    [new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl")]
+  let user = new UserFactory().createUser(
+    "Erdem",
+    "Pekguzel",
+    "erdempekguzel@avans.nl",
+    "0697513489",
+    [],
+    ScrumRole.SCRUM_MASTER
   );
 
   const mockTask1 = {
@@ -202,9 +212,15 @@ describe("Pipeline Source State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
+
     pipeline = new Pipeline("testPipeline", user);
 
     pipeline.setState(new PipelineSourceState(pipeline));
@@ -256,9 +272,15 @@ describe("Pipeline Package State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
+
     pipeline = new Pipeline("testPipeline", user);
 
     pipeline.setState(new PipelinePackageState(pipeline));
@@ -310,9 +332,15 @@ describe("Pipeline Build State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
+
     pipeline = new Pipeline("testPipeline", user);
 
     pipeline.setState(new PipelineBuildState(pipeline));
@@ -364,9 +392,15 @@ describe("Pipeline Test State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
+
     pipeline = new Pipeline("testPipeline", user);
 
     pipeline.setState(new PipelineTestState(pipeline));
@@ -418,9 +452,15 @@ describe("Pipeline Analyze State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
+
     pipeline = new Pipeline("testPipeline", user);
 
     pipeline.setState(new PipelineAnalyzeState(pipeline));
@@ -472,9 +512,15 @@ describe("Pipeline Deploy State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
+
     pipeline = new Pipeline("testPipeline", user);
 
     pipeline.setState(new PipelineDeployState(pipeline));
@@ -527,14 +573,19 @@ describe("Pipeline Cancel State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
+
     pipeline = new Pipeline("testPipeline", user);
 
     pipeline.setState(new PipelineCancelledState(pipeline));
   });
-
 
   it("should move to Source state ", () => {
     pipeline.moveToSource();

@@ -4,10 +4,10 @@ import { User } from "./user.model";
 export class Team {
   private members: User[] = [];
 
-  constructor(public name: string) {}
+  constructor(public name: string) { }
 
   public addMember(user: User) {
-    if (!(user.role == ScrumRole.PRODUCT_OWNER || ScrumRole.SCRUM_MASTER)) {
+    if (!(user.getRole() == ScrumRole.PRODUCT_OWNER || ScrumRole.SCRUM_MASTER)) {
       this.members.push(user);
     }
   }

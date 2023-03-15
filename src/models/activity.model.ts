@@ -4,12 +4,12 @@ import { User } from "./user.model";
 export class Activity {
   private developer?: User;
 
-  public constructor(public name: string, public description: string) {}
+  public constructor(public name: string, public description: string) { }
 
   public setDeveloper(user: User) {
     if (
-      user.role == ScrumRole.DEVELOPER ||
-      user.role == ScrumRole.LEAD_DEVELOPER
+      user.getRole() == ScrumRole.DEVELOPER ||
+      user.getRole() == ScrumRole.LEAD_DEVELOPER
     ) {
       this.developer = user;
     }

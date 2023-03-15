@@ -1,3 +1,4 @@
+import { UserFactory } from "../src/factory-pattern/user-factory";
 import { Activity } from "../src/models/activity.model";
 import { BacklogItem } from "../src/models/backlogItem.model";
 import { NotificationType, ScrumRole } from "../src/models/enumerations";
@@ -20,9 +21,14 @@ describe("Backlog Item Path Coverage Tests", () => {
   let notification: Notification;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
@@ -38,12 +44,32 @@ describe("Backlog Item Path Coverage Tests", () => {
   });
 
   it("should set developer and tester", () => {
-    const developer = new User(
-      "Developer 1",
-      "dev@gmail.com",
+    const developer = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
       ScrumRole.DEVELOPER
     );
-    const tester = new User("Tester 1", "test@gmail.com", ScrumRole.TESTER);
+    const tester = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
+      ScrumRole.TESTER
+    );
 
     backlogItem.setDeveloper(developer);
     backlogItem.setState(new BacklogReadyForTestingState(backlogItem));
@@ -147,9 +173,14 @@ describe("Backlog Item Doing State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0634978124",
+      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      ScrumRole.SCRUM_MASTER
+    );
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
@@ -201,9 +232,15 @@ describe("Backlog Item ReadyForTesting State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0634978124",
+      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      ScrumRole.SCRUM_MASTER
+    );
+
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
@@ -252,9 +289,15 @@ describe("Backlog Item Testing State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0634978124",
+      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      ScrumRole.SCRUM_MASTER
+    );
+
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
@@ -305,9 +348,15 @@ describe("Backlog Item Tested State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0634978124",
+      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      ScrumRole.SCRUM_MASTER
+    );
+
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
@@ -358,9 +407,15 @@ describe("Backlog Item Done State Tests", () => {
   let user: User;
 
   beforeEach(() => {
-    user = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    user = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0634978124",
+      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      ScrumRole.SCRUM_MASTER
+    );
+
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",

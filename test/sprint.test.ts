@@ -1,3 +1,4 @@
+import { UserFactory } from "../src/factory-pattern/user-factory";
 import { BacklogItem } from "../src/models/backlogItem.model";
 import { NotificationType, ScrumRole } from "../src/models/enumerations";
 import { Pipeline } from "../src/models/pipeline.model";
@@ -14,53 +15,90 @@ describe("Sprint", () => {
   let scrumMaster: User;
   let productOwner: User;
   let developer: User;
+  let leadDeveloper: User;
   let backlogItem: Omit<BacklogItem, "scrumMaster">;
   let pipeline: Pipeline;
 
   beforeEach(() => {
-    scrumMaster = new User("Luc", "lhajoost@avans.nl", ScrumRole.SCRUM_MASTER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
-    productOwner = new User(
+    scrumMaster = new UserFactory().createUser(
       "Luc",
+      "Joosten",
       "lhajoost@avans.nl",
-      ScrumRole.PRODUCT_OWNER,
-      [new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl")]
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
+      ScrumRole.SCRUM_MASTER
     );
-    developer = new User("Luc", "lhajoost@avans.nl", ScrumRole.DEVELOPER, [
-      new NotificationPreference(NotificationType.SLACK, "lhajoost@avans.nl"),
-    ]);
+    productOwner = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lhajoost@avans.nl",
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
+      ScrumRole.PRODUCT_OWNER
+    );
+    developer = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lhajoost@avans.nl",
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
+      ScrumRole.DEVELOPER
+    );
+    leadDeveloper = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lhajoost@avans.nl",
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
+      ScrumRole.LEAD_DEVELOPER
+    );
+
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
       "Adding new Functionality to the back-end",
       scrumMaster
     );
+    pipeline = new Pipeline("Sprint 1", scrumMaster);
     sprint = new Sprint(
+      112,
       "Sprint 1",
       new Date(),
       new Date(),
       scrumMaster,
-      new Pipeline("Test", scrumMaster)
+      pipeline
     );
-    pipeline = new Pipeline("test", scrumMaster);
   });
 
   describe("constructor", () => {
     it("should throw an error if the scrum master is not valid", () => {
       expect(() => {
-        new Sprint(
-          "Sprint 2",
-          new Date(),
-          new Date(),
-          productOwner,
-          new Pipeline("development", productOwner)
-        );
+        new Sprint(112, "Sprint 1", new Date(), new Date(), productOwner, pipeline);
       }).toThrowError("Invalid scrum master!");
     });
 
     it("should set the initial state to SprintCreatedState", () => {
-      expect(sprint["sprintState"].constructor.name).toBe("SprintCreatedState");
+      expect(sprint["_state"].constructor.name).toBe("SprintCreatedState");
     });
   });
 
@@ -90,7 +128,7 @@ describe("Sprint", () => {
 
   describe("addBacklogItem", () => {
     it("should add a new backlog item to the backlog items array", () => {
-      sprint.addBacklogItem(backlogItem);
+      sprint.addBacklogItem(leadDeveloper, backlogItem);
       expect(sprint.getBacklogItems().length).toBe(1);
       expect(sprint.getBacklogItems()[0].getName()).toBe(backlogItem.name);
       expect(sprint.getBacklogItems()[0].getDescription()).toBe(
@@ -107,8 +145,8 @@ describe("Sprint", () => {
 
   describe("removeBacklogItem", () => {
     it("should remove a backlog item from the backlog items array", () => {
-      sprint.addBacklogItem(backlogItem);
-      sprint.removeBacklogItem(sprint.getBacklogItems()[0]);
+      sprint.addBacklogItem(leadDeveloper, backlogItem);
+      sprint.removeBacklogItem(leadDeveloper, sprint.getBacklogItems()[0]);
       expect(sprint.getBacklogItems().length).toBe(0);
     });
   });
@@ -125,7 +163,7 @@ describe("Sprint", () => {
     expect(sprint.getName()).toEqual("New Sprint Name");
     expect(sprint.getStartDate()).toEqual(new Date("2023-04-02"));
     expect(sprint.getEndDate()).toEqual(new Date("2023-04-15"));
-    expect(sprint.getScrumMaster().name).toEqual("Luc");
+    expect(sprint.getScrumMaster().getFirstName()).toEqual("Luc");
   });
 
   describe("Check Role", () => {

@@ -8,11 +8,21 @@ export class PipelineSourceState extends IPipelineState {
     super("Sourcing Stage", "Sourcing...");
   }
 
-  onSource(): () => void { return this.throwError('Source'); }
-  onBuild(): () => void { return this.throwError('Build'); }
-  onTest(): () => void { return this.throwError('Test'); }
-  onAnalyze(): () => void { return this.throwError('Analyze'); }
-  onDeploy(): () => void { return this.throwError('Deploy'); }
+  onSource(): () => void {
+    return this.throwError("Source");
+  }
+  onBuild(): () => void {
+    return this.throwError("Build");
+  }
+  onTest(): () => void {
+    return this.throwError("Test");
+  }
+  onAnalyze(): () => void {
+    return this.throwError("Analyze");
+  }
+  onDeploy(): () => void {
+    return this.throwError("Deploy");
+  }
 
   onPackage(): void {
     console.log(
@@ -27,7 +37,7 @@ export class PipelineSourceState extends IPipelineState {
   }
 
   private throwError(to: string): any {
-    console.log('Pipeline is fetching Source code')
+    console.log("Pipeline is fetching Source code");
     console.trace(`Cannot change to ${to} State from Source State`);
     throw new Error(`Cannot change to ${to} State from Source State`);
   }

@@ -8,12 +8,21 @@ export class PipelineAnalyzeState extends IPipelineState {
     super("Analyzing Stage", "Analyzing...");
   }
 
-  onSource(): () => void { return this.throwError('Source'); }
-  onPackage(): () => void { return this.throwError('Package'); }
-  onBuild(): () => void { return this.throwError('Build'); }
-  onTest(): () => void { return this.throwError('Test'); }
-  onAnalyze(): () => void { return this.throwError('Analyze'); }
-
+  onSource(): () => void {
+    return this.throwError("Source");
+  }
+  onPackage(): () => void {
+    return this.throwError("Package");
+  }
+  onBuild(): () => void {
+    return this.throwError("Build");
+  }
+  onTest(): () => void {
+    return this.throwError("Test");
+  }
+  onAnalyze(): () => void {
+    return this.throwError("Analyze");
+  }
 
   onDeploy(): void {
     console.log("Analysis complete, now deploying project");
@@ -26,7 +35,7 @@ export class PipelineAnalyzeState extends IPipelineState {
   }
 
   private throwError(to: string): any {
-    console.log('Pipeline is still performing Analysis on Coverage')
+    console.log("Pipeline is still performing Analysis on Coverage");
     console.log(`Cannot change to ${to} State from Analyze State`);
     throw new Error(`Cannot change to ${to} State from Analyze State`);
   }

@@ -4,23 +4,31 @@ import { SprintFinishedState } from "./finished.state";
 
 export class SprintActiveState implements ISprintState {
   constructor(private sprint: Sprint) {}
-  create(): void {
-    throw new Error("Cannot change state from Active to Created");
+
+  public create(): () => void {
+    return this.throwError("Created");
   }
-  start(): void {
-    throw new Error("Cannot change state from Active to Active");
+  public start(): () => void {
+    return this.throwError("Active");
   }
-  finish(): void {
+  public release(): () => void {
+    return this.throwError("Released");
+  }
+  public review(): () => void {
+    return this.throwError("Reviewed");
+  }
+  public close(): () => void {
+    return this.throwError("Closed");
+  }
+
+  public finish(): void {
     console.log("Scrum Master is finishing the sprint!");
     this.sprint.setState(new SprintFinishedState(this.sprint));
   }
-  release(): void {
-    throw new Error("Cannot change state from Active to Reviewed");
-  }
-  review(): void {
-    throw new Error("Cannot change state from Active to Copmleted");
-  }
-  close(): void {
-    throw new Error("Cannot change state from Active to Closed");
+
+  private throwError(to: string): any {
+    console.log("Sprint is already Active");
+    console.log(`Cannot change to ${to} State from Active State`);
+    throw new Error(`Cannot change to ${to} State from Active State`);
   }
 }

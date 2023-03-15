@@ -6,7 +6,7 @@ export class User {
     public email: string,
     public role: ScrumRole,
     private notificationPreference: NotificationPreference[] = []
-  ) { }
+  ) {}
 
   public addNotificationPreference(
     notificationType: NotificationType,
@@ -35,5 +35,5 @@ export class NotificationPreference {
   constructor(
     public notificationType: NotificationType,
     public address: string
-  ) { }
+  ) {}
 }

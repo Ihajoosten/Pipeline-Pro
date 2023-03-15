@@ -4,14 +4,16 @@ import { BacklogReadyForTestingState } from "./readyForTesting.state";
 import { BacklogToDoState } from "./toDo.state";
 
 export class BacklogDoingState implements IBacklogItemState {
-  constructor(private backlogItem: BacklogItem) { }
+  constructor(private backlogItem: BacklogItem) {}
 
   toDo(): void {
     console.log('Moving backlog item to the "ToDo" state.');
     this.backlogItem.setState(new BacklogToDoState(this.backlogItem));
   }
 
-  doing(): () => void { return this.throwError('Doing'); }
+  doing(): () => void {
+    return this.throwError("Doing");
+  }
 
   readyForTesting(): void {
     console.log('Moving backlog item to the "ReadyForTesting" state.');
@@ -20,13 +22,17 @@ export class BacklogDoingState implements IBacklogItemState {
     );
   }
 
-  testing(): () => void { return this.throwError('Testing'); }
+  testing(): () => void {
+    return this.throwError("Testing");
+  }
 
+  tested(): () => void {
+    return this.throwError("Tested");
+  }
 
-  tested(): () => void { return this.throwError('Tested'); }
-
-
-  done(): () => void { return this.throwError('Done'); }
+  done(): () => void {
+    return this.throwError("Done");
+  }
 
   private throwError(to: string): any {
     console.log(`Cannot move backlog item to the ${to} from Doing state`);

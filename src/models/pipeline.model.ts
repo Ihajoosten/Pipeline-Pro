@@ -38,8 +38,10 @@ export class Pipeline implements ISubject {
   }
 
   public execute(): void {
+    // console.log('Executing this kankeroni ding')
     try {
       if (this.visitor) {
+        // console.warn('Kankeroni heeft wel een visitor joeee')
         this.tasks.forEach((task) => {
           task.acceptVisitor(this.visitor!);
         });
@@ -51,6 +53,8 @@ export class Pipeline implements ISubject {
         this.notify(notification);
       }
     } catch (error) {
+      // console.error('Kankeroni heeft geen visitor joediekankeroedie')
+
       const notificationMessage = `There was an error during one of the pipeline tasks!`;
       const notification = new Notification(
         this.scrumMaster,

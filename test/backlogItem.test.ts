@@ -15,6 +15,8 @@ import { BacklogTestingState } from "../src/state-pattern/states/backlog-states/
 describe("Backlog Item Path Coverage Tests", () => {
   let backlogItem: BacklogItem;
   let user: User;
+  let tester: User;
+  let developer: User;
   let activity: Activity;
   let thread: Thread;
   let observer: IObserver;
@@ -28,6 +30,32 @@ describe("Backlog Item Path Coverage Tests", () => {
       "0697513489",
       [],
       ScrumRole.SCRUM_MASTER
+    );
+    tester = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
+      ScrumRole.TESTER
+    );
+    developer = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
+      ScrumRole.DEVELOPER
     );
     backlogItem = new BacklogItem(
       "BI-001",
@@ -44,40 +72,18 @@ describe("Backlog Item Path Coverage Tests", () => {
   });
 
   it("should set developer and tester", () => {
-    const developer = new UserFactory().createUser(
-      "Luc",
-      "Joosten",
-      "lucjoosten@gmail.com",
-      "0645791584",
-      [
-        new NotificationPreference(
-          NotificationType.EMAIL,
-          "lhajoosten@avans.nl"
-        ),
-      ],
-      ScrumRole.DEVELOPER
-    );
-    const tester = new UserFactory().createUser(
-      "Luc",
-      "Joosten",
-      "lucjoosten@gmail.com",
-      "0645791584",
-      [
-        new NotificationPreference(
-          NotificationType.EMAIL,
-          "lhajoosten@avans.nl"
-        ),
-      ],
-      ScrumRole.TESTER
-    );
-
     backlogItem.setDeveloper(developer);
     backlogItem.setState(new BacklogReadyForTestingState(backlogItem));
-    backlogItem.setTester(developer, tester);
-
+    backlogItem.setTester(tester);
     expect(backlogItem.getDeveloper()).toBe(developer);
     expect(backlogItem.getTester()).toBe(tester);
   });
+
+  it("should not set a tester and throw an error if the user is not a tester", () => {
+    expect(() => {
+      backlogItem.setTester(user);
+    }).toThrowError();
+  })
 
   it("should add and remove activity", () => {
     backlogItem.addActivity(activity);
@@ -92,6 +98,13 @@ describe("Backlog Item Path Coverage Tests", () => {
     backlogItem.removeThread();
     expect(backlogItem.getThread()).toBe(undefined);
   });
+
+  it("should not add a thread and throw an error when a thread already exists", () => {
+    backlogItem.addThread(thread);
+    expect(() => {
+      backlogItem.addThread(thread);
+    }).toThrowError();
+  })
 
   it("should set and get state", () => {
     backlogItem.setState(backlogItem.getState());
@@ -166,323 +179,212 @@ describe("Backlog Item Path Coverage Tests", () => {
     backlogItem.doing();
     expect(backlogItem.getState().constructor.name).toBe("BacklogDoingState");
   });
-});
 
-describe("Backlog Item Doing State Tests", () => {
-  let backlogItem: BacklogItem;
-  let user: User;
-
-  beforeEach(() => {
-    user = new UserFactory().createUser(
-      "Luc",
-      "Joosten",
-      "lucjoosten@gmail.com",
-      "0634978124",
-      [
-        new NotificationPreference(
-          NotificationType.SLACK,
-          "lucjoosten@gmail.com"
-        ),
-      ],
-      ScrumRole.SCRUM_MASTER
-    );
-    backlogItem = new BacklogItem(
-      "BI-001",
-      "Make a new Functionality",
-      "Adding new Functionality to the back-end",
-      user
-    );
-    backlogItem.setState(new BacklogDoingState(backlogItem));
-  });
-
-  it("should move to to-do state", () => {
-    backlogItem.toDo();
-    expect(backlogItem.getState().constructor.name).toBe("BacklogToDoState");
-  });
-
-  it("should not move to doing state, should throw error", () => {
-    expect(() => {
-      backlogItem.doing();
-    }).toThrowError();
-  });
-
-  it("should move to ready for testing state", () => {
-    backlogItem.readyForTesting();
-    expect(backlogItem.getState().constructor.name).toBe(
-      "BacklogReadyForTestingState"
-    );
-  });
-
-  it("should not move to testing state, should throw error", () => {
-    expect(() => {
-      backlogItem.testing();
-    }).toThrowError();
-  });
-
-  it("should not move to tested state, should throw error", () => {
-    expect(() => {
-      backlogItem.tested();
-    }).toThrowError();
-  });
-
-  it("should not move to done state, should throw error", () => {
-    expect(() => {
-      backlogItem.done();
-    }).toThrowError();
-  });
-});
-
-describe("Backlog Item ReadyForTesting State Tests", () => {
-  let backlogItem: BacklogItem;
-  let user: User;
-
-  beforeEach(() => {
-    user = new UserFactory().createUser(
-      "Luc",
-      "Joosten",
-      "lucjoosten@gmail.com",
-      "0634978124",
-      [
-        new NotificationPreference(
-          NotificationType.SLACK,
-          "lucjoosten@gmail.com"
-        ),
-      ],
-      ScrumRole.SCRUM_MASTER
-    );
-
-    backlogItem = new BacklogItem(
-      "BI-001",
-      "Make a new Functionality",
-      "Adding new Functionality to the back-end",
-      user
-    );
-    backlogItem.setState(new BacklogReadyForTestingState(backlogItem));
-  });
-
-  it("should move to to-do state", () => {
-    backlogItem.toDo();
-    expect(backlogItem.getState().constructor.name).toBe("BacklogToDoState");
-  });
-
-  it("should move to doing state", () => {
-    backlogItem.doing();
-    expect(backlogItem.getState().constructor.name).toBe("BacklogDoingState");
-  });
-
-  it("should not move to ready for testing state, should throw error", () => {
-    expect(() => {
-      backlogItem.readyForTesting();
-    }).toThrowError();
-  });
-
-  it("should move to testing state", () => {
-    backlogItem.testing();
-    expect(backlogItem.getState().constructor.name).toBe("BacklogTestingState");
-  });
-
-  it("should not move to tested state, should throw error", () => {
-    expect(() => {
-      backlogItem.tested();
-    }).toThrowError();
-  });
-
-  it("should not move to done state, should throw error", () => {
-    expect(() => {
-      backlogItem.done();
-    }).toThrowError();
-  });
-});
-
-describe("Backlog Item Testing State Tests", () => {
-  let backlogItem: BacklogItem;
-  let user: User;
-
-  beforeEach(() => {
-    user = new UserFactory().createUser(
-      "Luc",
-      "Joosten",
-      "lucjoosten@gmail.com",
-      "0634978124",
-      [
-        new NotificationPreference(
-          NotificationType.SLACK,
-          "lucjoosten@gmail.com"
-        ),
-      ],
-      ScrumRole.SCRUM_MASTER
-    );
-
-    backlogItem = new BacklogItem(
-      "BI-001",
-      "Make a new Functionality",
-      "Adding new Functionality to the back-end",
-      user
-    );
-    backlogItem.setState(new BacklogTestingState(backlogItem));
-  });
-
-  it("should not move to to-do state, should throw error", () => {
-    expect(() => {
+  describe("Backlog Item Doing State Tests", () => {
+    beforeEach(() => {
+      backlogItem.setState(new BacklogDoingState(backlogItem));
+    });
+  
+    it("should move to to-do state", () => {
       backlogItem.toDo();
-    }).toThrowError();
-  });
-
-  it("should not move to doing state, should throw error", () => {
-    expect(() => {
-      backlogItem.doing();
-    }).toThrowError();
-  });
-
-  it("should not move to ready for testing state, should throw error", () => {
-    expect(() => {
+      expect(backlogItem.getState().constructor.name).toBe("BacklogToDoState");
+    });
+  
+    it("should not move to doing state, should throw error", () => {
+      expect(() => {
+        backlogItem.doing();
+      }).toThrowError();
+    });
+  
+    it("should move to ready for testing state and send a notification to the tester", () => {
+      backlogItem.setTester(tester);
+      backlogItem.subscribe(observer);
       backlogItem.readyForTesting();
-    }).toThrowError();
+      expect(backlogItem.getState().constructor.name).toBe(
+        "BacklogReadyForTestingState"
+      );
+      expect(observer.update).toHaveBeenCalled();
+    });
+  
+    it("should not move to testing state, should throw error", () => {
+      expect(() => {
+        backlogItem.testing();
+      }).toThrowError();
+    });
+  
+    it("should not move to tested state, should throw error", () => {
+      expect(() => {
+        backlogItem.tested();
+      }).toThrowError();
+    });
+  
+    it("should not move to done state, should throw error", () => {
+      expect(() => {
+        backlogItem.done();
+      }).toThrowError();
+    });
   });
-
-  it("should not move to testing state, should throw error", () => {
-    expect(() => {
-      backlogItem.testing();
-    }).toThrowError();
-  });
-
-  it("should move to tested state", () => {
-    backlogItem.tested();
-    expect(backlogItem.getState().constructor.name).toBe("BacklogTestedState");
-  });
-
-  it("should not move to done state, should throw error", () => {
-    expect(() => {
-      backlogItem.done();
-    }).toThrowError();
-  });
-});
-
-describe("Backlog Item Tested State Tests", () => {
-  let backlogItem: BacklogItem;
-  let user: User;
-
-  beforeEach(() => {
-    user = new UserFactory().createUser(
-      "Luc",
-      "Joosten",
-      "lucjoosten@gmail.com",
-      "0634978124",
-      [
-        new NotificationPreference(
-          NotificationType.SLACK,
-          "lucjoosten@gmail.com"
-        ),
-      ],
-      ScrumRole.SCRUM_MASTER
-    );
-
-    backlogItem = new BacklogItem(
-      "BI-001",
-      "Make a new Functionality",
-      "Adding new Functionality to the back-end",
-      user
-    );
-    backlogItem.setState(new BacklogTestedState(backlogItem));
-  });
-
-  it("should move to to-do state ", () => {
-    backlogItem.toDo();
-    expect(backlogItem.getState().constructor.name).toBe("BacklogToDoState");
-  });
-
-  it("should not move to doing state, should throw error", () => {
-    expect(() => {
-      backlogItem.doing();
-    }).toThrowError();
-  });
-
-  it("should move to ready for testing state ", () => {
-    backlogItem.readyForTesting();
-    expect(backlogItem.getState().constructor.name).toBe(
-      "BacklogReadyForTestingState"
-    );
-  });
-
-  it("should not move to testing state, should throw error", () => {
-    expect(() => {
-      backlogItem.testing();
-    }).toThrowError();
-  });
-
-  it("should not move to tested state, should throw error", () => {
-    expect(() => {
-      backlogItem.tested();
-    }).toThrowError();
-  });
-
-  it("should move to done state ", () => {
-    backlogItem.done();
-    expect(backlogItem.getState().constructor.name).toBe("BacklogDoneState");
-  });
-});
-
-describe("Backlog Item Done State Tests", () => {
-  let backlogItem: BacklogItem;
-  let user: User;
-
-  beforeEach(() => {
-    user = new UserFactory().createUser(
-      "Luc",
-      "Joosten",
-      "lucjoosten@gmail.com",
-      "0634978124",
-      [
-        new NotificationPreference(
-          NotificationType.SLACK,
-          "lucjoosten@gmail.com"
-        ),
-      ],
-      ScrumRole.SCRUM_MASTER
-    );
-
-    backlogItem = new BacklogItem(
-      "BI-001",
-      "Make a new Functionality",
-      "Adding new Functionality to the back-end",
-      user
-    );
-    backlogItem.setState(new BacklogDoneState(backlogItem));
-  });
-
-  it("should not move to to-do state, should throw error", () => {
-    expect(() => {
+  
+  describe("Backlog Item ReadyForTesting State Tests", () => {
+    beforeEach(() => {
+      backlogItem.setState(new BacklogReadyForTestingState(backlogItem));
+    });
+  
+    it("should move to to-do state", () => {
       backlogItem.toDo();
-    }).toThrowError();
-  });
-
-  it("should not move to doing state, should throw error", () => {
-    expect(() => {
+      expect(backlogItem.getState().constructor.name).toBe("BacklogToDoState");
+    });
+  
+    it("should move to doing state", () => {
       backlogItem.doing();
-    }).toThrowError();
-  });
-
-  it("should not move to ready for testing state, should throw error", () => {
-    expect(() => {
-      backlogItem.readyForTesting();
-    }).toThrowError();
-  });
-
-  it("should not move to testing state, should throw error", () => {
-    expect(() => {
+      expect(backlogItem.getState().constructor.name).toBe("BacklogDoingState");
+    });
+  
+    it("should not move to ready for testing state, should throw error", () => {
+      expect(() => {
+        backlogItem.readyForTesting();
+      }).toThrowError();
+    });
+  
+    it("should move to testing state", () => {
       backlogItem.testing();
-    }).toThrowError();
+      expect(backlogItem.getState().constructor.name).toBe("BacklogTestingState");
+    });
+  
+    it("should not move to tested state, should throw error", () => {
+      expect(() => {
+        backlogItem.tested();
+      }).toThrowError();
+    });
+  
+    it("should not move to done state, should throw error", () => {
+      expect(() => {
+        backlogItem.done();
+      }).toThrowError();
+    });
   });
-
-  it("should not move to tested state, should throw error", () => {
-    expect(() => {
+  
+  describe("Backlog Item Testing State Tests", () => {
+    beforeEach(() => {
+      backlogItem.setState(new BacklogTestingState(backlogItem));
+    });
+  
+    it("should not move to to-do state, should throw error", () => {
+      expect(() => {
+        backlogItem.toDo();
+      }).toThrowError();
+    });
+  
+    it("should not move to doing state, should throw error", () => {
+      expect(() => {
+        backlogItem.doing();
+      }).toThrowError();
+    });
+  
+    it("should not move to ready for testing state, should throw error", () => {
+      expect(() => {
+        backlogItem.readyForTesting();
+      }).toThrowError();
+    });
+  
+    it("should not move to testing state, should throw error", () => {
+      expect(() => {
+        backlogItem.testing();
+      }).toThrowError();
+    });
+  
+    it("should move to tested state", () => {
       backlogItem.tested();
-    }).toThrowError();
+      expect(backlogItem.getState().constructor.name).toBe("BacklogTestedState");
+    });
+  
+    it("should not move to done state, should throw error", () => {
+      expect(() => {
+        backlogItem.done();
+      }).toThrowError();
+    });
   });
-
-  it("should not move to done state, should throw error", () => {
-    expect(() => {
+  
+  describe("Backlog Item Tested State Tests", () => {  
+    beforeEach(() => {
+      backlogItem.setState(new BacklogTestedState(backlogItem));
+    });
+  
+    it("should move to to-do state ", () => {
+      backlogItem.toDo();
+      expect(backlogItem.getState().constructor.name).toBe("BacklogToDoState");
+    });
+  
+    it("should not move to doing state, should throw error", () => {
+      expect(() => {
+        backlogItem.doing();
+      }).toThrowError();
+    });
+  
+    it("should move to ready for testing state ", () => {
+      backlogItem.readyForTesting();
+      expect(backlogItem.getState().constructor.name).toBe(
+        "BacklogReadyForTestingState"
+      );
+    });
+  
+    it("should not move to testing state, should throw error", () => {
+      expect(() => {
+        backlogItem.testing();
+      }).toThrowError();
+    });
+  
+    it("should not move to tested state, should throw error", () => {
+      expect(() => {
+        backlogItem.tested();
+      }).toThrowError();
+    });
+  
+    it("should move to done state ", () => {
       backlogItem.done();
-    }).toThrowError();
+      expect(backlogItem.getState().constructor.name).toBe("BacklogDoneState");
+    });
+  });
+  
+  describe("Backlog Item Done State Tests", () => {
+    beforeEach(() => {
+      backlogItem.setState(new BacklogDoneState(backlogItem));
+    });
+  
+    it("should not move to to-do state, should throw error", () => {
+      expect(() => {
+        backlogItem.toDo();
+      }).toThrowError();
+    });
+  
+    it("should not move to doing state, should throw error", () => {
+      expect(() => {
+        backlogItem.doing();
+      }).toThrowError();
+    });
+  
+    it("should not move to ready for testing state, should throw error", () => {
+      expect(() => {
+        backlogItem.readyForTesting();
+      }).toThrowError();
+    });
+  
+    it("should not move to testing state, should throw error", () => {
+      expect(() => {
+        backlogItem.testing();
+      }).toThrowError();
+    });
+  
+    it("should not move to tested state, should throw error", () => {
+      expect(() => {
+        backlogItem.tested();
+      }).toThrowError();
+    });
+  
+    it("should not move to done state, should throw error", () => {
+      expect(() => {
+        backlogItem.done();
+      }).toThrowError();
+    });
   });
 });

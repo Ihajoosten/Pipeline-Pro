@@ -2,6 +2,7 @@ import { UserFactory } from "../src/factory-pattern/user-factory";
 import { ScrumRole } from "../src/models/enumerations";
 import { Notification } from "../src/models/notification.model";
 import { Pipeline } from "../src/models/pipeline.model";
+import { User } from "../src/models/user.model";
 import { IObserver } from "../src/observer-pattern/interfaces/IObserver";
 import { IPipelineState } from "../src/state-pattern/interface/IPipelineState";
 import { PipelineAnalyzeState } from "../src/state-pattern/states/pipeline-states/analyze.state";
@@ -13,26 +14,33 @@ import { PipelineSourceState } from "../src/state-pattern/states/pipeline-states
 import { PipelineTestState } from "../src/state-pattern/states/pipeline-states/test.state";
 import { IPipelineVisitor } from "../src/visitor-pattern/visitors/IPipelineVisitor";
 
-describe("Pipeline tests", () => {
+describe("Pipeline Tests", () => {
   let pipeline: Pipeline;
   const pipelineName = "pipeline";
-  const scrumMaster = new UserFactory().createUser(
-    "Erdem",
-    "Pekguzel",
-    "erdempekguzel@avans.nl",
-    "0697513489",
-    [],
-    ScrumRole.SCRUM_MASTER
-  );
-  const task1: any = { execute: jest.fn() };
-  const task2: any = { execute: jest.fn() };
-  const task3: any = { execute: jest.fn() };
-  const observer1 = { update: jest.fn() };
-  const observer2 = { update: jest.fn() };
-  const observer3 = { update: jest.fn() };
+  let scrumMaster: User;
+  let task1: any;
+  let task2: any;
+  let task3: any;
+  let observer1: any;
+  let observer2: any;
+  let observer3: any;
 
   beforeEach(() => {
     pipeline = new Pipeline(pipelineName, scrumMaster);
+    scrumMaster = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.SCRUM_MASTER
+    );
+    task1 = { execute: jest.fn() };
+    task2 = { execute: jest.fn() };
+    task3 = { execute: jest.fn() };
+    observer1 = { update: jest.fn() };
+    observer2 = { update: jest.fn() };
+    observer3 = { update: jest.fn() };
   });
 
   describe("addTask", () => {

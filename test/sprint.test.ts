@@ -19,6 +19,7 @@ describe("Sprint", () => {
   let backlogItem: BacklogItem;
   let pipeline: Pipeline;
 
+
   beforeEach(() => {
     scrumMaster = new UserFactory().createUser(
       "Luc",

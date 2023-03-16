@@ -23,45 +23,41 @@ export class TeamFactory {
   ): Team {
     const team = new Team(name);
 
-    console.warn("Paramater Developers" + developers);
-
     team.productOwner =
       productOwner &&
-      !TeamFactory.validate(
-        `${productOwner.getFirstName} ${productOwner.getLastName}`
-      )
+        !TeamFactory.validate(
+          `${productOwner.getFirstName} ${productOwner.getLastName}`
+        )
         ? productOwner
         : undefined;
     team.scrumMaster =
       scrumMaster &&
-      !TeamFactory.validate(
-        `${scrumMaster.getFirstName} ${scrumMaster.getLastName}`
-      )
+        !TeamFactory.validate(
+          `${scrumMaster.getFirstName} ${scrumMaster.getLastName}`
+        )
         ? scrumMaster
         : undefined;
     team.leadDevelopers =
       leadDevelopers &&
-      leadDevelopers.filter((d) => {
-        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
-      })
+        leadDevelopers.filter((d) => {
+          TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+        })
         ? leadDevelopers
         : undefined;
     team.developers =
       developers &&
-      developers.filter((d) => {
-        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
-      })
+        developers.filter((d) => {
+          TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+        })
         ? developers
         : undefined;
     team.testers =
       testers &&
-      testers.filter((d) => {
-        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
-      })
+        testers.filter((d) => {
+          TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+        })
         ? testers
         : undefined;
-
-    console.warn("Team Developers" + team.developers);
 
     return team;
   }

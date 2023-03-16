@@ -126,6 +126,7 @@ export class Sprint {
   public finish(user: User): void {
     this.checkRole(user.getRole());
     this._state.finish();
+    this._pipeline.execute();
   }
 
   public release(user: User): void {
@@ -143,21 +144,6 @@ export class Sprint {
     this._pipeline.execute();
     this._state.close();
   }
-
-  // public getSprintLength(): number {
-  //   const diffTime = Math.abs(
-  //     this._endDate.getTime() - this._startDate.getTime()
-  //   );
-  //   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  //   return diffDays;
-  // }
-
-  // public isOverlapping(sprint: Sprint): boolean {
-  //   return (
-  //     this._startDate < sprint.getEndDate() &&
-  //     this._endDate > sprint.getStartDate()
-  //   );
-  // }
 
   private checkRole(role: ScrumRole): void {
     if (role !== ScrumRole.SCRUM_MASTER) {

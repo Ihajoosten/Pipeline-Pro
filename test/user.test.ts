@@ -87,10 +87,6 @@ describe("User", () => {
 
   describe("removeNotificationPreference", () => {
     it("should remove a notification preference", () => {
-      console.warn(
-        "SHOULD HAVE EMPTY ARRAY: " + user.getNotificationPreferences()
-      );
-
       user.addNotificationPreference(
         NotificationType.EMAIL,
         "lhajoost@avans.nl"
@@ -100,18 +96,12 @@ describe("User", () => {
         "lhajoost@avans.nl"
       );
 
-      console.warn(
-        "SHOULD HAVE TWO ITEMS IN ARRAY: " + user.getNotificationPreferences()
-      );
       let notificationPreference = new NotificationPreference(
         NotificationType.EMAIL,
         "lhajoost@avans.nl"
       );
       user.removeNotificationPreference(notificationPreference);
 
-      console.warn(
-        "SHOULD HAVE ONE ITEM IN ARRAY: " + user.getNotificationPreferences()
-      );
       expect(user.getNotificationPreferences().length).toEqual(1);
     });
   });

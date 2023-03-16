@@ -9,11 +9,10 @@ export class SprintResult {
     private goal: string,
     private totalStoryPointsPlanned: number,
     private totalStoryPointsCompleted: number,
-    private sprintDuration: number,
     private percentageOfPlannedStoryPointsCompleted: number,
     private userStoriesCompleted: string[],
     private userStoriesNotCompleted: string[],
     private impediments: string[],
     private retrospectiveActions: string[]
-  ) { }
+  ) {}
 }

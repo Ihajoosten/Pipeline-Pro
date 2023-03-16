@@ -146,7 +146,7 @@ describe("Sprint", () => {
       expect(() => {
         sprint.addBacklogItem(developer, backlogItem);
       }).toThrowError();
-    })
+    });
   });
 
   describe("getBacklogItems", () => {
@@ -166,7 +166,7 @@ describe("Sprint", () => {
       expect(() => {
         sprint.removeBacklogItem(developer, backlogItem);
       }).toThrowError();
-    })
+    });
   });
 
   it("should update sprint with new details when sprint is in created state", () => {

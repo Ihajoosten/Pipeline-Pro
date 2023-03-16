@@ -102,7 +102,7 @@ describe("Pipeline Tests", () => {
   });
 
   describe("notify", () => {
-  const notification = new Notification(scrumMaster, "Test Notification");
+    const notification = new Notification(scrumMaster, "Test Notification");
     it("should notify all observers with the given notification", () => {
       pipeline.subscribe(observer1);
       pipeline.subscribe(observer2);
@@ -117,11 +117,11 @@ describe("Pipeline Tests", () => {
   describe("execute", () => {
     let mockVisitor: IPipelineVisitor;
     let mockNotification: Notification;
-    let mockObserver: IObserver;  
+    let mockObserver: IObserver;
     let mockTask: IPipelineState;
     let mockTask2: IPipelineState;
     let mockTask3: IPipelineState;
-  
+
     beforeEach(() => {
       mockVisitor = {
         visit: jest.fn(),
@@ -144,19 +144,20 @@ describe("Pipeline Tests", () => {
         }),
       } as unknown as IPipelineState;
     });
-  
+
     it("should execute tasks and notify observers if visitor is defined", () => {
       pipeline.addTask(mockTask);
       pipeline.addTask(mockTask2);
       pipeline.setVisitor(mockVisitor);
       pipeline.subscribe(mockObserver);
       pipeline.execute();
-      mockNotification["message"] = "Pipeline tasks were successfully executed!";
+      mockNotification["message"] =
+        "Pipeline tasks were successfully executed!";
       expect(mockTask.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
       expect(mockTask2.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
     });
-  
+
     it("should notify observers if there is an error during task execution", () => {
       pipeline.addTask(mockTask3);
       pipeline.setVisitor(mockVisitor);
@@ -166,8 +167,8 @@ describe("Pipeline Tests", () => {
         "There was an error during one of the pipeline tasks!";
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
     });
-  
-    it("should not execute tasks or notify observers if visitor is undefined", () => {  
+
+    it("should not execute tasks or notify observers if visitor is undefined", () => {
       pipeline.addTask(mockTask3);
       pipeline.subscribe(mockObserver);
       pipeline.execute();
@@ -177,279 +178,291 @@ describe("Pipeline Tests", () => {
   });
 
   describe("Pipeline Source State Tests", () => {
-    beforeEach(() => {  
+    beforeEach(() => {
       pipeline.setState(new PipelineSourceState(pipeline));
     });
-  
+
     it("should not move to Source state, should throw error", () => {
       expect(() => {
         pipeline.moveToSource();
       }).toThrowError();
     });
-  
+
     it("should not move to Build state, should throw error", () => {
       expect(() => {
         pipeline.moveToBuild();
       }).toThrowError();
     });
-  
+
     it("should not move to Test state, should throw error", () => {
       expect(() => {
         pipeline.moveToTest();
       }).toThrowError();
     });
-  
+
     it("should not move to Analyze state, should throw error", () => {
       expect(() => {
         pipeline.moveToAnalyze();
       }).toThrowError();
     });
-  
+
     it("should not move to Deploy state, should throw error", () => {
       expect(() => {
         pipeline.moveToDeploy();
       }).toThrowError();
     });
-  
+
     it("should move to Package state ", () => {
       pipeline.moveToPackage();
       expect(pipeline.getState().constructor.name).toBe("PipelinePackageState");
     });
-  
+
     it("should move to Cancel state ", () => {
       pipeline.moveToCancel();
-      expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+      expect(pipeline.getState().constructor.name).toBe(
+        "PipelineCancelledState"
+      );
     });
   });
 
   describe("Pipeline Package State Tests", () => {
-    beforeEach(() => {  
+    beforeEach(() => {
       pipeline.setState(new PipelinePackageState(pipeline));
     });
-  
+
     it("should not move to Source state, should throw error", () => {
       expect(() => {
         pipeline.moveToSource();
       }).toThrowError();
     });
-  
+
     it("should not move to Package state, should throw error", () => {
       expect(() => {
         pipeline.moveToPackage();
       }).toThrowError();
     });
-  
+
     it("should not move to Test state, should throw error", () => {
       expect(() => {
         pipeline.moveToTest();
       }).toThrowError();
     });
-  
+
     it("should not move to Analyze state, should throw error", () => {
       expect(() => {
         pipeline.moveToAnalyze();
       }).toThrowError();
     });
-  
+
     it("should not move to Deploy state, should throw error", () => {
       expect(() => {
         pipeline.moveToDeploy();
       }).toThrowError();
     });
-  
+
     it("should move to Build state ", () => {
       pipeline.moveToBuild();
       expect(pipeline.getState().constructor.name).toBe("PipelineBuildState");
     });
-  
+
     it("should move to Cancel state ", () => {
       pipeline.moveToCancel();
-      expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+      expect(pipeline.getState().constructor.name).toBe(
+        "PipelineCancelledState"
+      );
     });
   });
 
   describe("Pipeline Build State Tests", () => {
-    beforeEach(() => {  
+    beforeEach(() => {
       pipeline.setState(new PipelineBuildState(pipeline));
     });
-  
+
     it("should not move to Source state, should throw error", () => {
       expect(() => {
         pipeline.moveToSource();
       }).toThrowError();
     });
-  
+
     it("should not move to Package state, should throw error", () => {
       expect(() => {
         pipeline.moveToPackage();
       }).toThrowError();
     });
-  
+
     it("should not move to Build state, should throw error", () => {
       expect(() => {
         pipeline.moveToBuild();
       }).toThrowError();
     });
-  
+
     it("should not move to Analyze state, should throw error", () => {
       expect(() => {
         pipeline.moveToAnalyze();
       }).toThrowError();
     });
-  
+
     it("should not move to Deploy state, should throw error", () => {
       expect(() => {
         pipeline.moveToDeploy();
       }).toThrowError();
     });
-  
+
     it("should move to Test state ", () => {
       pipeline.moveToTest();
       expect(pipeline.getState().constructor.name).toBe("PipelineTestState");
     });
-  
+
     it("should move to Cancel state ", () => {
       pipeline.moveToCancel();
-      expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+      expect(pipeline.getState().constructor.name).toBe(
+        "PipelineCancelledState"
+      );
     });
   });
 
-  describe("Pipeline Test State Tests", () => {  
+  describe("Pipeline Test State Tests", () => {
     beforeEach(() => {
       pipeline.setState(new PipelineTestState(pipeline));
     });
-  
+
     it("should not move to Source state, should throw error", () => {
       expect(() => {
         pipeline.moveToSource();
       }).toThrowError();
     });
-  
+
     it("should not move to Package state, should throw error", () => {
       expect(() => {
         pipeline.moveToPackage();
       }).toThrowError();
     });
-  
+
     it("should not move to Build state, should throw error", () => {
       expect(() => {
         pipeline.moveToBuild();
       }).toThrowError();
     });
-  
+
     it("should not move to Test state, should throw error", () => {
       expect(() => {
         pipeline.moveToTest();
       }).toThrowError();
     });
-  
+
     it("should not move to Deploy state, should throw error", () => {
       expect(() => {
         pipeline.moveToDeploy();
       }).toThrowError();
     });
-  
+
     it("should move to Analyze state ", () => {
       pipeline.moveToAnalyze();
       expect(pipeline.getState().constructor.name).toBe("PipelineAnalyzeState");
     });
-  
+
     it("should move to Cancel state ", () => {
       pipeline.moveToCancel();
-      expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+      expect(pipeline.getState().constructor.name).toBe(
+        "PipelineCancelledState"
+      );
     });
   });
 
-  describe("Pipeline Analyze State Tests", () => {  
+  describe("Pipeline Analyze State Tests", () => {
     beforeEach(() => {
       pipeline.setState(new PipelineAnalyzeState(pipeline));
     });
-  
+
     it("should not move to Source state, should throw error", () => {
       expect(() => {
         pipeline.moveToSource();
       }).toThrowError();
     });
-  
+
     it("should not move to Package state, should throw error", () => {
       expect(() => {
         pipeline.moveToPackage();
       }).toThrowError();
     });
-  
+
     it("should not move to Build state, should throw error", () => {
       expect(() => {
         pipeline.moveToBuild();
       }).toThrowError();
     });
-  
+
     it("should not move to Test state, should throw error", () => {
       expect(() => {
         pipeline.moveToTest();
       }).toThrowError();
     });
-  
+
     it("should not move to Analyze state, should throw error", () => {
       expect(() => {
         pipeline.moveToAnalyze();
       }).toThrowError();
     });
-  
+
     it("should move to Deploy state ", () => {
       pipeline.moveToDeploy();
       expect(pipeline.getState().constructor.name).toBe("PipelineDeployState");
     });
-  
+
     it("should move to Cancel state ", () => {
       pipeline.moveToCancel();
-      expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+      expect(pipeline.getState().constructor.name).toBe(
+        "PipelineCancelledState"
+      );
     });
   });
 
-  describe("Pipeline Deploy State Tests", () => {  
+  describe("Pipeline Deploy State Tests", () => {
     beforeEach(() => {
       pipeline.setState(new PipelineDeployState(pipeline));
     });
-  
+
     it("should not move to Source state, should throw error", () => {
       expect(() => {
         pipeline.moveToSource();
       }).toThrowError();
     });
-  
+
     it("should not move to Package state, should throw error", () => {
       expect(() => {
         pipeline.moveToPackage();
       }).toThrowError();
     });
-  
+
     it("should not move to Build state, should throw error", () => {
       expect(() => {
         pipeline.moveToBuild();
       }).toThrowError();
     });
-  
+
     it("should not move to Test state, should throw error", () => {
       expect(() => {
         pipeline.moveToTest();
       }).toThrowError();
     });
-  
+
     it("should not move to Analyze state, should throw error", () => {
       expect(() => {
         pipeline.moveToAnalyze();
       }).toThrowError();
     });
-  
+
     it("should not move to Deploy state, should throw error", () => {
       expect(() => {
         pipeline.moveToDeploy();
       }).toThrowError();
     });
-  
+
     it("should move to Cancel state ", () => {
       pipeline.moveToCancel();
-      expect(pipeline.getState().constructor.name).toBe("PipelineCancelledState");
+      expect(pipeline.getState().constructor.name).toBe(
+        "PipelineCancelledState"
+      );
     });
   });
 
@@ -457,42 +470,42 @@ describe("Pipeline Tests", () => {
     beforeEach(() => {
       pipeline.setState(new PipelineCancelledState(pipeline));
     });
-  
+
     it("should move to Source state ", () => {
       pipeline.moveToSource();
       expect(pipeline.getState().constructor.name).toBe("PipelineSourceState");
     });
-  
+
     it("should not move to Package state, should throw error", () => {
       expect(() => {
         pipeline.moveToPackage();
       }).toThrowError();
     });
-  
+
     it("should not move to Build state, should throw error", () => {
       expect(() => {
         pipeline.moveToBuild();
       }).toThrowError();
     });
-  
+
     it("should not move to Test state, should throw error", () => {
       expect(() => {
         pipeline.moveToTest();
       }).toThrowError();
     });
-  
+
     it("should not move to Analyze state, should throw error", () => {
       expect(() => {
         pipeline.moveToAnalyze();
       }).toThrowError();
     });
-  
+
     it("should not move to Deploy state, should throw error", () => {
       expect(() => {
         pipeline.moveToDeploy();
       }).toThrowError();
     });
-  
+
     it("should not move to Cancel state, should throw error", () => {
       expect(() => {
         pipeline.moveToCancel();

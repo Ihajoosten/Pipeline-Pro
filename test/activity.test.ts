@@ -10,5 +10,5 @@ describe("Activity Tests", () => {
     it("should set a (lead)developer", () => {
         activity.setDeveloper(user);
         expect(activity.getDeveloper()).toBe(user);
-    })
+    });
 })

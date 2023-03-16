@@ -16,7 +16,7 @@ describe("Sprint", () => {
   let productOwner: User;
   let developer: User;
   let leadDeveloper: User;
-  let backlogItem: Omit<BacklogItem, "scrumMaster">;
+  let backlogItem: BacklogItem;
   let pipeline: Pipeline;
 
   beforeEach(() => {
@@ -164,7 +164,7 @@ describe("Sprint", () => {
 
     it("should not remove a backlog item and throw an error if the user is not a lead developer", () => {
       expect(() => {
-        sprint.addBacklogItem(developer, backlogItem);
+        sprint.removeBacklogItem(developer, backlogItem);
       }).toThrowError();
     })
   });

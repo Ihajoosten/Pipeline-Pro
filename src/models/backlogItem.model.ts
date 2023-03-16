@@ -56,15 +56,12 @@ export class BacklogItem implements ISubject {
     this.developer = undefined;
   }
 
-  public setTester(user: User, tester: User) {
-    if (
-      (this.getState() instanceof BacklogReadyForTestingState &&
-        user.getRole() == ScrumRole.DEVELOPER) ||
-      (user.getRole() == ScrumRole.LEAD_DEVELOPER &&
-        tester.getRole() == ScrumRole.TESTER)
-    ) {
-      this.tester = tester;
-    } else console.warn("Backlog item is not ready for testing");
+  public setTester(user: User) {
+    if (user.getRole() == ScrumRole.TESTER) {
+      this.tester = user;
+    } else {
+      throw new Error("Backlog item is not ready for testing");
+    }
   }
 
   public getTester(): User | undefined {

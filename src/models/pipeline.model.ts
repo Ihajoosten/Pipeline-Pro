@@ -3,8 +3,9 @@ import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../state-pattern/states/pipeline-states/source.state";
 import { IPipelineVisitor } from "../visitor-pattern/visitors/IPipelineVisitor";
+import { ScrumRole } from "./enumerations";
 import { Notification } from "./notification.model";
-import { User } from "./user.model";
+import { LeadDeveloper, User } from "./user.model";
 
 export class Pipeline implements ISubject {
   private state: IPipelineState = new PipelineSourceState(this);
@@ -12,8 +13,7 @@ export class Pipeline implements ISubject {
   private observers: IObserver[] = [];
   private visitor?: IPipelineVisitor;
 
-  constructor(private name: string, private scrumMaster: User) {
-    // Controleren op scrumMaster rol?
+  constructor(private name: string, private user: User) {
   }
 
   public getName(): string {
@@ -47,7 +47,7 @@ export class Pipeline implements ISubject {
         });
         const notificationMessage = `Pipeline tasks were successfully executed!`;
         const notification = new Notification(
-          this.scrumMaster,
+          this.user,
           notificationMessage
         );
         this.notify(notification);
@@ -55,7 +55,7 @@ export class Pipeline implements ISubject {
     } catch (error) {
       const notificationMessage = `There was an error during one of the pipeline tasks!`;
       const notification = new Notification(
-        this.scrumMaster,
+        this.user,
         notificationMessage
       );
       this.notify(notification);

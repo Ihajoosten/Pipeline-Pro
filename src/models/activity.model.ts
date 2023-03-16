@@ -8,8 +8,8 @@ export class Activity {
 
   public setDeveloper(user: User) {
     if (
-      user.role == ScrumRole.DEVELOPER ||
-      user.role == ScrumRole.LEAD_DEVELOPER
+      user.getRole() == ScrumRole.DEVELOPER ||
+      user.getRole() == ScrumRole.LEAD_DEVELOPER
     ) {
       this.developer = user;
     }

@@ -72,7 +72,6 @@ describe("Sprint", () => {
       ],
       ScrumRole.LEAD_DEVELOPER
     );
-
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
@@ -142,6 +141,12 @@ describe("Sprint", () => {
         backlogItem.description
       );
     });
+
+    it("should not add a new backlog item and throw an error if the user is not a lead developer", () => {
+      expect(() => {
+        sprint.addBacklogItem(developer, backlogItem);
+      }).toThrowError();
+    })
   });
 
   describe("getBacklogItems", () => {
@@ -156,6 +161,12 @@ describe("Sprint", () => {
       sprint.removeBacklogItem(leadDeveloper, sprint.getBacklogItems()[0]);
       expect(sprint.getBacklogItems().length).toBe(0);
     });
+
+    it("should not remove a backlog item and throw an error if the user is not a lead developer", () => {
+      expect(() => {
+        sprint.addBacklogItem(developer, backlogItem);
+      }).toThrowError();
+    })
   });
 
   it("should update sprint with new details when sprint is in created state", () => {

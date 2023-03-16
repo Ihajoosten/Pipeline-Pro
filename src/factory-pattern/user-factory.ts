@@ -85,8 +85,6 @@ export class UserFactory {
           notificationPreference,
           role
         );
-      default:
-        throw new Error(`Invalid role: ${role}`);
     }
   }
 

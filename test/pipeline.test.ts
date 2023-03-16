@@ -157,7 +157,7 @@ describe("Pipeline Tests", () => {
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
     });
   
-    it.only("should notify observers if there is an error during task execution", () => {
+    it("should notify observers if there is an error during task execution", () => {
       pipeline.addTask(mockTask3);
       pipeline.setVisitor(mockVisitor);
       pipeline.subscribe(mockObserver);

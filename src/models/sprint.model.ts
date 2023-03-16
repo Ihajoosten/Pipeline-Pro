@@ -57,26 +57,9 @@ export class Sprint {
     return this._scrumMaster;
   }
 
-  // public addBacklogItem(partialBacklogItem: Omit<BacklogItem, "scrumMaster">) {
-  //   const backlogItem = new BacklogItem(
-  //     partialBacklogItem.id,
-  //     partialBacklogItem.name,
-  //     partialBacklogItem.description,
-  //     this._scrumMaster
-  //   );
-  //   this._backlogItems.push(backlogItem);
-  // }
-
   public getBacklogItems(): BacklogItem[] {
     return this._backlogItems;
   }
-
-  // public removeBacklogItem(backlogItem: BacklogItem) {
-  //   const index = this._backlogItems.indexOf(backlogItem);
-  //   if (index !== -1) {
-  //     this._backlogItems.splice(index, 1);
-  //   }
-  // }
 
   public addBacklogItem(
     user: User,
@@ -161,20 +144,20 @@ export class Sprint {
     this._state.close();
   }
 
-  public getSprintLength(): number {
-    const diffTime = Math.abs(
-      this._endDate.getTime() - this._startDate.getTime()
-    );
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  }
+  // public getSprintLength(): number {
+  //   const diffTime = Math.abs(
+  //     this._endDate.getTime() - this._startDate.getTime()
+  //   );
+  //   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  //   return diffDays;
+  // }
 
-  public isOverlapping(sprint: Sprint): boolean {
-    return (
-      this._startDate < sprint.getEndDate() &&
-      this._endDate > sprint.getStartDate()
-    );
-  }
+  // public isOverlapping(sprint: Sprint): boolean {
+  //   return (
+  //     this._startDate < sprint.getEndDate() &&
+  //     this._endDate > sprint.getStartDate()
+  //   );
+  // }
 
   private checkRole(role: ScrumRole): void {
     if (role !== ScrumRole.SCRUM_MASTER) {

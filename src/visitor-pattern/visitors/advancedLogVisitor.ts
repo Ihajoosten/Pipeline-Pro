@@ -2,19 +2,25 @@ import { IPipelineState } from "../../state-pattern/interface/IPipelineState";
 import { IPipelineVisitor } from "./IPipelineVisitor";
 
 export class AdvancedLogVisitor implements IPipelineVisitor {
-  private message: string = "";
+  private message = "";
+  private logCSS = [
+    "font-size: 50px",
+    "background-color: black",
+    "color: white",
+  ].join(" ;");
 
   visit(pipelineStage: IPipelineState): void {
-    this.log(
-      `Stage: ${pipelineStage.getName()}: ${pipelineStage.getAction()} - ${new Date(
-        Date.now()
-      )}`
-    );
+    this.log(`Currently processing the following action: ${pipelineStage.getAction()} in the ${pipelineStage.getName()}!`);
   }
 
   public log(message: string) {
     this.message = message;
-    console.log(this.message);
+    console.log(`
+    ╔═╗╔╦╗╦  ╦╔═╗╔╗╔╔═╗╔═╗╔╦╗  ╦  ╔═╗╔═╗╔═╗╔═╗╦═╗
+    ╠═╣ ║║╚╗╔╝╠═╣║║║║  ║╣  ║║  ║  ║ ║║ ╦║ ╦║╣ ╠╦╝
+    ╩ ╩═╩╝ ╚╝ ╩ ╩╝╚╝╚═╝╚═╝═╩╝  ╩═╝╚═╝╚═╝╚═╝╚═╝╩╚═                                                                                                                   
+    `)
+    console.log(`%c ${message}`, this.logCSS);
   }
 
   public getLog(): string {

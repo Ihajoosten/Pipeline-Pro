@@ -5,7 +5,7 @@ export class SimpleLogVisitor implements IPipelineVisitor {
   private message: string = "";
 
   visit(pipelineStage: IPipelineState): void {
-    this.log(`Stage: ${pipelineStage.getName()}`);
+    this.log(`${pipelineStage.getName()}: ${pipelineStage.getAction()}`);
   }
 
   public log(message: string): void {

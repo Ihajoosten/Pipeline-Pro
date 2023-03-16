@@ -26,7 +26,6 @@ describe("Pipeline Tests", () => {
   let observer3: any;
 
   beforeEach(() => {
-    pipeline = new Pipeline(pipelineName, scrumMaster);
     scrumMaster = new UserFactory().createUser(
       "Erdem",
       "Pekguzel",
@@ -35,6 +34,7 @@ describe("Pipeline Tests", () => {
       [],
       ScrumRole.SCRUM_MASTER
     );
+    pipeline = new Pipeline(pipelineName, scrumMaster);
     task1 = { execute: jest.fn() };
     task2 = { execute: jest.fn() };
     task3 = { execute: jest.fn() };

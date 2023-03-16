@@ -15,7 +15,7 @@ export class BacklogItem implements ISubject {
   private state: IBacklogItemState;
   private developer?: User;
   private tester?: User;
-  private activities: Activity[] = [];
+  private activities: Array<Activity> = [];
   private thread?: Thread;
 
   constructor(
@@ -87,6 +87,8 @@ export class BacklogItem implements ISubject {
     if (this.thread) {
       throw new Error("Thread already exists!");
     }
+
+    if (this.state instanceof BacklogDoneState) throw new Error('Cannot add new messages, the item is already finished');
     this.thread = thread;
   }
 
@@ -146,6 +148,11 @@ export class BacklogItem implements ISubject {
 
   public done(): void {
     // Check if all activities are done
+    let allDone: boolean = true
+    this.activities.forEach(act => {
+      if (!act.isDone) allDone = false;
+    });
+    if (!allDone) { throw new Error('Not all activites are done for this backlog item') }
     this.state.done();
   }
 

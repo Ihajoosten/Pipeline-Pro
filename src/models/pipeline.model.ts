@@ -12,7 +12,7 @@ export class Pipeline implements ISubject {
   private observers: IObserver[] = [];
   private visitor?: IPipelineVisitor;
 
-  constructor(private name: string, private scrumMaster: User) { }
+  constructor(private name: string, private scrumMaster: User) {}
 
   public getName(): string {
     return this.name;

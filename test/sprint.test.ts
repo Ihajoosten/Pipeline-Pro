@@ -93,7 +93,14 @@ describe("Sprint", () => {
   describe("constructor", () => {
     it("should throw an error if the scrum master is not valid", () => {
       expect(() => {
-        new Sprint(112, "Sprint 1", new Date(), new Date(), productOwner, pipeline);
+        new Sprint(
+          112,
+          "Sprint 1",
+          new Date(),
+          new Date(),
+          productOwner,
+          pipeline
+        );
       }).toThrowError("Invalid scrum master!");
     });
 

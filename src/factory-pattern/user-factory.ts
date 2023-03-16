@@ -41,15 +41,50 @@ export class UserFactory {
 
     switch (role) {
       case ScrumRole.PRODUCT_OWNER:
-        return new ProductOwner(firstName, lastName, email, phoneNumber, notificationPreference, role);
+        return new ProductOwner(
+          firstName,
+          lastName,
+          email,
+          phoneNumber,
+          notificationPreference,
+          role
+        );
       case ScrumRole.SCRUM_MASTER:
-        return new ScrumMaster(firstName, lastName, email, phoneNumber, notificationPreference, role);
+        return new ScrumMaster(
+          firstName,
+          lastName,
+          email,
+          phoneNumber,
+          notificationPreference,
+          role
+        );
       case ScrumRole.DEVELOPER:
-        return new Developer(firstName, lastName, email, phoneNumber, notificationPreference, role);
+        return new Developer(
+          firstName,
+          lastName,
+          email,
+          phoneNumber,
+          notificationPreference,
+          role
+        );
       case ScrumRole.LEAD_DEVELOPER:
-        return new LeadDeveloper(firstName, lastName, email, phoneNumber, notificationPreference, role);
+        return new LeadDeveloper(
+          firstName,
+          lastName,
+          email,
+          phoneNumber,
+          notificationPreference,
+          role
+        );
       case ScrumRole.TESTER:
-        return new Tester(firstName, lastName, email, phoneNumber, notificationPreference, role);
+        return new Tester(
+          firstName,
+          lastName,
+          email,
+          phoneNumber,
+          notificationPreference,
+          role
+        );
       default:
         throw new Error(`Invalid role: ${role}`);
     }

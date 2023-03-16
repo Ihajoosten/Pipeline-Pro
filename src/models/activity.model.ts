@@ -4,7 +4,7 @@ import { User } from "./user.model";
 export class Activity {
   private developer?: User;
 
-  public constructor(public name: string, public description: string) { }
+  public constructor(public name: string, public description: string) {}
 
   public setDeveloper(user: User) {
     if (

@@ -15,7 +15,7 @@ export abstract class User {
     email: string,
     phoneNumber: string,
     notificationPreference: Array<NotificationPreference>,
-    role: ScrumRole,
+    role: ScrumRole
   ) {
     this._firstName = firstName;
     this._lastName = lastName;
@@ -69,12 +69,14 @@ export abstract class User {
     notificationType: NotificationType,
     address: string
   ) {
-    let preference = new NotificationPreference(notificationType, address)
+    let preference = new NotificationPreference(notificationType, address);
     this._notificationPreference.push(preference);
   }
 
-  public removeNotificationPreference(notificationPreference: NotificationPreference) {
-    const index = this._notificationPreference.findIndex(preference =>
+  public removeNotificationPreference(
+    notificationPreference: NotificationPreference
+  ) {
+    const index = this._notificationPreference.findIndex((preference) =>
       preference.equals(notificationPreference)
     );
     if (index !== -1) {
@@ -148,4 +150,3 @@ export class Tester extends User {
   }
 }
 export { NotificationPreference };
-

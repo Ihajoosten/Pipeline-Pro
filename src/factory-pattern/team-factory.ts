@@ -1,49 +1,72 @@
-// import { User } from "../models/user/user.model";
-// import { Team } from "../models/team.model";
-// import { UserFactory } from "./user-factory";
+import RE2 from "re2";
+import { RegEx } from "../models/enumerations";
+import { Team } from "../models/team.model";
+import {
+  Developer,
+  LeadDeveloper,
+  ProductOwner,
+  ScrumMaster,
+  Tester,
+} from "../models/user.model";
 
-// // TeamFactory class
-// export class TeamFactory {
-//   static createTeam(
-//     teamName: string,
-//     roles: string[],
-//     numMembers: number
-//   ): Team {
-//     let users: User[] = [];
-//     for (let i = 0; i < numMembers; i++) {
-//       const role = roles[i % roles.length];
-//       users.push(
-//         UserFactory.createUser(`User ${i}`, `user${i}@example.com`, role)
-//       );
-//     }
-//     return new Team(teamName);
-//   }
+const regNames = new RE2(RegEx.TEAM_NAMES);
 
-//   // static createTeamWithDefaultName(userRoles: string[], numMembers: number): Team {
-//   //   const users = userRoles.map((role) => UserFactory.createUser(role));
-//   //   const team = new Team(`Team ${uuidv4()}`, users.slice(0, numMembers));
-//   //   return team;
-//   // }
+// TeamFactory class
+export class TeamFactory {
+  public static createTeam(
+    name: string,
+    productOwner?: ProductOwner,
+    scrumMaster?: ScrumMaster,
+    leadDevelopers?: LeadDeveloper[],
+    developers?: Developer[],
+    testers?: Tester[]
+  ): Team {
+    const team = new Team(name);
 
-//   // static createTeamWithDevelopers(numMembers: number): Team {
-//   //   const users = Array.from({ length: numMembers }, () => UserFactory.createUser("Developer"));
-//   //   const team = new Team(`Team ${uuidv4()}`, users);
-//   //   return team;
-//   // }
+    console.warn("Paramater Developers" + developers);
 
-//   // static createTeamWithLeadDeveloper(numMembers: number): Team {
-//   //   const lead = UserFactory.createUser("LeadDeveloper");
-//   //   const developers = Array.from({ length: numMembers - 1 }, () => UserFactory.createUser("Developer"));
-//   //   const users = [lead, ...developers];
-//   //   const team = new Team(`Team ${uuidv4()}`, users);
-//   //   return team;
-//   // }
+    team.productOwner =
+      productOwner &&
+      !TeamFactory.validate(
+        `${productOwner.getFirstName} ${productOwner.getLastName}`
+      )
+        ? productOwner
+        : undefined;
+    team.scrumMaster =
+      scrumMaster &&
+      !TeamFactory.validate(
+        `${scrumMaster.getFirstName} ${scrumMaster.getLastName}`
+      )
+        ? scrumMaster
+        : undefined;
+    team.leadDevelopers =
+      leadDevelopers &&
+      leadDevelopers.filter((d) => {
+        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+      })
+        ? leadDevelopers
+        : undefined;
+    team.developers =
+      developers &&
+      developers.filter((d) => {
+        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+      })
+        ? developers
+        : undefined;
+    team.testers =
+      testers &&
+      testers.filter((d) => {
+        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+      })
+        ? testers
+        : undefined;
 
-//   // static createTeamWithScrumMaster(numMembers: number): Team {
-//   //   const scrumMaster = UserFactory.createUser("ScrumMaster");
-//   //   const developers = Array.from({ length: numMembers - 1 }, () => UserFactory.createUser("Developer"));
-//   //   const users = [scrumMaster, ...developers];
-//   //   const team = new Team(`Team ${uuidv4()}`, users);
-//   //   return team;
-//   // }
-// }
+    console.warn("Team Developers" + team.developers);
+
+    return team;
+  }
+
+  private static validate(name: string): boolean {
+    return regNames.test(name);
+  }
+}

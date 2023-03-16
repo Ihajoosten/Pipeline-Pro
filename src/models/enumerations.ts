@@ -24,4 +24,5 @@ export enum RegEx {
   EMAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$",
   PHONE_NUMBER = "^\\+?[0-9]{6,14}$",
   NAME = "^[a-zA-Z]{2,}$",
+  TEAM_NAMES = "^[a-zA-Z0-9s]{1,50}$/",
 }

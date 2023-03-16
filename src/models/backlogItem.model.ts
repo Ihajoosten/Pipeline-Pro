@@ -60,7 +60,8 @@ export class BacklogItem implements ISubject {
     if (
       (this.getState() instanceof BacklogReadyForTestingState &&
         user.getRole() == ScrumRole.DEVELOPER) ||
-      (user.getRole() == ScrumRole.LEAD_DEVELOPER && tester.getRole() == ScrumRole.TESTER)
+      (user.getRole() == ScrumRole.LEAD_DEVELOPER &&
+        tester.getRole() == ScrumRole.TESTER)
     ) {
       this.tester = tester;
     } else console.warn("Backlog item is not ready for testing");

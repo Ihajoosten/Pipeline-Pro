@@ -178,7 +178,12 @@ describe("Backlog Item Doing State Tests", () => {
       "Joosten",
       "lucjoosten@gmail.com",
       "0634978124",
-      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      [
+        new NotificationPreference(
+          NotificationType.SLACK,
+          "lucjoosten@gmail.com"
+        ),
+      ],
       ScrumRole.SCRUM_MASTER
     );
     backlogItem = new BacklogItem(
@@ -237,7 +242,12 @@ describe("Backlog Item ReadyForTesting State Tests", () => {
       "Joosten",
       "lucjoosten@gmail.com",
       "0634978124",
-      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      [
+        new NotificationPreference(
+          NotificationType.SLACK,
+          "lucjoosten@gmail.com"
+        ),
+      ],
       ScrumRole.SCRUM_MASTER
     );
 
@@ -294,7 +304,12 @@ describe("Backlog Item Testing State Tests", () => {
       "Joosten",
       "lucjoosten@gmail.com",
       "0634978124",
-      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      [
+        new NotificationPreference(
+          NotificationType.SLACK,
+          "lucjoosten@gmail.com"
+        ),
+      ],
       ScrumRole.SCRUM_MASTER
     );
 
@@ -353,7 +368,12 @@ describe("Backlog Item Tested State Tests", () => {
       "Joosten",
       "lucjoosten@gmail.com",
       "0634978124",
-      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      [
+        new NotificationPreference(
+          NotificationType.SLACK,
+          "lucjoosten@gmail.com"
+        ),
+      ],
       ScrumRole.SCRUM_MASTER
     );
 
@@ -412,7 +432,12 @@ describe("Backlog Item Done State Tests", () => {
       "Joosten",
       "lucjoosten@gmail.com",
       "0634978124",
-      [new NotificationPreference(NotificationType.SLACK, "lucjoosten@gmail.com")],
+      [
+        new NotificationPreference(
+          NotificationType.SLACK,
+          "lucjoosten@gmail.com"
+        ),
+      ],
       ScrumRole.SCRUM_MASTER
     );
 

@@ -69,7 +69,8 @@ describe("Pipeline Tests", () => {
   describe("setVisitor", () => {
     const mockVisitor: IPipelineVisitor = {
       visit: jest.fn(),
-      log: jest.fn()
+      log: jest.fn(),
+      getLog: jest.fn(),
     };
     it("should set the visitor of the pipeline", () => {
       pipeline.setVisitor(mockVisitor);
@@ -124,7 +125,8 @@ describe("Pipeline Tests", () => {
     beforeEach(() => {
       mockVisitor = {
         visit: jest.fn(),
-        log: jest.fn()
+        log: jest.fn(),
+        getLog: jest.fn(),
       };
       mockNotification = new Notification(scrumMaster, "test notification");
       mockObserver = {

@@ -45,25 +45,18 @@ export class Project {
       this._scrumMaster.getRole() === ScrumRole.SCRUM_MASTER
     ) {
       this._sprints.push(sprint);
-      console.log(`Added sprint ${sprint.getName()} to ${this._name}`);
+      console.log(`Added sprint ${sprint._name} to ${this._name}`);
     } else {
       console.log(`There is no scrum master assigned to ${this._name}`);
     }
   }
-  public removeSprint(sprintId: number, currentUser: User) {
+  public removeSprint(sprint: Sprint, currentUser: User): void {
     if (currentUser instanceof ScrumMaster) {
       throw new Error("Only the Scrum Master can remove a sprint");
     }
-
-    const sprintIndex = this._sprints.findIndex(
-      (sprint) => sprint.getId() === sprintId
-    );
-    if (sprintIndex === -1) {
-      throw new Error("Sprint not found in the project");
+    const index = this._sprints.indexOf(sprint);
+    if (index !== -1) {
+      this._sprints.splice(index, 1);
     }
-
-    const removedSprint = this._sprints.splice(sprintIndex, 1)[0];
-
-    return removedSprint;
   }
 }

@@ -12,8 +12,15 @@ export class Pipeline implements ISubject {
   private tasks: IPipelineState[] = [];
   private observers: IObserver[] = [];
   private visitor?: IPipelineVisitor;
+  private isExecuting: boolean = false;
 
-  constructor(private name: string, private user: User) {
+  constructor(private name: string, private productOwner: User, private scrumMaster: User) {
+    if (this.productOwner.getRole() !== ScrumRole.PRODUCT_OWNER) {
+      throw new Error("Invalid product owner!")
+    }
+    if (this.scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER) {
+      throw new Error("Invalid scrum master!")
+    }
   }
 
   public getName(): string {
@@ -41,25 +48,34 @@ export class Pipeline implements ISubject {
 
   public execute(): void {
     try {
+      this.isExecuting = true;
       if (this.visitor) {
         this.tasks.forEach((task) => {
           task.acceptVisitor(this.visitor!);
         });
         const notificationMessage = `Pipeline tasks were successfully executed!`;
-        const notification = new Notification(
-          this.user,
+        this.notify(new Notification(
+          this.productOwner,
           notificationMessage
-        );
-        this.notify(notification);
+        ));
+        this.notify(new Notification(
+          this.scrumMaster,
+          notificationMessage
+        ));
       }
     } catch (error) {
+      this.isExecuting = false;
       const notificationMessage = `There was an error during one of the pipeline tasks!`;
-      const notification = new Notification(
-        this.user,
+      this.notify(new Notification(
+        this.scrumMaster,
         notificationMessage
-      );
-      this.notify(notification);
+      ));
     }
+    this.isExecuting = false;
+  }
+
+  public isRunning(): boolean {
+    return this.isExecuting;
   }
 
   public getState(): IPipelineState {

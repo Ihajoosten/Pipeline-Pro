@@ -5,52 +5,48 @@ import { SprintCreatedState } from "../state-pattern/states/sprint-states/create
 import { SprintActiveState } from "../state-pattern/states/sprint-states/active.state";
 import { Pipeline } from "./pipeline.model";
 import { ScrumRole } from "./enumerations";
+import { BacklogDoneState } from "../state-pattern/states/backlog-states/done.state";
+import { ISubject } from "../observer-pattern/interfaces/ISubject";
+import { IObserver } from "../observer-pattern/interfaces/IObserver";
+import { Notification } from "./notification.model";
 
-export class Sprint {
-  private _id: number;
-  private _name: string;
-  private _startDate: Date;
-  private _endDate: Date;
+export class Sprint implements ISubject {
+  public _name: string;
+  public _startDate: Date;
+  public _endDate: Date;
+  private _createdBy: User;
+  private _createdAt: Date;
+  private _productOwner: User;
   private _scrumMaster: User;
-  private _backlogItems: Array<BacklogItem>;
-  private _state: ISprintState;
   private _pipeline: Pipeline;
+  private _backlogItems: Array<BacklogItem> = [];
+  private _state: ISprintState;
+  private _observers: Array<IObserver> = [];
 
   constructor(
-    id: number,
     name: string,
     startDate: Date,
     endDate: Date,
+    createdBy: User,
+    productOwner: User,
     scrumMaster: User,
-    pipeline: Pipeline
+    pipeline: Pipeline,
   ) {
-    if (scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER) {
-      throw new Error("Invalid scrum master!");
-    }
-    this._id = id;
     this._name = name;
     this._startDate = startDate;
     this._endDate = endDate;
+    this._createdBy = createdBy;
+    this._createdAt = new Date(Date.now());
+    if (productOwner.getRole() !== ScrumRole.PRODUCT_OWNER) throw new Error("Invalid product owner!");
+    this._productOwner = productOwner;
+    if (scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER) throw new Error("Invalid scrum master!");
     this._scrumMaster = scrumMaster;
-    this._state = new SprintCreatedState(this);
-    this._backlogItems = new Array<BacklogItem>();
     this._pipeline = pipeline;
+    this._state = new SprintCreatedState(this);
   }
 
-  public getId(): number {
-    return this._id;
-  }
-
-  public getName(): string {
-    return this._name;
-  }
-
-  public getStartDate(): Date {
-    return this._startDate;
-  }
-
-  public getEndDate(): Date {
-    return this._endDate;
+  public getCreationInfo(): string {
+    return `${this._createdBy} - ${this._createdAt}`;
   }
 
   public getScrumMaster(): User {
@@ -62,18 +58,10 @@ export class Sprint {
   }
 
   public addBacklogItem(
-    user: User,
-    partialBacklogItem: Omit<BacklogItem, "scrumMaster">
+    leadDeveloper: User,
+    backlogItem: BacklogItem
   ): void {
-    if (!(user instanceof LeadDeveloper)) {
-      throw new Error("Only Lead Developers can add backlog items.");
-    }
-    const backlogItem = new BacklogItem(
-      partialBacklogItem.id,
-      partialBacklogItem.name,
-      partialBacklogItem.description,
-      this._scrumMaster
-    );
+    if (leadDeveloper.getRole() !== ScrumRole.LEAD_DEVELOPER) throw new Error("Only lead developers can add backlog items!")
     this._backlogItems.push(backlogItem);
   }
 
@@ -103,7 +91,10 @@ export class Sprint {
     pipeline?: Pipeline
   ): void {
     if (this._state instanceof SprintActiveState) {
-      throw new Error("Cannot update Sprint because it has already started!");
+      throw new Error("Cannot update sprint because it has already started!");
+    }
+    if (this._pipeline.isRunning()) {
+      throw new Error("Cannot update sprint because the pipeline is running!");
     }
     if (name) this._name = name;
     if (startDate) this._startDate = startDate;
@@ -131,7 +122,24 @@ export class Sprint {
 
   public release(user: User): void {
     this.checkRole(user.getRole());
-    this._state.release();
+    let maximumPoints = 0;
+    let totalPoints = 0;
+    this._backlogItems.forEach(backlogItem => {
+      console.log(backlogItem);
+      maximumPoints += backlogItem._storyPoints;
+      if (backlogItem.getState() instanceof BacklogDoneState) {
+        totalPoints += backlogItem._storyPoints;
+      }
+    })
+    console.log(totalPoints, maximumPoints);
+    if ((totalPoints / maximumPoints) * 100 >= 75) {
+        this._pipeline.execute();
+        this._state.release();
+    } else {
+      const notificationMessage = `Sprint: ${this._name} didn't have enough points to release the sprint!`;
+      this.notify(new Notification(this._scrumMaster, notificationMessage));
+      this.notify(new Notification(this._productOwner, notificationMessage));
+    }
   }
 
   public review(user: User): void {
@@ -140,14 +148,31 @@ export class Sprint {
   }
 
   public close(user: User): void {
+    // Controleren of document is geupload
     this.checkRole(user.getRole());
-    this._pipeline.execute();
     this._state.close();
   }
 
   private checkRole(role: ScrumRole): void {
     if (role !== ScrumRole.SCRUM_MASTER) {
       throw new Error("Only the scrum master can perform this action!");
+    }
+  }
+
+  public subscribe(observer: IObserver): void {
+    this._observers.push(observer);
+  }
+
+  public unsubscribe(observer: IObserver) {
+    const index = this._observers.indexOf(observer);
+    if (index !== -1) {
+      this._observers.splice(index, 1);
+    }
+  }
+
+  public notify(notification: Notification) {
+    for (const observer of this._observers) {
+      observer.update(notification);
     }
   }
 }

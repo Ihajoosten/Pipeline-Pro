@@ -17,6 +17,7 @@ import { IPipelineVisitor } from "../src/visitor-pattern/visitors/IPipelineVisit
 describe("Pipeline Tests", () => {
   let pipeline: Pipeline;
   const pipelineName = "pipeline";
+  let productOwner: User;
   let scrumMaster: User;
   let task1: any;
   let task2: any;
@@ -26,6 +27,14 @@ describe("Pipeline Tests", () => {
   let observer3: any;
 
   beforeEach(() => {
+    productOwner = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.PRODUCT_OWNER
+    );
     scrumMaster = new UserFactory().createUser(
       "Erdem",
       "Pekguzel",
@@ -34,7 +43,7 @@ describe("Pipeline Tests", () => {
       [],
       ScrumRole.SCRUM_MASTER
     );
-    pipeline = new Pipeline(pipelineName, scrumMaster);
+    pipeline = new Pipeline(pipelineName, productOwner, scrumMaster);
     task1 = { execute: jest.fn() };
     task2 = { execute: jest.fn() };
     task3 = { execute: jest.fn() };
@@ -42,6 +51,20 @@ describe("Pipeline Tests", () => {
     observer2 = { update: jest.fn() };
     observer3 = { update: jest.fn() };
   });
+
+  describe("constructor", () => {
+    it("should throw an error when providing an invalid product owner", () => {
+      expect(() => {
+        new Pipeline(pipelineName, scrumMaster, scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should throw an error when providing an invalid scrum master", () => {
+      expect(() => {
+        new Pipeline(pipelineName, productOwner, productOwner);
+      }).toThrowError();
+    });
+  })
 
   describe("addTask", () => {
     it("should add a task to the pipeline", () => {

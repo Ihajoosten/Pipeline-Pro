@@ -2,8 +2,8 @@ import { ScrumMaster } from "../models/user.model";
 
 export class SprintResult {
   public constructor(
+    // public maken of getters gebruiken?
     private name: string,
-    private scrumMaster: ScrumMaster,
     private startDate: string,
     private endDate: string,
     private goal: string,

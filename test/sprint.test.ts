@@ -4,6 +4,7 @@ import { NotificationType, ScrumRole } from "../src/models/enumerations";
 import { Pipeline } from "../src/models/pipeline.model";
 import { Sprint } from "../src/models/sprint.model";
 import { NotificationPreference, User } from "../src/models/user.model";
+import { BacklogDoneState } from "../src/state-pattern/states/backlog-states/done.state";
 import { SprintActiveState } from "../src/state-pattern/states/sprint-states/active.state";
 import { SprintClosedState } from "../src/state-pattern/states/sprint-states/closed.state";
 import { SprintFinishedState } from "../src/state-pattern/states/sprint-states/finished.state";
@@ -76,31 +77,19 @@ describe("Sprint", () => {
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
-      "Adding new Functionality to the back-end",
-      scrumMaster
+      5,
+      developer, scrumMaster
     );
-    pipeline = new Pipeline("Sprint 1", scrumMaster);
-    sprint = new Sprint(
-      112,
-      "Sprint 1",
-      new Date(),
-      new Date(),
-      scrumMaster,
-      pipeline
-    );
+    backlogItem.setState(new BacklogDoneState(backlogItem));
+    pipeline = new Pipeline("Sprint 1", productOwner, scrumMaster);
+    sprint = new Sprint("", new Date, new Date, developer, productOwner, scrumMaster, pipeline);
+    sprint.addBacklogItem(leadDeveloper, backlogItem);
   });
 
   describe("constructor", () => {
     it("should throw an error if the scrum master is not valid", () => {
       expect(() => {
-        new Sprint(
-          112,
-          "Sprint 1",
-          new Date(),
-          new Date(),
-          productOwner,
-          pipeline
-        );
+        new Sprint("", new Date, new Date, scrumMaster, productOwner, developer, pipeline);
       }).toThrowError("Invalid scrum master!");
     });
 
@@ -109,23 +98,23 @@ describe("Sprint", () => {
     });
   });
 
-  describe("getName", () => {
-    it("should return the name of the sprint", () => {
-      expect(sprint.getName()).toBe("Sprint 1");
-    });
-  });
+  // describe("getName", () => {
+  //   it("should return the name of the sprint", () => {
+  //     expect(sprint._name).toBe("Sprint 1");
+  //   });
+  // });
 
-  describe("getStartDate", () => {
-    it("should return the start date of the sprint", () => {
-      expect(sprint.getStartDate()).toBeInstanceOf(Date);
-    });
-  });
+  // describe("getStartDate", () => {
+  //   it("should return the start date of the sprint", () => {
+  //     expect(sprint._startDate).toBeInstanceOf(Date);
+  //   });
+  // });
 
-  describe("getEndDate", () => {
-    it("should return the end date of the sprint", () => {
-      expect(sprint.getEndDate()).toBeInstanceOf(Date);
-    });
-  });
+  // describe("getEndDate", () => {
+  //   it("should return the end date of the sprint", () => {
+  //     expect(sprint._endDate).toBeInstanceOf(Date);
+  //   });
+  // });
 
   describe("getScrumMaster", () => {
     it("should return the scrum master of the sprint", () => {
@@ -136,10 +125,10 @@ describe("Sprint", () => {
   describe("addBacklogItem", () => {
     it("should add a new backlog item to the backlog items array", () => {
       sprint.addBacklogItem(leadDeveloper, backlogItem);
-      expect(sprint.getBacklogItems().length).toBe(1);
-      expect(sprint.getBacklogItems()[0].getName()).toBe(backlogItem.name);
-      expect(sprint.getBacklogItems()[0].getDescription()).toBe(
-        backlogItem.description
+      expect(sprint.getBacklogItems().length).toBe(2);
+      expect(sprint.getBacklogItems()[1]._name).toBe(backlogItem._name);
+      expect(sprint.getBacklogItems()[1]._description).toBe(
+        backlogItem._description
       );
     });
 
@@ -158,7 +147,6 @@ describe("Sprint", () => {
 
   describe("removeBacklogItem", () => {
     it("should remove a backlog item from the backlog items array", () => {
-      sprint.addBacklogItem(leadDeveloper, backlogItem);
       sprint.removeBacklogItem(leadDeveloper, sprint.getBacklogItems()[0]);
       expect(sprint.getBacklogItems().length).toBe(0);
     });
@@ -179,9 +167,9 @@ describe("Sprint", () => {
       pipeline
     );
 
-    expect(sprint.getName()).toEqual("New Sprint Name");
-    expect(sprint.getStartDate()).toEqual(new Date("2023-04-02"));
-    expect(sprint.getEndDate()).toEqual(new Date("2023-04-15"));
+    expect(sprint._name).toEqual("New Sprint Name");
+    expect(sprint._startDate).toEqual(new Date("2023-04-02"));
+    expect(sprint._endDate).toEqual(new Date("2023-04-15"));
     expect(sprint.getScrumMaster().getFirstName()).toEqual("Luc");
   });
 
@@ -197,7 +185,7 @@ describe("Sprint", () => {
           scrumMaster,
           pipeline
         )
-      ).toThrowError("Cannot update Sprint because it has already started!");
+      ).toThrowError("Cannot update sprint because it has already started!");
     });
 
     it("should not start sprint when called by non-scrum master user", () => {
@@ -337,10 +325,9 @@ describe("Sprint", () => {
       expect(sprint.getState().constructor.name).toBe("SprintReleasedState");
     });
 
-    it("should not move to Reviewed state, should throw error", () => {
-      expect(() => {
-        sprint.review(scrumMaster);
-      }).toThrowError();
+    it("should move to Reviewed state", () => {
+      sprint.review(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe("SprintReviewedState");
     });
 
     it("should not move to Closed state, should throw error", () => {

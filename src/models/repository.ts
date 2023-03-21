@@ -1,3 +1,7 @@
+import { Activity } from "./activity.model";
+import { BacklogItem } from "./backlogItem.model";
+import { Sprint } from "./sprint.model";
+
 export interface Commit {
   hash: string;
   message: string;
@@ -6,6 +10,8 @@ export interface Commit {
     email: string;
     date: Date;
   };
+  sprint?: Sprint;
+  activity?: BacklogItem | Activity;
 }
 
 export interface Branch {
@@ -46,7 +52,9 @@ export class Repository {
   public commit(
     branchName: string,
     message: string,
-    author: { name: string; email: string }
+    author: { name: string; email: string },
+    sprint?: Sprint,
+    activity?: BacklogItem | Activity
   ): void {
     const branch = this.getBranch(branchName);
     const lastCommit = branch.commits.length > 0 ? branch.commits[0] : null;
@@ -60,6 +68,8 @@ export class Repository {
         email: author.email,
         date: new Date(),
       },
+      sprint,
+      activity
     };
     branch.commits.unshift(newCommit);
   }

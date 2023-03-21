@@ -1,6 +1,5 @@
 import { UserFactory } from "../src/factory-pattern/user-factory";
 import { ScrumRole } from "../src/models/enumerations";
-import { User } from "../src/models/user.model";
 import {
   JPEGSprintReport,
   PDFSprintReport,
@@ -20,7 +19,6 @@ describe("Report", () => {
   );
   const mockSprintResult: SprintResult = new SprintResult(
     "Sprint 1",
-    mockUser,
     "2022-01-01",
     "2022-01-10",
     "Complete feature X",

@@ -9,8 +9,9 @@ import { SimpleLogVisitor } from "../src/visitor-pattern/visitors/simpleLogVisit
 describe("Logger Tests", () => {
     const simpleLogVisitor = new SimpleLogVisitor();
     const advancedLogVisitor = new AdvancedLogVisitor();
-    const user: User = new UserFactory().createUser("Erdem", "Pekguzel", "er@d.em", "0612345678", [], ScrumRole.SCRUM_MASTER);
-    const pipeline = new Pipeline("", user)
+    const productOwner: User = new UserFactory().createUser("Erdem", "Pekguzel", "er@d.em", "0612345678", [], ScrumRole.PRODUCT_OWNER);
+    const scrumMaster: User = new UserFactory().createUser("Erdem", "Pekguzel", "er@d.em", "0612345678", [], ScrumRole.SCRUM_MASTER);
+    const pipeline = new Pipeline("pipeline", productOwner, scrumMaster);
     const pipelineTestState = new PipelineTestState(pipeline);
 
     it("should output a simple log", () => {

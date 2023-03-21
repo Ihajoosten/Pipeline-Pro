@@ -8,7 +8,7 @@ import { Notification } from "../models/notification.model";
 import { NotificationType } from "../models/enumerations";
 
 export class NotificationObserver implements IObserver {
-  private sentNotifications: IMessage[] = []; // Wordt gebruikt voor testen
+  //private sentNotifications: IMessage[] = []; // Wordt gebruikt voor testen
 
   update(data: any): void {
     const notificationData: Notification = data;
@@ -22,29 +22,29 @@ export class NotificationObserver implements IObserver {
       .getRecipient()
       .getNotificationPreferences()) {
       const message: IMessage = {
-        address: notificationPreference.address,
+        address: notificationPreference.getAddress(),
         message: notificationData.getMessage(),
       };
 
-      switch (notificationPreference.notificationType) {
+      switch (notificationPreference.getNotifyType()) {
         case NotificationType.DISCORD:
           discordService.sendMessage(message);
-          this.sentNotifications.push(message);
+          //this.sentNotifications.push(message);
           break;
         case NotificationType.EMAIL:
           emailService.sendMessage(message);
-          this.sentNotifications.push(message);
+          //this.sentNotifications.push(message);
           break;
         case NotificationType.SLACK:
           slackService.sendMessage(message);
-          this.sentNotifications.push(message);
+          //this.sentNotifications.push(message);
           break;
         case NotificationType.WHATSAPP:
           whatsappService.sendMessage(message);
-          this.sentNotifications.push(message);
+          //this.sentNotifications.push(message);
           break;
         default:
-          throw new Error("Je moet een notificatie type kiezen");
+          throw new Error(`No notification preference set for ${notificationData.getRecipient()}`);
       }
     }
   }

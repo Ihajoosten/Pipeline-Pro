@@ -4,7 +4,7 @@ import { SprintActiveState } from "./active.state";
 import { SprintReviewedState } from "./reviewed.state";
 
 export class SprintReleasedState implements ISprintState {
-  constructor(private sprint: Sprint) { }
+  constructor(private sprint: Sprint) {}
 
   public create(): () => void {
     return this.throwError("Created");
@@ -21,7 +21,9 @@ export class SprintReleasedState implements ISprintState {
   }
 
   public start(): () => void {
-    console.log("Scrum Master canceled Release! You can now iterate through backlog items again");
+    console.log(
+      "Scrum Master canceled Release! You can now iterate through backlog items again"
+    );
     this.sprint.setState(new SprintActiveState(this.sprint));
     return this.throwError("Active");
   }

@@ -30,16 +30,18 @@ export class Sprint implements ISubject {
     createdBy: User,
     productOwner: User,
     scrumMaster: User,
-    pipeline: Pipeline,
+    pipeline: Pipeline
   ) {
     this._name = name;
     this._startDate = startDate;
     this._endDate = endDate;
     this._createdBy = createdBy;
     this._createdAt = new Date(Date.now());
-    if (productOwner.getRole() !== ScrumRole.PRODUCT_OWNER) throw new Error("Invalid product owner!");
+    if (productOwner.getRole() !== ScrumRole.PRODUCT_OWNER)
+      throw new Error("Invalid product owner!");
     this._productOwner = productOwner;
-    if (scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER) throw new Error("Invalid scrum master!");
+    if (scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER)
+      throw new Error("Invalid scrum master!");
     this._scrumMaster = scrumMaster;
     this._pipeline = pipeline;
     this._state = new SprintCreatedState(this);
@@ -57,11 +59,9 @@ export class Sprint implements ISubject {
     return this._backlogItems;
   }
 
-  public addBacklogItem(
-    leadDeveloper: User,
-    backlogItem: BacklogItem
-  ): void {
-    if (leadDeveloper.getRole() !== ScrumRole.LEAD_DEVELOPER) throw new Error("Only lead developers can add backlog items!")
+  public addBacklogItem(leadDeveloper: User, backlogItem: BacklogItem): void {
+    if (leadDeveloper.getRole() !== ScrumRole.LEAD_DEVELOPER)
+      throw new Error("Only lead developers can add backlog items!");
     this._backlogItems.push(backlogItem);
   }
 
@@ -124,17 +124,17 @@ export class Sprint implements ISubject {
     this.checkRole(user.getRole());
     let maximumPoints = 0;
     let totalPoints = 0;
-    this._backlogItems.forEach(backlogItem => {
+    this._backlogItems.forEach((backlogItem) => {
       console.log(backlogItem);
       maximumPoints += backlogItem._storyPoints;
       if (backlogItem.getState() instanceof BacklogDoneState) {
         totalPoints += backlogItem._storyPoints;
       }
-    })
+    });
     console.log(totalPoints, maximumPoints);
     if ((totalPoints / maximumPoints) * 100 >= 75) {
-        this._pipeline.execute();
-        this._state.release();
+      this._pipeline.execute();
+      this._state.release();
     } else {
       const notificationMessage = `Sprint: ${this._name} didn't have enough points to release the sprint!`;
       this.notify(new Notification(this._scrumMaster, notificationMessage));

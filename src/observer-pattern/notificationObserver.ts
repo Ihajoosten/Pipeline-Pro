@@ -44,7 +44,9 @@ export class NotificationObserver implements IObserver {
           //this.sentNotifications.push(message);
           break;
         default:
-          throw new Error(`No notification preference set for ${notificationData.getRecipient()}`);
+          throw new Error(
+            `No notification preference set for ${notificationData.getRecipient()}`
+          );
       }
     }
   }

@@ -2,25 +2,24 @@ import { ScrumRole } from "./enumerations";
 import { User } from "./user.model";
 
 export class Activity {
-  private developer?: User;
-  public isDone: boolean = false;
+  private _developer?: User;
+  public _isDone: boolean = false;
 
-  public constructor(public name: string, public description: string) {
-  }
+  public constructor(public name: string, public description: string) {}
   public setDeveloper(user: User) {
     if (
       user.getRole() == ScrumRole.DEVELOPER ||
       user.getRole() == ScrumRole.LEAD_DEVELOPER
     ) {
-      this.developer = user;
+      this._developer = user;
     }
   }
 
   public getDeveloper(): User | undefined {
-    return this.developer;
+    return this._developer;
   }
 
   public removeDeveloper() {
-    this.developer = undefined;
+    this._developer = undefined;
   }
 }

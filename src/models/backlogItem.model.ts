@@ -16,7 +16,7 @@ export class BacklogItem implements ISubject {
   public _storyPoints: number;
   private _createdBy: User;
   private _createdAt: Date;
-  private _scrumMaster: User
+  private _scrumMaster: User;
   private _developer?: User;
   private _tester?: User;
   private _activities: Array<Activity> = [];
@@ -24,13 +24,20 @@ export class BacklogItem implements ISubject {
   private _state: IBacklogItemState;
   private _observers: Array<IObserver> = [];
 
-  constructor(name: string, description: string, storyPoints: number, createdBy: User, scrumMaster: User) {
+  constructor(
+    name: string,
+    description: string,
+    storyPoints: number,
+    createdBy: User,
+    scrumMaster: User
+  ) {
     this._name = name;
     this._description = description;
     this._storyPoints = storyPoints;
     this._createdBy = createdBy;
     this._createdAt = new Date(Date.now());
-    if (scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER) throw new Error("Invalid scrum master!");
+    if (scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER)
+      throw new Error("Invalid scrum master!");
     this._scrumMaster = scrumMaster;
     this._state = new BacklogToDoState(this);
   }
@@ -44,7 +51,13 @@ export class BacklogItem implements ISubject {
   }
 
   public setDeveloper(developer: User) {
-    if (!(developer.getRole() == ScrumRole.DEVELOPER || developer.getRole() == ScrumRole.LEAD_DEVELOPER)) throw new Error("Invalid developer!");
+    if (
+      !(
+        developer.getRole() == ScrumRole.DEVELOPER ||
+        developer.getRole() == ScrumRole.LEAD_DEVELOPER
+      )
+    )
+      throw new Error("Invalid developer!");
     this._developer = developer;
   }
 
@@ -57,7 +70,8 @@ export class BacklogItem implements ISubject {
   }
 
   public setTester(tester: User) {
-    if (tester.getRole() !== ScrumRole.TESTER) throw new Error ("Invalid tester!");
+    if (tester.getRole() !== ScrumRole.TESTER)
+      throw new Error("Invalid tester!");
     this._tester = tester;
   }
 
@@ -86,7 +100,8 @@ export class BacklogItem implements ISubject {
 
   public addThread(thread: Thread) {
     if (this._thread) throw new Error("Thread already exists!");
-    if (this._state instanceof BacklogDoneState) throw new Error('Cannot add new thread, the item is already finished!');
+    if (this._state instanceof BacklogDoneState)
+      throw new Error("Cannot add new thread, the item is already finished!");
     this._thread = thread;
   }
 
@@ -146,11 +161,13 @@ export class BacklogItem implements ISubject {
 
   public done(): void {
     // Check if all activities are done
-    let allDone: boolean = true
-    this._activities.forEach(act => {
-      if (!act.isDone) allDone = false;
+    let allDone: boolean = true;
+    this._activities.forEach((act) => {
+      if (!act._isDone) allDone = false;
     });
-    if (!allDone) { throw new Error('Not all activites are done for this backlog item') }
+    if (!allDone) {
+      throw new Error("Not all activites are done for this backlog item");
+    }
     this._state.done();
   }
 

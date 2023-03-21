@@ -1,6 +1,5 @@
 import { ScrumRole } from "./enumerations";
 import { Sprint } from "./sprint.model";
-import { Team } from "./team.model";
 import {
   Developer,
   LeadDeveloper,
@@ -18,7 +17,6 @@ export class Project {
   private _scrumMaster: ScrumMaster;
   private _developers: Array<User>;
   private _sprints: Array<Sprint>;
-  // private _forum: Forum;
 
   public constructor(
     id: number,

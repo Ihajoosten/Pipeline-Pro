@@ -20,7 +20,6 @@ describe("Sprint", () => {
   let backlogItem: BacklogItem;
   let pipeline: Pipeline;
 
-
   beforeEach(() => {
     scrumMaster = new UserFactory().createUser(
       "Luc",
@@ -78,18 +77,35 @@ describe("Sprint", () => {
       "BI-001",
       "Make a new Functionality",
       5,
-      developer, scrumMaster
+      developer,
+      scrumMaster
     );
     backlogItem.setState(new BacklogDoneState(backlogItem));
     pipeline = new Pipeline("Sprint 1", productOwner, scrumMaster);
-    sprint = new Sprint("", new Date, new Date, developer, productOwner, scrumMaster, pipeline);
+    sprint = new Sprint(
+      "",
+      new Date(),
+      new Date(),
+      developer,
+      productOwner,
+      scrumMaster,
+      pipeline
+    );
     sprint.addBacklogItem(leadDeveloper, backlogItem);
   });
 
   describe("constructor", () => {
     it("should throw an error if the scrum master is not valid", () => {
       expect(() => {
-        new Sprint("", new Date, new Date, scrumMaster, productOwner, developer, pipeline);
+        new Sprint(
+          "",
+          new Date(),
+          new Date(),
+          scrumMaster,
+          productOwner,
+          developer,
+          pipeline
+        );
       }).toThrowError("Invalid scrum master!");
     });
 
@@ -97,24 +113,6 @@ describe("Sprint", () => {
       expect(sprint["_state"].constructor.name).toBe("SprintCreatedState");
     });
   });
-
-  // describe("getName", () => {
-  //   it("should return the name of the sprint", () => {
-  //     expect(sprint._name).toBe("Sprint 1");
-  //   });
-  // });
-
-  // describe("getStartDate", () => {
-  //   it("should return the start date of the sprint", () => {
-  //     expect(sprint._startDate).toBeInstanceOf(Date);
-  //   });
-  // });
-
-  // describe("getEndDate", () => {
-  //   it("should return the end date of the sprint", () => {
-  //     expect(sprint._endDate).toBeInstanceOf(Date);
-  //   });
-  // });
 
   describe("getScrumMaster", () => {
     it("should return the scrum master of the sprint", () => {

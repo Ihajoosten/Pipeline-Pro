@@ -20,7 +20,7 @@ export interface Branch {
 }
 
 export class Repository {
-  private branches: Branch[] = [{ name: "master", commits: [] }];
+  private branches: Array<Branch> = [{ name: "master", commits: [] }];
 
   public createBranch(branchName: string): Branch {
     const newBranch: Branch = { name: branchName, commits: [] };
@@ -69,7 +69,7 @@ export class Repository {
         date: new Date(),
       },
       sprint,
-      activity
+      activity,
     };
     branch.commits.unshift(newCommit);
   }

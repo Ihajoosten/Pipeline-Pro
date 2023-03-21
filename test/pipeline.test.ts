@@ -64,7 +64,7 @@ describe("Pipeline Tests", () => {
         new Pipeline(pipelineName, productOwner, productOwner);
       }).toThrowError();
     });
-  })
+  });
 
   describe("addTask", () => {
     it("should add a task to the pipeline", () => {
@@ -97,14 +97,14 @@ describe("Pipeline Tests", () => {
     };
     it("should set the visitor of the pipeline", () => {
       pipeline.setVisitor(mockVisitor);
-      expect(pipeline["visitor"]).toEqual(mockVisitor);
+      expect(pipeline["_visitor"]).toEqual(mockVisitor);
     });
   });
 
   describe("subscribe", () => {
     it("should subscribe an observer to the pipeline", () => {
       pipeline.subscribe(observer1);
-      expect(pipeline["observers"]).toContain(observer1);
+      expect(pipeline["_observers"]).toContain(observer1);
     });
   });
 
@@ -114,13 +114,13 @@ describe("Pipeline Tests", () => {
       pipeline.subscribe(observer2);
       pipeline.subscribe(observer3);
       pipeline.unsubscribe(observer2);
-      expect(pipeline["observers"]).toEqual([observer1, observer3]);
+      expect(pipeline["_observers"]).toEqual([observer1, observer3]);
     });
 
     it("should not unsubscribe an observer if it is not subscribed", () => {
       pipeline.subscribe(observer1);
       pipeline.unsubscribe(observer2);
-      expect(pipeline["observers"]).toEqual([observer1]);
+      expect(pipeline["_observers"]).toEqual([observer1]);
     });
   });
 
@@ -175,7 +175,7 @@ describe("Pipeline Tests", () => {
       pipeline.subscribe(mockObserver);
       pipeline.execute();
       mockNotification["message"] =
-        "Pipeline tasks were successfully executed!";
+        "Pipeline _tasks were successfully executed!";
       expect(mockTask.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
       expect(mockTask2.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
@@ -187,7 +187,7 @@ describe("Pipeline Tests", () => {
       pipeline.subscribe(mockObserver);
       pipeline.execute();
       mockNotification["message"] =
-        "There was an error during one of the pipeline tasks!";
+        "There was an error during one of the pipeline _tasks!";
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
     });
 

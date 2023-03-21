@@ -74,7 +74,9 @@ describe("Backlog Item Path Coverage Tests", () => {
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
-      10, user, scrumMaster
+      10,
+      user,
+      scrumMaster
     );
     activity = new Activity("Testing", "Testing the activity of backlog item");
     thread = new Thread("Title", "First message", user);
@@ -84,11 +86,13 @@ describe("Backlog Item Path Coverage Tests", () => {
     notification = new Notification(user, "notification");
   });
 
-  it('throws an error when not all activities are done', () => {
+  it("throws an error when not all activities are done", () => {
     backlogItem.addActivity(activity);
-    activity.isDone = false;
+    activity._isDone = false;
     backlogItem.addActivity(activity);
-    expect(() => backlogItem.done()).toThrow('Not all activites are done for this backlog item');
+    expect(() => backlogItem.done()).toThrow(
+      "Not all activites are done for this backlog item"
+    );
   });
 
   it("should set developer and tester", () => {

@@ -28,7 +28,10 @@ export class Thread implements ISubject {
 
   public addMessage(threadMessage: ThreadMessage) {
     this._messages.push(threadMessage);
-    const notificationMessage = `${threadMessage.createdBy.getFirstName() + threadMessage.createdBy.getLastName()} responded to your thread with: ${threadMessage.getMessage()}`;
+    const notificationMessage = `${
+      threadMessage.createdBy.getFirstName() +
+      threadMessage.createdBy.getLastName()
+    } responded to your thread with: ${threadMessage.getMessage()}`;
     const notification = new Notification(this._createdBy, notificationMessage);
     this.notify(notification);
   }

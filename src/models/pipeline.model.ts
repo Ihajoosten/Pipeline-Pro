@@ -5,21 +5,25 @@ import { PipelineSourceState } from "../state-pattern/states/pipeline-states/sou
 import { IPipelineVisitor } from "../visitor-pattern/visitors/IPipelineVisitor";
 import { ScrumRole } from "./enumerations";
 import { Notification } from "./notification.model";
-import { LeadDeveloper, User } from "./user.model";
+import { User } from "./user.model";
 
 export class Pipeline implements ISubject {
-  private state: IPipelineState = new PipelineSourceState(this);
-  private tasks: IPipelineState[] = [];
-  private observers: IObserver[] = [];
-  private visitor?: IPipelineVisitor;
-  private isExecuting: boolean = false;
+  private _state: IPipelineState = new PipelineSourceState(this);
+  private _tasks: Array<IPipelineState> = [];
+  private _observers: Array<IObserver> = [];
+  private _visitor?: IPipelineVisitor;
+  private _isExecuting: boolean = false;
 
-  constructor(private name: string, private productOwner: User, private scrumMaster: User) {
+  constructor(
+    private name: string,
+    private productOwner: User,
+    private scrumMaster: User
+  ) {
     if (this.productOwner.getRole() !== ScrumRole.PRODUCT_OWNER) {
-      throw new Error("Invalid product owner!")
+      throw new Error("Invalid product owner!");
     }
     if (this.scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER) {
-      throw new Error("Invalid scrum master!")
+      throw new Error("Invalid scrum master!");
     }
   }
 
@@ -28,105 +32,96 @@ export class Pipeline implements ISubject {
   }
 
   public addTask(pipelineTask: IPipelineState): void {
-    this.tasks.push(pipelineTask);
+    this._tasks.push(pipelineTask);
   }
 
   public getTasks(): IPipelineState[] {
-    return this.tasks;
+    return this._tasks;
   }
 
   public removeTask(pipelineTask: IPipelineState) {
-    const index = this.tasks.indexOf(pipelineTask);
+    const index = this._tasks.indexOf(pipelineTask);
     if (index !== -1) {
-      this.tasks.splice(index, 1);
+      this._tasks.splice(index, 1);
     }
   }
 
-  public setVisitor(visitor: IPipelineVisitor): void {
-    this.visitor = visitor;
+  public setVisitor(_visitor: IPipelineVisitor): void {
+    this._visitor = _visitor;
   }
 
   public execute(): void {
     try {
-      this.isExecuting = true;
-      if (this.visitor) {
-        this.tasks.forEach((task) => {
-          task.acceptVisitor(this.visitor!);
+      this._isExecuting = true;
+      if (this._visitor) {
+        this._tasks.forEach((task) => {
+          task.acceptVisitor(this._visitor!);
         });
-        const notificationMessage = `Pipeline tasks were successfully executed!`;
-        this.notify(new Notification(
-          this.productOwner,
-          notificationMessage
-        ));
-        this.notify(new Notification(
-          this.scrumMaster,
-          notificationMessage
-        ));
+        const notificationMessage = `Pipeline _tasks were successfully executed!`;
+        this.notify(new Notification(this.productOwner, notificationMessage));
+        this.notify(new Notification(this.scrumMaster, notificationMessage));
       }
     } catch (error) {
-      this.isExecuting = false;
-      const notificationMessage = `There was an error during one of the pipeline tasks!`;
-      this.notify(new Notification(
-        this.scrumMaster,
-        notificationMessage
-      ));
+      this._isExecuting = false;
+      const notificationMessage = `There was an error during one of the pipeline _tasks!`;
+      this.notify(new Notification(this.scrumMaster, notificationMessage));
     }
-    this.isExecuting = false;
+    this._isExecuting = false;
   }
 
   public isRunning(): boolean {
-    return this.isExecuting;
+    return this._isExecuting;
   }
 
   public getState(): IPipelineState {
-    return this.state;
+    return this._state;
   }
 
-  public setState(state: IPipelineState): void {
-    this.state = state;
+  public setState(_state: IPipelineState): void {
+    this._state = _state;
   }
 
   public moveToSource(): void {
-    this.state.onSource();
+    this._state.onSource();
   }
 
   public moveToPackage(): void {
-    this.state.onPackage();
+    this._state.onPackage();
   }
 
   public moveToBuild(): void {
-    this.state.onBuild();
+    this._state.onBuild();
   }
 
   public moveToTest(): void {
-    this.state.onTest();
+    this._state.onTest();
   }
 
   public moveToAnalyze(): void {
-    this.state.onAnalyze();
+    this._state.onAnalyze();
   }
 
   public moveToDeploy(): void {
-    this.state.onDeploy();
+    this._state.onDeploy();
   }
 
   public moveToCancel(): void {
-    this.state.onCancel();
+    this._state.onCancel();
   }
 
   public subscribe(observer: IObserver) {
-    this.observers.push(observer);
+    this._observers.push(observer);
   }
 
   public unsubscribe(observer: IObserver) {
-    const index = this.observers.indexOf(observer);
+    const index = this._observers.indexOf(observer);
     if (index !== -1) {
-      this.observers.splice(index, 1);
+      this._observers.splice(index, 1);
     }
   }
 
   public notify(notification: Notification) {
-    for (const observer of this.observers) {
+    for (const observer of this._observers) {
       observer.update(notification);
     }
   }

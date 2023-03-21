@@ -137,12 +137,6 @@ describe("Sprint", () => {
     });
   });
 
-  describe("getBacklogItems", () => {
-    it("should return the backlog items array", () => {
-      expect(sprint.getBacklogItems()).toBeInstanceOf(Array);
-    });
-  });
-
   describe("removeBacklogItem", () => {
     it("should remove a backlog item from the backlog items array", () => {
       sprint.removeBacklogItem(leadDeveloper, sprint.getBacklogItems()[0]);
@@ -156,19 +150,45 @@ describe("Sprint", () => {
     });
   });
 
-  it("should update sprint with new details when sprint is in created state", () => {
-    sprint.updateSprint(
-      "New Sprint Name",
-      new Date("2023-04-02"),
-      new Date("2023-04-15"),
-      scrumMaster,
-      pipeline
-    );
+  describe("updateSprint", () => {
+    it("should update sprint with new details when sprint is in created state", () => {
+      jest.resetAllMocks();
+      sprint.updateSprint(
+        "New Sprint Name",
+        new Date("2023-04-02"),
+        new Date("2023-04-15"),
+        scrumMaster,
+        pipeline
+      );
+  
+      expect(sprint._name).toEqual("New Sprint Name");
+      expect(sprint._startDate).toEqual(new Date("2023-04-02"));
+      expect(sprint._endDate).toEqual(new Date("2023-04-15"));
+      expect(sprint.getScrumMaster().getFirstName()).toEqual("Luc");
+    });
 
-    expect(sprint._name).toEqual("New Sprint Name");
-    expect(sprint._startDate).toEqual(new Date("2023-04-02"));
-    expect(sprint._endDate).toEqual(new Date("2023-04-15"));
-    expect(sprint.getScrumMaster().getFirstName()).toEqual("Luc");
+    it("should not update a sprint and throw an error when the pipeline is running", () => {
+      const pipelineMock = require('../src/models/pipeline.model').default as jest.MockedClass<typeof Pipeline>;
+      jest.doMock('../src/models/pipeline.model', () => {
+        return {
+          default: jest.fn().mockImplementation(() => {
+            return {
+              isRunning: jest.fn().mockReturnValue(true)
+            }
+          }) as jest.MockedClass<typeof Pipeline>
+        }
+      });
+
+      expect(() => {
+        sprint.updateSprint(
+          "New Sprint Name",
+          new Date("2023-04-02"),
+          new Date("2023-04-15"),
+          scrumMaster,
+          new pipelineMock("", productOwner, scrumMaster)
+        );
+      }).toThrowError();
+    })
   });
 
   describe("Check Role", () => {

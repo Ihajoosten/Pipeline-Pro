@@ -8,7 +8,6 @@ export class PipelineCancelledState extends IPipelineState {
   }
 
   onSource(): void {
-    // Only to this state to restart
     console.log("Pipeline canceled, now restarting tasks");
     this.pipeline.setState(new PipelineSourceState(this.pipeline));
   }

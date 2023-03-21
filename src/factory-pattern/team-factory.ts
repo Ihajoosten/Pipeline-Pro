@@ -11,7 +11,6 @@ import {
 
 const regNames = new RE2(RegEx.TEAM_NAMES);
 
-// TeamFactory class
 export class TeamFactory {
   public static createTeam(
     name: string,

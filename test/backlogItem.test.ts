@@ -168,7 +168,6 @@ describe("Backlog Item Path Coverage Tests", () => {
     });
   });
 
-  // states
   it("should not move to to-do state, should throw error", () => {
     expect(() => {
       backlogItem.toDo();

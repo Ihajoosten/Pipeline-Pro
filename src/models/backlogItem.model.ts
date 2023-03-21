@@ -160,7 +160,6 @@ export class BacklogItem implements ISubject {
   }
 
   public done(): void {
-    // Check if all activities are done
     let allDone: boolean = true;
     this._activities.forEach((act) => {
       if (!act._isDone) allDone = false;

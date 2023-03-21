@@ -3,8 +3,8 @@ import { ScrumRole } from "../src/models/enumerations";
 import { Pipeline } from "../src/models/pipeline.model";
 import { User } from "../src/models/user.model";
 import { PipelineTestState } from "../src/state-pattern/states/pipeline-states/test.state";
-import { AdvancedLogVisitor } from "../src/visitor-pattern/visitors/advancedLogVisitor";
-import { SimpleLogVisitor } from "../src/visitor-pattern/visitors/simpleLogVisitor";
+import { AdvancedLogVisitor } from "../src/visitor-pattern/advancedLogVisitor";
+import { SimpleLogVisitor } from "../src/visitor-pattern/simpleLogVisitor";
 
 describe("Logger Tests", () => {
   const simpleLogVisitor = new SimpleLogVisitor();

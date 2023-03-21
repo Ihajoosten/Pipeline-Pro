@@ -2,7 +2,7 @@ import { IObserver } from "../observer-pattern/interfaces/IObserver";
 import { ISubject } from "../observer-pattern/interfaces/ISubject";
 import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { PipelineSourceState } from "../state-pattern/states/pipeline-states/source.state";
-import { IPipelineVisitor } from "../visitor-pattern/visitors/IPipelineVisitor";
+import { IPipelineVisitor } from "../visitor-pattern/IPipelineVisitor";
 import { ScrumRole } from "./enumerations";
 import { Notification } from "./notification.model";
 import { User } from "./user.model";

@@ -33,13 +33,10 @@ describe("Report", () => {
 
   describe("generateReport PDF", () => {
     it("should generate a report with PDFSprintReport", () => {
-      // Arrange
       const report = new PDFSprintReport(mockUser, mockSprintResult);
 
-      // Act
       const result = report.generateReport();
 
-      // Assert
       expect(result).toMatch(/PDF Report for Sprint Results:/);
       expect(result).toMatch(/Generated on /);
       expect(result).toMatch(
@@ -68,7 +65,6 @@ describe("Report", () => {
     });
 
     it("should throw an error when generateHeader is not implemented", () => {
-      // Arrange
       class InvalidReport extends Report {
         protected generateFooter(): string {
           return "This is the footer of the report that's going to be generated in PDF format";
@@ -85,23 +81,18 @@ describe("Report", () => {
 
       const report = new InvalidReport();
 
-      // Act
       const action = () => report.generateReport();
 
-      // Assert
       expect(action).toThrowError("Not implemented: generateHeader");
     });
   });
 
   describe("generateReport PNG", () => {
     it("should generate a report with PNGSprintReport", () => {
-      // Arrange
       const report = new PNGSprintReport(mockUser, mockSprintResult);
 
-      // Act
       const result = report.generateReport();
 
-      // Assert
       expect(result).toMatch(/PDF Report for Sprint Results:/);
       expect(result).toMatch(/Generated on /);
       expect(result).toMatch(
@@ -132,13 +123,10 @@ describe("Report", () => {
 
   describe("generateReport JPEG", () => {
     it("should generate a report with JPEGSprintReport", () => {
-      // Arrange
       const report = new JPEGSprintReport(mockUser, mockSprintResult);
 
-      // Act
       const result = report.generateReport();
 
-      // Assert
       expect(result).toMatch(/PDF Report for Sprint Results:/);
       expect(result).toMatch(/Generated on /);
       expect(result).toMatch(
@@ -167,7 +155,6 @@ describe("Report", () => {
     });
 
     it("should throw an error when generateHeader is not implemented", () => {
-      // Arrange
       class InvalidReport extends Report {
         protected generateFooter(): string {
           return "This is the footer of the report that's going to be generated in JPEG format";
@@ -184,15 +171,12 @@ describe("Report", () => {
 
       const report = new InvalidReport();
 
-      // Act
       const action = () => report.generateReport();
 
-      // Assert
       expect(action).toThrowError("Not implemented: generateHeader");
     });
 
     it("should throw an error when generateFooter is not implemented", () => {
-      // Arrange
       class InvalidReport extends Report {
         protected generateFooter(): string {
           throw new Error("Not implemented: generateFooter");
@@ -208,10 +192,8 @@ describe("Report", () => {
 
       const report = new InvalidReport();
 
-      // Act
       const action = () => report.generateReport();
 
-      // Assert
       expect(action).toThrowError("Not implemented: generateFooter");
     });
   });

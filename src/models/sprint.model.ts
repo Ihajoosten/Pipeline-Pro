@@ -148,7 +148,6 @@ export class Sprint implements ISubject {
   }
 
   public close(user: User): void {
-    // Controleren of document is geupload
     this.checkRole(user.getRole());
     this._state.close();
   }

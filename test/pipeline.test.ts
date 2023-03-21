@@ -12,7 +12,7 @@ import { PipelineDeployState } from "../src/state-pattern/states/pipeline-states
 import { PipelinePackageState } from "../src/state-pattern/states/pipeline-states/package.state";
 import { PipelineSourceState } from "../src/state-pattern/states/pipeline-states/source.state";
 import { PipelineTestState } from "../src/state-pattern/states/pipeline-states/test.state";
-import { IPipelineVisitor } from "../src/visitor-pattern/visitors/IPipelineVisitor";
+import { IPipelineVisitor } from "../src/visitor-pattern/IPipelineVisitor";
 
 describe("Pipeline Tests", () => {
   let pipeline: Pipeline;

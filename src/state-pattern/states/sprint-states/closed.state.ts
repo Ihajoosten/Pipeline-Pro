@@ -11,7 +11,6 @@ export class SprintClosedState implements ISprintState {
   }
   public release(): () => void {
     throw new Error(`Cannot change to Released State from Closed State`);
-    // return this.throwError("Released");
   }
   public review(): () => void {
     return this.throwError("Reviewed");

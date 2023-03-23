@@ -17,6 +17,7 @@ describe("Backlog Item Path Coverage Tests", () => {
   let user: User;
   let tester: User;
   let developer: User;
+  let scrumMaster: User;
   let activity: Activity;
   let thread: Thread;
   let observer: IObserver;
@@ -57,18 +58,41 @@ describe("Backlog Item Path Coverage Tests", () => {
       ],
       ScrumRole.DEVELOPER
     );
+    scrumMaster = new UserFactory().createUser(
+      "Luc",
+      "Joosten",
+      "lucjoosten@gmail.com",
+      "0645791584",
+      [
+        new NotificationPreference(
+          NotificationType.EMAIL,
+          "lhajoosten@avans.nl"
+        ),
+      ],
+      ScrumRole.SCRUM_MASTER
+    );
     backlogItem = new BacklogItem(
       "BI-001",
       "Make a new Functionality",
-      "Adding new Functionality to the back-end",
-      user
+      10,
+      user,
+      scrumMaster
     );
     activity = new Activity("Testing", "Testing the activity of backlog item");
-    thread = new Thread("Testing Thread", user);
+    thread = new Thread("Title", "First message", user);
     observer = {
       update: jest.fn(),
     };
-    notification = new Notification(user, "test test notify");
+    notification = new Notification(user, "notification");
+  });
+
+  it("throws an error when not all activities are done", () => {
+    backlogItem.addActivity(activity);
+    activity._isDone = false;
+    backlogItem.addActivity(activity);
+    expect(() => backlogItem.done()).toThrow(
+      "Not all activites are done for this backlog item"
+    );
   });
 
   it("should set developer and tester", () => {
@@ -114,7 +138,7 @@ describe("Backlog Item Path Coverage Tests", () => {
   describe("subscribe", () => {
     it("should add an observer to the observers array", () => {
       backlogItem.subscribe(observer);
-      expect(backlogItem["observers"]).toContain(observer);
+      expect(backlogItem["_observers"]).toContain(observer);
     });
   });
 
@@ -122,12 +146,12 @@ describe("Backlog Item Path Coverage Tests", () => {
     it("should remove an observer from the observers array", () => {
       backlogItem.subscribe(observer);
       backlogItem.unsubscribe(observer);
-      expect(backlogItem["observers"]).not.toContain(observer);
+      expect(backlogItem["_observers"]).not.toContain(observer);
     });
 
     it("should not remove an observer that is not subscribed", () => {
       backlogItem.unsubscribe(observer);
-      expect(backlogItem["observers"]).toEqual([]);
+      expect(backlogItem["_observers"]).toEqual([]);
     });
   });
 
@@ -144,7 +168,6 @@ describe("Backlog Item Path Coverage Tests", () => {
     });
   });
 
-  // states
   it("should not move to to-do state, should throw error", () => {
     expect(() => {
       backlogItem.toDo();

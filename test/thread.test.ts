@@ -13,27 +13,27 @@ describe("Thread Tests", () => {
     [],
     ScrumRole.PRODUCT_OWNER
   );
-  const thread: Thread = new Thread("", user);
-  const threadMessage: ThreadMessage = new ThreadMessage("", "");
+  const thread: Thread = new Thread("", "", user);
+  const threadMessage: ThreadMessage = new ThreadMessage("", user);
   const observer = { update: jest.fn() };
 
   it("should add a message and send a notification", () => {
     thread.subscribe(observer);
     thread.addMessage(threadMessage);
 
-    expect(thread.getMessages()[0]).toBe(threadMessage);
+    expect(thread.getMessages()[1]).toBe(threadMessage);
     expect(observer.update).toBeCalled();
   });
 
   it("should remove a message", () => {
     thread.removeMessage(threadMessage);
 
-    expect(thread.getMessages()).toHaveLength(0);
+    expect(thread.getMessages()).toHaveLength(1);
   });
 
   it("should unsubscribe an observer", () => {
     thread.unsubscribe(observer);
 
-    expect(thread["observers"]).toHaveLength(0);
+    expect(thread["_observers"]).toHaveLength(0);
   });
 });

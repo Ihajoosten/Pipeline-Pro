@@ -3,13 +3,13 @@ import { IMessagingAdapter } from "./interfaces/IMessagingAdapter";
 import { IMessagingService } from "./interfaces/IMessagingService";
 
 export class MessagingServiceAdapter implements IMessagingAdapter {
-  private messagingService: IMessagingService;
+  private _messagingService: IMessagingService;
 
   constructor(messagingService: IMessagingService) {
-    this.messagingService = messagingService;
+    this._messagingService = messagingService;
   }
 
   public sendMessage(message: IMessage): void {
-    this.messagingService.sendMessage(message);
+    this._messagingService.sendMessage(message);
   }
 }

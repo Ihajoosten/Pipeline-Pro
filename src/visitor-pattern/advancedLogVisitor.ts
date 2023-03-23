@@ -1,11 +1,13 @@
-import { IPipelineState } from "../../state-pattern/interface/IPipelineState";
+import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { IPipelineVisitor } from "./IPipelineVisitor";
 
 export class AdvancedLogVisitor implements IPipelineVisitor {
   private message = "";
 
   visit(pipelineStage: IPipelineState): void {
-    this.log(`Currently processing the following action: ${pipelineStage.getAction()} in the ${pipelineStage.getName()}!`);
+    this.log(
+      `Currently processing the following action: ${pipelineStage.getAction()} in the ${pipelineStage.getName()}!`
+    );
   }
 
   public log(message: string) {
@@ -14,7 +16,7 @@ export class AdvancedLogVisitor implements IPipelineVisitor {
     ╔═╗╔╦╗╦  ╦╔═╗╔╗╔╔═╗╔═╗╔╦╗  ╦  ╔═╗╔═╗╔═╗╔═╗╦═╗
     ╠═╣ ║║╚╗╔╝╠═╣║║║║  ║╣  ║║  ║  ║ ║║ ╦║ ╦║╣ ╠╦╝
     ╩ ╩═╩╝ ╚╝ ╩ ╩╝╚╝╚═╝╚═╝═╩╝  ╩═╝╚═╝╚═╝╚═╝╚═╝╩╚═                                                                                                                   
-    `)
+    `);
     console.log(`%c ${message}`);
   }
 

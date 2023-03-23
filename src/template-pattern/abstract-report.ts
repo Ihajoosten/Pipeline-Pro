@@ -38,10 +38,9 @@ export function exportLog(sprintResult: SprintResult): string {
   const sprintDuration = Math.round(
     (new Date(sprintResult["endDate"]).getTime() -
       new Date(sprintResult["startDate"]).getTime()) /
-    (1000 * 60 * 60 * 24)
+      (1000 * 60 * 60 * 24)
   );
-  const velocity =
-    sprintResult["totalStoryPointsCompleted"] / sprintDuration;
+  const velocity = sprintResult["totalStoryPointsCompleted"] / sprintDuration;
 
   let logOutput = `Sprint Name: ${sprintResult["name"]}\n`;
   logOutput += `Sprint Duration: ${sprintDuration} days\n`;
@@ -97,7 +96,9 @@ export class PDFSprintReport extends Report {
     return `This is the footer of the report that's going to be generated in PDF format`;
   }
 
-  protected generateContent(): string { return exportLog(this.sprintResult) }
+  protected generateContent(): string {
+    return exportLog(this.sprintResult);
+  }
 }
 
 export class PNGSprintReport extends Report {
@@ -120,7 +121,9 @@ export class PNGSprintReport extends Report {
     return `This is the footer of the report that's going to be generated in PNG format`;
   }
 
-  protected generateContent(): string { return exportLog(this.sprintResult) }
+  protected generateContent(): string {
+    return exportLog(this.sprintResult);
+  }
 }
 
 export class JPEGSprintReport extends Report {
@@ -143,5 +146,7 @@ export class JPEGSprintReport extends Report {
     return `This is the footer of the report that's going to be generated in JPEG format`;
   }
 
-  protected generateContent(): string { return exportLog(this.sprintResult) }
+  protected generateContent(): string {
+    return exportLog(this.sprintResult);
+  }
 }

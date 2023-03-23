@@ -11,7 +11,6 @@ import {
 
 const regNames = new RE2(RegEx.TEAM_NAMES);
 
-// TeamFactory class
 export class TeamFactory {
   public static createTeam(
     name: string,
@@ -25,37 +24,37 @@ export class TeamFactory {
 
     team.productOwner =
       productOwner &&
-        !TeamFactory.validate(
-          `${productOwner.getFirstName} ${productOwner.getLastName}`
-        )
+      !TeamFactory.validate(
+        `${productOwner.getFirstName} ${productOwner.getLastName}`
+      )
         ? productOwner
         : undefined;
     team.scrumMaster =
       scrumMaster &&
-        !TeamFactory.validate(
-          `${scrumMaster.getFirstName} ${scrumMaster.getLastName}`
-        )
+      !TeamFactory.validate(
+        `${scrumMaster.getFirstName} ${scrumMaster.getLastName}`
+      )
         ? scrumMaster
         : undefined;
     team.leadDevelopers =
       leadDevelopers &&
-        leadDevelopers.filter((d) => {
-          TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
-        })
+      leadDevelopers.filter((d) => {
+        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+      })
         ? leadDevelopers
         : undefined;
     team.developers =
       developers &&
-        developers.filter((d) => {
-          TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
-        })
+      developers.filter((d) => {
+        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+      })
         ? developers
         : undefined;
     team.testers =
       testers &&
-        testers.filter((d) => {
-          TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
-        })
+      testers.filter((d) => {
+        TeamFactory.validate(`${d.getFirstName} ${d.getLastName}`);
+      })
         ? testers
         : undefined;
 

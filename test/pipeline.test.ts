@@ -12,11 +12,12 @@ import { PipelineDeployState } from "../src/state-pattern/states/pipeline-states
 import { PipelinePackageState } from "../src/state-pattern/states/pipeline-states/package.state";
 import { PipelineSourceState } from "../src/state-pattern/states/pipeline-states/source.state";
 import { PipelineTestState } from "../src/state-pattern/states/pipeline-states/test.state";
-import { IPipelineVisitor } from "../src/visitor-pattern/visitors/IPipelineVisitor";
+import { IPipelineVisitor } from "../src/visitor-pattern/IPipelineVisitor";
 
 describe("Pipeline Tests", () => {
   let pipeline: Pipeline;
   const pipelineName = "pipeline";
+  let productOwner: User;
   let scrumMaster: User;
   let task1: any;
   let task2: any;
@@ -26,6 +27,14 @@ describe("Pipeline Tests", () => {
   let observer3: any;
 
   beforeEach(() => {
+    productOwner = new UserFactory().createUser(
+      "Erdem",
+      "Pekguzel",
+      "erdempekguzel@avans.nl",
+      "0697513489",
+      [],
+      ScrumRole.PRODUCT_OWNER
+    );
     scrumMaster = new UserFactory().createUser(
       "Erdem",
       "Pekguzel",
@@ -34,13 +43,27 @@ describe("Pipeline Tests", () => {
       [],
       ScrumRole.SCRUM_MASTER
     );
-    pipeline = new Pipeline(pipelineName, scrumMaster);
+    pipeline = new Pipeline(pipelineName, productOwner, scrumMaster);
     task1 = { execute: jest.fn() };
     task2 = { execute: jest.fn() };
     task3 = { execute: jest.fn() };
     observer1 = { update: jest.fn() };
     observer2 = { update: jest.fn() };
     observer3 = { update: jest.fn() };
+  });
+
+  describe("constructor", () => {
+    it("should throw an error when providing an invalid product owner", () => {
+      expect(() => {
+        new Pipeline(pipelineName, scrumMaster, scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should throw an error when providing an invalid scrum master", () => {
+      expect(() => {
+        new Pipeline(pipelineName, productOwner, productOwner);
+      }).toThrowError();
+    });
   });
 
   describe("addTask", () => {
@@ -74,14 +97,14 @@ describe("Pipeline Tests", () => {
     };
     it("should set the visitor of the pipeline", () => {
       pipeline.setVisitor(mockVisitor);
-      expect(pipeline["visitor"]).toEqual(mockVisitor);
+      expect(pipeline["_visitor"]).toEqual(mockVisitor);
     });
   });
 
   describe("subscribe", () => {
     it("should subscribe an observer to the pipeline", () => {
       pipeline.subscribe(observer1);
-      expect(pipeline["observers"]).toContain(observer1);
+      expect(pipeline["_observers"]).toContain(observer1);
     });
   });
 
@@ -91,13 +114,13 @@ describe("Pipeline Tests", () => {
       pipeline.subscribe(observer2);
       pipeline.subscribe(observer3);
       pipeline.unsubscribe(observer2);
-      expect(pipeline["observers"]).toEqual([observer1, observer3]);
+      expect(pipeline["_observers"]).toEqual([observer1, observer3]);
     });
 
     it("should not unsubscribe an observer if it is not subscribed", () => {
       pipeline.subscribe(observer1);
       pipeline.unsubscribe(observer2);
-      expect(pipeline["observers"]).toEqual([observer1]);
+      expect(pipeline["_observers"]).toEqual([observer1]);
     });
   });
 
@@ -152,7 +175,7 @@ describe("Pipeline Tests", () => {
       pipeline.subscribe(mockObserver);
       pipeline.execute();
       mockNotification["message"] =
-        "Pipeline tasks were successfully executed!";
+        "Pipeline _tasks were successfully executed!";
       expect(mockTask.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
       expect(mockTask2.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
@@ -164,7 +187,7 @@ describe("Pipeline Tests", () => {
       pipeline.subscribe(mockObserver);
       pipeline.execute();
       mockNotification["message"] =
-        "There was an error during one of the pipeline tasks!";
+        "There was an error during one of the pipeline _tasks!";
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
     });
 

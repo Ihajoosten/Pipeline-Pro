@@ -1,4 +1,4 @@
-import { IPipelineVisitor } from "../../visitor-pattern/visitors/IPipelineVisitor";
+import { IPipelineVisitor } from "../../visitor-pattern/IPipelineVisitor";
 
 export abstract class IPipelineState {
   constructor(private name: string, private action: string) {

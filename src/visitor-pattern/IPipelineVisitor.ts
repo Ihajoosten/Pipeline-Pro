@@ -1,4 +1,4 @@
-import { IPipelineState } from "../../state-pattern/interface/IPipelineState";
+import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 
 export interface IPipelineVisitor {
   visit(pipelineStage: IPipelineState): void;

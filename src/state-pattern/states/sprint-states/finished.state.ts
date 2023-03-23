@@ -1,6 +1,7 @@
 import { Sprint } from "../../../models/sprint.model";
 import { ISprintState } from "../../interface/ISprintState";
 import { SprintReleasedState } from "./released.state";
+import { SprintReviewedState } from "./reviewed.state";
 
 export class SprintFinishedState implements ISprintState {
   constructor(private sprint: Sprint) {}
@@ -14,15 +15,16 @@ export class SprintFinishedState implements ISprintState {
   public start(): () => void {
     return this.throwError("Active");
   }
-  public review(): () => void {
-    return this.throwError("Reviewed");
+  public review(): void {
+    console.log("Scrum master is reviewing the sprint!");
+    this.sprint.setState(new SprintReviewedState(this.sprint));
   }
   public close(): () => void {
     return this.throwError("Closed");
   }
 
   release(): void {
-    console.log("Scrum master is reviewing the sprint!");
+    console.log("Scrum master is releasing the sprint!");
     this.sprint.setState(new SprintReleasedState(this.sprint));
   }
 

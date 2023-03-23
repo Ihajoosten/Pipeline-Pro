@@ -11,164 +11,178 @@ import { Notification } from "./notification.model";
 import { ScrumRole } from "./enumerations";
 
 export class BacklogItem implements ISubject {
-  private observers: IObserver[] = [];
-  private state: IBacklogItemState;
-  private developer?: User;
-  private tester?: User;
-  private activities: Array<Activity> = [];
-  private thread?: Thread;
+  public _name: string;
+  public _description: string;
+  public _storyPoints: number;
+  private _createdBy: User;
+  private _createdAt: Date;
+  private _scrumMaster: User;
+  private _developer?: User;
+  private _tester?: User;
+  private _activities: Array<Activity> = [];
+  private _thread?: Thread;
+  private _state: IBacklogItemState;
+  private _observers: Array<IObserver> = [];
 
   constructor(
-    public id: string,
-    public name: string,
-    public description: string,
-    private scrumMaster: User
+    name: string,
+    description: string,
+    storyPoints: number,
+    createdBy: User,
+    scrumMaster: User
   ) {
-    this.state = new BacklogToDoState(this);
+    this._name = name;
+    this._description = description;
+    this._storyPoints = storyPoints;
+    this._createdBy = createdBy;
+    this._createdAt = new Date(Date.now());
+    if (scrumMaster.getRole() !== ScrumRole.SCRUM_MASTER)
+      throw new Error("Invalid scrum master!");
+    this._scrumMaster = scrumMaster;
+    this._state = new BacklogToDoState(this);
+  }
+
+  public getCreationInfo(): string {
+    return `${this._createdBy} - ${this._createdAt}`;
   }
 
   public getScrumMaster(): User {
-    return this.scrumMaster;
+    return this._scrumMaster;
   }
 
-  public getName(): string {
-    return this.name;
-  }
-
-  public getDescription(): string {
-    return this.description;
-  }
-
-  public setDeveloper(user: User) {
+  public setDeveloper(developer: User) {
     if (
-      user.getRole() == ScrumRole.DEVELOPER ||
-      user.getRole() == ScrumRole.LEAD_DEVELOPER
-    ) {
-      this.developer = user;
-    }
+      !(
+        developer.getRole() == ScrumRole.DEVELOPER ||
+        developer.getRole() == ScrumRole.LEAD_DEVELOPER
+      )
+    )
+      throw new Error("Invalid developer!");
+    this._developer = developer;
   }
 
   public getDeveloper(): User | undefined {
-    return this.developer;
+    return this._developer;
   }
 
   public removeDeveloper(): void {
-    this.developer = undefined;
+    this._developer = undefined;
   }
 
-  public setTester(user: User) {
-    if (user.getRole() == ScrumRole.TESTER) {
-      this.tester = user;
-    } else {
-      throw new Error("Backlog item is not ready for testing");
-    }
+  public setTester(tester: User) {
+    if (tester.getRole() !== ScrumRole.TESTER)
+      throw new Error("Invalid tester!");
+    this._tester = tester;
   }
 
   public getTester(): User | undefined {
-    return this.tester;
+    return this._tester;
+  }
+
+  public removeTester(): void {
+    this._tester = undefined;
   }
 
   public addActivity(activity: Activity) {
-    this.activities.push(activity);
+    this._activities.push(activity);
   }
 
   public removeActivity(activity: Activity) {
-    const index = this.activities.indexOf(activity);
+    const index = this._activities.indexOf(activity);
     if (index !== -1) {
-      this.activities.splice(index, 1);
+      this._activities.splice(index, 1);
     }
   }
 
   public getActivities(): Activity[] {
-    return this.activities;
+    return this._activities;
   }
 
   public addThread(thread: Thread) {
-    if (this.thread) {
-      throw new Error("Thread already exists!");
-    }
-
-    if (this.state instanceof BacklogDoneState) throw new Error('Cannot add new messages, the item is already finished');
-    this.thread = thread;
+    if (this._thread) throw new Error("Thread already exists!");
+    if (this._state instanceof BacklogDoneState)
+      throw new Error("Cannot add new thread, the item is already finished!");
+    this._thread = thread;
   }
 
   public getThread(): Thread | void {
-    if (this.thread) {
-      return this.thread;
+    if (this._thread) {
+      return this._thread;
     }
   }
 
   public removeThread() {
-    this.thread = undefined;
+    this._thread = undefined;
   }
 
   public getState(): IBacklogItemState {
-    return this.state;
+    return this._state;
   }
 
   public setState(state: IBacklogItemState): void {
-    this.state = state;
+    this._state = state;
   }
 
   public toDo(): void {
     if (
-      this.state instanceof BacklogReadyForTestingState ||
-      this.state instanceof BacklogDoneState
+      this._state instanceof BacklogReadyForTestingState ||
+      this._state instanceof BacklogDoneState
     ) {
-      const notificationMessage = `Backlog item: ${this.name} moved from the 'ready for testing/done' stage to the 'to do' stage!`;
+      const notificationMessage = `Backlog item: ${this._name} moved from the 'ready for testing/done' stage to the 'to do' stage!`;
       const notification = new Notification(
-        this.scrumMaster,
+        this._scrumMaster,
         notificationMessage
       );
       this.notify(notification);
     }
-    this.state.toDo();
+    this._state.toDo();
   }
 
   public doing(): void {
-    this.state.doing();
+    this._state.doing();
   }
 
   public readyForTesting(): void {
-    this.state.readyForTesting();
-    if (this.tester) {
-      const notificationMessage = `Backlog item: ${this.name} moved to the 'ready for testing' stage!`;
-      const notification = new Notification(this.tester, notificationMessage);
+    this._state.readyForTesting();
+    if (this._tester) {
+      const notificationMessage = `Backlog item: ${this._name} moved to the 'ready for testing' stage!`;
+      const notification = new Notification(this._tester, notificationMessage);
       this.notify(notification);
     }
   }
 
   public testing(): void {
-    this.state.testing();
+    this._state.testing();
   }
 
   public tested(): void {
-    this.state.tested();
+    this._state.tested();
   }
 
   public done(): void {
-    // Check if all activities are done
-    let allDone: boolean = true
-    this.activities.forEach(act => {
-      if (!act.isDone) allDone = false;
+    let allDone: boolean = true;
+    this._activities.forEach((act) => {
+      if (!act._isDone) allDone = false;
     });
-    if (!allDone) { throw new Error('Not all activites are done for this backlog item') }
-    this.state.done();
+    if (!allDone) {
+      throw new Error("Not all activites are done for this backlog item");
+    }
+    this._state.done();
   }
 
   public subscribe(observer: IObserver) {
-    this.observers.push(observer);
+    this._observers.push(observer);
   }
 
   public unsubscribe(observer: IObserver) {
-    const index = this.observers.indexOf(observer);
+    const index = this._observers.indexOf(observer);
     if (index !== -1) {
-      this.observers.splice(index, 1);
+      this._observers.splice(index, 1);
     }
   }
 
   public notify(notification: Notification) {
-    for (const observer of this.observers) {
+    for (const observer of this._observers) {
       observer.update(notification);
     }
   }

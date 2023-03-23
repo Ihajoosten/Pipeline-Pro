@@ -1,4 +1,4 @@
-import { IPipelineState } from "../../state-pattern/interface/IPipelineState";
+import { IPipelineState } from "../state-pattern/interface/IPipelineState";
 import { IPipelineVisitor } from "./IPipelineVisitor";
 
 export class SimpleLogVisitor implements IPipelineVisitor {

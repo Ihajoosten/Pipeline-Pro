@@ -9,6 +9,8 @@ import {
 } from "./user.model";
 
 export class Project {
+  // Getters maken?
+  // creationInfo
   private _id: number;
   private _name: string;
   private _startDate: Date;
@@ -38,20 +40,12 @@ export class Project {
   }
 
   public addSprint(sprint: Sprint): void {
-    if (
-      this._scrumMaster &&
-      this._scrumMaster.getRole() === ScrumRole.SCRUM_MASTER
-    ) {
+    // Check if created by ...
       this._sprints.push(sprint);
-      console.log(`Added sprint ${sprint._name} to ${this._name}`);
-    } else {
-      console.log(`There is no scrum master assigned to ${this._name}`);
     }
-  }
+
   public removeSprint(sprint: Sprint, currentUser: User): void {
-    if (currentUser instanceof ScrumMaster) {
-      throw new Error("Only the Scrum Master can remove a sprint");
-    }
+    // Check if created by ...
     const index = this._sprints.indexOf(sprint);
     if (index !== -1) {
       this._sprints.splice(index, 1);

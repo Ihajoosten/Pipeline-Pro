@@ -4,7 +4,7 @@ import { IMessagingService } from "../interfaces/IMessagingService";
 export class WhatsappService implements IMessagingService {
   public sendMessage(message: IMessage): void {
     console.log(
-      `Sending whatsapp message to ${message.address}: ${message.message}`
+      `Sending Whatsapp message to ${message.address}: ${message.message}`
     );
   }
 }

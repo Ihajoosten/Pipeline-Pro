@@ -33,7 +33,7 @@ export class PipelineCancelledState extends IPipelineState {
 
   private throwError(to: string): any {
     console.log("Pipeline is canceled");
-    console.trace(`Cannot change to ${to} State from Cancel State`);
+    console.warn(`Cannot change to ${to} State from Cancel State`);
     throw new Error(`Cannot change to ${to} State from Cancel State`);
   }
 }

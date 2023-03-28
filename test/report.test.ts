@@ -79,7 +79,7 @@ describe("Report", () => {
         }
       }
 
-      const report = new InvalidReport();
+      const report = new InvalidReport(mockUser, mockSprintResult);
 
       const action = () => report.generateReport();
 
@@ -169,7 +169,7 @@ describe("Report", () => {
         }
       }
 
-      const report = new InvalidReport();
+      const report = new InvalidReport(mockUser, mockSprintResult);
 
       const action = () => report.generateReport();
 
@@ -190,7 +190,7 @@ describe("Report", () => {
         }
       }
 
-      const report = new InvalidReport();
+      const report = new InvalidReport(mockUser, mockSprintResult);
 
       const action = () => report.generateReport();
 

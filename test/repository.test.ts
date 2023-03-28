@@ -1,4 +1,4 @@
-import { Branch, Repository } from "../src/models/repository";
+import { Branch, Repository } from "../src/models/repository.model";
 
 describe("The user should be able to create a repository and work in it.", () => {
   let repository: Repository;

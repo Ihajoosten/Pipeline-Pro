@@ -38,7 +38,7 @@ export class PipelineTestState extends IPipelineState {
 
   private throwError(to: string): any {
     console.log("Pipeline being Tested");
-    console.trace(`Cannot change to ${to} State from Test State`);
+    console.warn(`Cannot change to ${to} State from Test State`);
     throw new Error(`Cannot change to ${to} State from Test State`);
   }
 }

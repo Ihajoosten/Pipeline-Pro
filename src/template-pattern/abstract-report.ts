@@ -2,6 +2,14 @@ import { User } from "../models/user.model";
 import { SprintResult } from "./SprintResult";
 
 export abstract class Report {
+  public author: User;
+  public sprintResult: SprintResult;
+
+  public constructor(author: User, sprintResults: SprintResult) {
+    this.author = author;
+    this.sprintResult = sprintResults;
+  }
+
   generateReport(): string {
     const header = this.generateHeader();
     const content = this.generateContent();
@@ -77,15 +85,8 @@ export function exportLog(sprintResult: SprintResult): string {
 }
 
 export class PDFSprintReport extends Report {
-  public author: User;
-  public timeOfGeneration: string;
-  public sprintResult: SprintResult;
-
   public constructor(author: User, sprintResults: SprintResult) {
-    super();
-    this.author = author;
-    this.sprintResult = sprintResults;
-    this.timeOfGeneration = new Date().getTime.toString();
+    super(author, sprintResults);
   }
 
   protected generateHeader(): string {
@@ -102,15 +103,8 @@ export class PDFSprintReport extends Report {
 }
 
 export class PNGSprintReport extends Report {
-  public author: User;
-  public timeOfGeneration: string;
-  public sprintResult: SprintResult;
-
   public constructor(author: User, sprintResults: SprintResult) {
-    super();
-    this.author = author;
-    this.sprintResult = sprintResults;
-    this.timeOfGeneration = new Date().getTime.toString();
+    super(author, sprintResults);
   }
 
   protected generateHeader(): string {
@@ -127,15 +121,8 @@ export class PNGSprintReport extends Report {
 }
 
 export class JPEGSprintReport extends Report {
-  public author: User;
-  public timeOfGeneration: string;
-  public sprintResult: SprintResult;
-
   public constructor(author: User, sprintResults: SprintResult) {
-    super();
-    this.author = author;
-    this.sprintResult = sprintResults;
-    this.timeOfGeneration = new Date().getTime.toString();
+    super(author, sprintResults);
   }
 
   protected generateHeader(): string {

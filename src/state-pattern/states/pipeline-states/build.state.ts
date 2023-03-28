@@ -36,7 +36,7 @@ export class PipelineBuildState extends IPipelineState {
 
   private throwError(to: string): any {
     console.log("Pipeline is still being build");
-    console.trace(`Cannot change to ${to} State from Build State`);
+    console.warn(`Cannot change to ${to} State from Build State`);
     throw new Error(`Cannot change to ${to} State from Build State`);
   }
 }

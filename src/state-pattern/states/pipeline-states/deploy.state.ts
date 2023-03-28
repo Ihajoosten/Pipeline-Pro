@@ -33,7 +33,7 @@ export class PipelineDeployState extends IPipelineState {
 
   private throwError(to: string): any {
     console.log("Pipeline is being deployed at a cloud provider");
-    console.trace(`Cannot change to ${to} State from Deploy State`);
+    console.warn(`Cannot change to ${to} State from Deploy State`);
     throw new Error(`Cannot change to ${to} State from Deploy State`);
   }
 }

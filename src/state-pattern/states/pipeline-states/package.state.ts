@@ -36,7 +36,7 @@ export class PipelinePackageState extends IPipelineState {
 
   private throwError(to: string): any {
     console.log("Pipeline is installing Packages / 3rd party libraries");
-    console.trace(`Cannot change to ${to} State from Package State`);
+    console.warn(`Cannot change to ${to} State from Package State`);
     throw new Error(`Cannot change to ${to} State from Package State`);
   }
 }

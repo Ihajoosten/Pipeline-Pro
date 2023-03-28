@@ -8,22 +8,6 @@ export class PipelineAnalyzeState extends IPipelineState {
     super("Analyzing Stage", "Analyzing...");
   }
 
-  onSource(): () => void {
-    return this.throwError("Source");
-  }
-  onPackage(): () => void {
-    return this.throwError("Package");
-  }
-  onBuild(): () => void {
-    return this.throwError("Build");
-  }
-  onTest(): () => void {
-    return this.throwError("Test");
-  }
-  onAnalyze(): () => void {
-    return this.throwError("Analyze");
-  }
-
   onDeploy(): void {
     console.log("Analysis complete, now deploying project");
     this.pipeline.setState(new PipelineDeployState(this.pipeline));
@@ -32,6 +16,25 @@ export class PipelineAnalyzeState extends IPipelineState {
   onCancel(): void {
     console.log("Scrum Master Cancelled Pipeline");
     this.pipeline.setState(new PipelineCancelledState(this.pipeline));
+  }
+
+  onAnalyze(): () => void {
+    return this.throwError("Analyze");
+  }
+
+  onSource(): () => void {
+    return this.throwError("Source");
+  }
+  onBuild(): () => void {
+    return this.throwError("Build");
+  }
+
+  onPackage(): () => void {
+    return this.throwError("Package");
+  }
+
+  onTest(): () => void {
+    return this.throwError("Test");
   }
 
   private throwError(to: string): any {

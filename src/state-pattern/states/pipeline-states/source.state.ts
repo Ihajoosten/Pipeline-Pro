@@ -38,7 +38,7 @@ export class PipelineSourceState extends IPipelineState {
 
   private throwError(to: string): any {
     console.log("Pipeline is fetching Source code");
-    console.trace(`Cannot change to ${to} State from Source State`);
+    console.warn(`Cannot change to ${to} State from Source State`);
     throw new Error(`Cannot change to ${to} State from Source State`);
   }
 }

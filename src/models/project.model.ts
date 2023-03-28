@@ -1,4 +1,3 @@
-import { ScrumRole } from "./enumerations";
 import { Sprint } from "./sprint.model";
 import {
   Developer,
@@ -9,8 +8,6 @@ import {
 } from "./user.model";
 
 export class Project {
-  // Getters maken?
-  // creationInfo
   private _id: number;
   private _name: string;
   private _startDate: Date;

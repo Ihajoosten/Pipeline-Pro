@@ -16,9 +16,12 @@ export class NotificationObserver implements IObserver {
     const slackService = new SlackService();
     const whatsappService = new WhatsappService();
 
+    console.warn(notificationData);
+
     for (const notificationPreference of notificationData
       .getRecipient()
       .getNotificationPreferences()) {
+      console.warn(notificationPreference);
       const message: IMessage = {
         address: notificationPreference.getAddress(),
         message: notificationData.getMessage(),

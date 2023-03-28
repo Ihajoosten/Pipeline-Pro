@@ -16,7 +16,7 @@ export class Project {
   private _startDate: Date;
   private _endDate: Date;
   private _productOwner: ProductOwner;
-  private _scrumMaster: ScrumMaster;
+  private _scrumMaster?: ScrumMaster;
   private _developers: Array<User>;
   private _sprints: Array<Sprint>;
 
@@ -41,11 +41,17 @@ export class Project {
 
   public addSprint(sprint: Sprint): void {
     // Check if created by ...
-      this._sprints.push(sprint);
-    }
+    this._sprints.push(sprint);
+  }
+
+  public getScrumMaster(): any {
+    return this._scrumMaster;
+  }
 
   public removeSprint(sprint: Sprint, currentUser: User): void {
     // Check if created by ...
+    if (!(currentUser instanceof ScrumMaster))
+      throw new Error("Only the Scrum Master can remove a sprint");
     const index = this._sprints.indexOf(sprint);
     if (index !== -1) {
       this._sprints.splice(index, 1);

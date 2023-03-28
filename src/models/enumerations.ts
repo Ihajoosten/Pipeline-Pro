@@ -3,6 +3,7 @@ export enum NotificationType {
   EMAIL = "Email",
   DISCORD = "Discord",
   WHATSAPP = "Whatsapp",
+  TEST = "Test",
 }
 
 export enum ScrumRole {

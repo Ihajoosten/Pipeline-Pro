@@ -160,7 +160,7 @@ describe("Sprint", () => {
         scrumMaster,
         pipeline
       );
-  
+
       expect(sprint._name).toEqual("New Sprint Name");
       expect(sprint._startDate).toEqual(new Date("2023-04-02"));
       expect(sprint._endDate).toEqual(new Date("2023-04-15"));
@@ -168,15 +168,16 @@ describe("Sprint", () => {
     });
 
     it("should not update a sprint and throw an error when the pipeline is running", () => {
-      const pipelineMock = require('../src/models/pipeline.model').default as jest.MockedClass<typeof Pipeline>;
-      jest.doMock('../src/models/pipeline.model', () => {
+      const pipelineMock = require("../src/models/pipeline.model")
+        .default as jest.MockedClass<typeof Pipeline>;
+      jest.doMock("../src/models/pipeline.model", () => {
         return {
           default: jest.fn().mockImplementation(() => {
             return {
-              isRunning: jest.fn().mockReturnValue(true)
-            }
-          }) as jest.MockedClass<typeof Pipeline>
-        }
+              isRunning: jest.fn().mockReturnValue(true),
+            };
+          }) as jest.MockedClass<typeof Pipeline>,
+        };
       });
 
       expect(() => {
@@ -188,7 +189,7 @@ describe("Sprint", () => {
           new pipelineMock("", productOwner, scrumMaster)
         );
       }).toThrowError();
-    })
+    });
   });
 
   describe("Check Role", () => {

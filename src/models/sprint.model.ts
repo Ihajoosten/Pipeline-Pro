@@ -125,13 +125,11 @@ export class Sprint implements ISubject {
     let maximumPoints = 0;
     let totalPoints = 0;
     this._backlogItems.forEach((backlogItem) => {
-      console.log(backlogItem);
       maximumPoints += backlogItem._storyPoints;
       if (backlogItem.getState() instanceof BacklogDoneState) {
         totalPoints += backlogItem._storyPoints;
       }
     });
-    console.log(totalPoints, maximumPoints);
     if ((totalPoints / maximumPoints) * 100 >= 75) {
       this._pipeline.execute();
       this._state.release();

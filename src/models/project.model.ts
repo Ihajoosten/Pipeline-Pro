@@ -13,7 +13,7 @@ export class Project {
   private _startDate: Date;
   private _endDate: Date;
   private _productOwner: ProductOwner;
-  private _scrumMaster?: ScrumMaster;
+  private _scrumMaster: ScrumMaster;
   private _developers: Array<User>;
   private _sprints: Array<Sprint>;
 

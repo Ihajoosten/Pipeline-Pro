@@ -143,6 +143,7 @@ export class Sprint implements ISubject {
       const notificationMessage = `Sprint: ${this._name} didn't have enough points to release the sprint!`;
       this.notify(new Notification(this._scrumMaster, notificationMessage));
       this.notify(new Notification(this._productOwner, notificationMessage));
+      this.cancelRelease(user);
     }
   }
 

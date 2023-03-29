@@ -6,6 +6,7 @@ import { Sprint } from "../src/models/sprint.model";
 import { NotificationPreference, User } from "../src/models/user.model";
 import { BacklogDoneState } from "../src/state-pattern/states/backlog-states/done.state";
 import { SprintActiveState } from "../src/state-pattern/states/sprint-states/active.state";
+import { SprintCancelReleaseState } from "../src/state-pattern/states/sprint-states/canceled.state";
 import { SprintClosedState } from "../src/state-pattern/states/sprint-states/closed.state";
 import { SprintFinishedState } from "../src/state-pattern/states/sprint-states/finished.state";
 import { SprintReleasedState } from "../src/state-pattern/states/sprint-states/released.state";
@@ -236,6 +237,11 @@ describe("Sprint", () => {
         "Only the scrum master can perform this action!"
       );
     });
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
+      }).toThrowError();
+    });
   });
 
   describe("Sprint Created State Tests", () => {
@@ -271,6 +277,11 @@ describe("Sprint", () => {
     it("should not move to Closed state, should throw error", () => {
       expect(() => {
         sprint.close(scrumMaster);
+      }).toThrowError();
+    });
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
       }).toThrowError();
     });
   });
@@ -314,6 +325,11 @@ describe("Sprint", () => {
         sprint.close(scrumMaster);
       }).toThrowError();
     });
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
+      }).toThrowError();
+    });
   });
 
   describe("Sprint Finished State Tests", () => {
@@ -352,6 +368,12 @@ describe("Sprint", () => {
     it("should not move to Closed state, should throw error", () => {
       expect(() => {
         sprint.close(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
       }).toThrowError();
     });
   });
@@ -395,6 +417,10 @@ describe("Sprint", () => {
         sprint.close(scrumMaster);
       }).toThrowError();
     });
+    it("should move to CancelReview state", () => {
+      sprint.cancelRelease(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe("SprintCancelReleaseState");
+    });
   });
 
   describe("Sprint Review State Tests", () => {
@@ -436,6 +462,12 @@ describe("Sprint", () => {
       sprint.close(scrumMaster);
       expect(sprint.getState().constructor.name).toBe("SprintClosedState");
     });
+
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
+      }).toThrowError();
+    });
   });
 
   describe("Sprint Closed State Tests", () => {
@@ -476,6 +508,58 @@ describe("Sprint", () => {
     it("should not move to Close state, should throw error", () => {
       expect(() => {
         sprint.close(scrumMaster);
+      }).toThrowError();
+    });
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
+      }).toThrowError();
+    });
+  });
+
+  describe("Sprint Canceled Release State Tests", () => {
+    beforeEach(() => {
+      sprint.setState(new SprintCancelReleaseState(sprint));
+    });
+
+    it("should not move to Created state, should throw error", () => {
+      expect(() => {
+        sprint.create(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should move to Active state", () => {
+      sprint.start(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe("SprintActiveState");
+    });
+
+    it("should not move to Finshed state, should throw error", () => {
+      expect(() => {
+        sprint.finish(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to Released state, should throw error", () => {
+      expect(() => {
+        sprint.release(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to Reviewed state, should throw error", () => {
+      expect(() => {
+        sprint.review(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to Closed state, should throw error", () => {
+      expect(() => {
+        sprint.close(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
       }).toThrowError();
     });
   });

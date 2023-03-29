@@ -1,5 +1,4 @@
 import { DiscordService } from "../src/adapter-pattern/services/discord.service";
-import { EmailService } from "../src/adapter-pattern/services/email.service";
 import { SlackService } from "../src/adapter-pattern/services/slack.service";
 import { WhatsappService } from "../src/adapter-pattern/services/whatsapp.service";
 import { UserFactory } from "../src/factory-pattern/user-factory";
@@ -13,19 +12,15 @@ import { NotificationObserver } from "../src/observer-pattern/notificationObserv
 
 // Mock service classes
 class MockDiscordService {
-  sendMessage(): void {}
-}
-
-class MockEmailService {
-  sendMessage(): void {}
+  sendMessage(): void { }
 }
 
 class MockSlackService {
-  sendMessage(): void {}
+  sendMessage(): void { }
 }
 
 class MockWhatsappService {
-  sendMessage(): void {}
+  sendMessage(): void { }
 }
 
 describe("NotificationObserver", () => {
@@ -87,7 +82,6 @@ describe("NotificationObserver", () => {
       DiscordService.prototype,
       "sendMessage"
     );
-    const emailServiceSpy = jest.spyOn(EmailService.prototype, "sendMessage");
     const slackServiceSpy = jest.spyOn(SlackService.prototype, "sendMessage");
     const whatsappServiceSpy = jest.spyOn(
       WhatsappService.prototype,
@@ -99,13 +93,11 @@ describe("NotificationObserver", () => {
 
     // Assert
     expect(discordServiceSpy).toHaveBeenCalled();
-    expect(emailServiceSpy).toHaveBeenCalled();
     expect(slackServiceSpy).toHaveBeenCalled();
     expect(whatsappServiceSpy).toHaveBeenCalled();
 
     // Clean up
     discordServiceSpy.mockRestore();
-    emailServiceSpy.mockRestore();
     slackServiceSpy.mockRestore();
     whatsappServiceSpy.mockRestore();
   });

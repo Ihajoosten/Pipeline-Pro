@@ -120,6 +120,12 @@ export class Sprint implements ISubject {
     this._pipeline.execute();
   }
 
+  public cancelRelease(user: User): void {
+    this.checkRole(user.getRole());
+    this._state.cancel();
+  }
+
+
   public release(user: User): void {
     this.checkRole(user.getRole());
     let maximumPoints = 0;

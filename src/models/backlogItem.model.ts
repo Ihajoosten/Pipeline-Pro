@@ -131,7 +131,7 @@ export class BacklogItem implements ISubject {
       const notificationMessage = `Backlog item: ${this._name} moved from the 'ready for testing/done' stage to the 'to do' stage!`;
       const notification = new Notification(
         this._scrumMaster,
-        notificationMessage
+        notificationMessage, 'test'
       );
       this.notify(notification);
     }
@@ -146,7 +146,7 @@ export class BacklogItem implements ISubject {
     this._state.readyForTesting();
     if (this._tester) {
       const notificationMessage = `Backlog item: ${this._name} moved to the 'ready for testing' stage!`;
-      const notification = new Notification(this._tester, notificationMessage);
+      const notification = new Notification(this._tester, notificationMessage, 'test');
       this.notify(notification);
     }
   }

@@ -37,7 +37,7 @@ export class NotificationObserver implements IObserver {
           const email: IEmail = {
             to: notificationData.getRecipient().getEmail(),
             from: notificationPreference.getAddress(),
-            subject: '',
+            subject: notificationData.getSubject(),
             body: notificationData.getMessage()
           }
           emailService.sendEmail(email);

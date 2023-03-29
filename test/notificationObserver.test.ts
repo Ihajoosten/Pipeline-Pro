@@ -70,13 +70,13 @@ describe("NotificationObserver", () => {
       ],
       ScrumRole.DEVELOPER
     );
-    notificationData = new Notification(developer, "Test notification message");
-    fakeData = new Notification(fakeDeveloper, "Testing Fake data");
+    notificationData = new Notification(developer, "Test notification message", 'test');
+    fakeData = new Notification(fakeDeveloper, "Testing Fake data", 'test');
   });
 
   it("update method should send notifications to all notification preferences", () => {
     // Arrange
-    const notification = new Notification(developer, "Test");
+    const notification = new Notification(developer, "Test", 'test');
     const observer = new NotificationObserver();
     const discordServiceSpy = jest.spyOn(
       DiscordService.prototype,

@@ -141,8 +141,8 @@ export class Sprint implements ISubject {
       this._state.release();
     } else {
       const notificationMessage = `Sprint: ${this._name} didn't have enough points to release the sprint!`;
-      this.notify(new Notification(this._scrumMaster, notificationMessage));
-      this.notify(new Notification(this._productOwner, notificationMessage));
+      this.notify(new Notification(this._scrumMaster, notificationMessage, 'Not Enough Points'));
+      this.notify(new Notification(this._productOwner, notificationMessage, 'Not Enough Points'));
       this.cancelRelease(user);
     }
   }

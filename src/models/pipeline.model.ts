@@ -58,13 +58,13 @@ export class Pipeline implements ISubject {
           task.acceptVisitor(this._visitor!);
         });
         const notificationMessage = `Pipeline _tasks were successfully executed!`;
-        this.notify(new Notification(this.productOwner, notificationMessage));
-        this.notify(new Notification(this.scrumMaster, notificationMessage));
+        this.notify(new Notification(this.productOwner, notificationMessage, 'Task Executed Sucessfully'));
+        this.notify(new Notification(this.scrumMaster, notificationMessage, 'Task Executed Sucessfully'));
       }
     } catch (error) {
       this._isExecuting = false;
       const notificationMessage = `There was an error during one of the pipeline _tasks!`;
-      this.notify(new Notification(this.scrumMaster, notificationMessage));
+      this.notify(new Notification(this.scrumMaster, notificationMessage, 'Task Execution Error'));
     }
     this._isExecuting = false;
   }

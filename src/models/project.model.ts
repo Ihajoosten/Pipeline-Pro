@@ -26,6 +26,7 @@ export class Project {
     scrumMaster: ScrumMaster,
     developers: Array<Developer | LeadDeveloper>
   ) {
+    if (!scrumMaster) throw new Error('Invalid Scrum Master!');
     this._id = id;
     this._name = name;
     this._startDate = startDate;

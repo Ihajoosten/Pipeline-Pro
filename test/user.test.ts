@@ -1,7 +1,7 @@
 import { UserFactory } from "../src/factory-pattern/user-factory";
 import { NotificationType, ScrumRole } from "../src/models/enumerations";
 import { NotificationPreference } from "../src/models/notification.model";
-import { User } from "../src/models/user.model";
+import { Developer, LeadDeveloper, ProductOwner, ScrumMaster, Tester, User } from "../src/models/user.model";
 
 describe("User", () => {
   let user: User;
@@ -103,6 +103,38 @@ describe("User", () => {
       user.removeNotificationPreference(notificationPreference);
 
       expect(user.getNotificationPreferences().length).toEqual(1);
+    });
+  });
+
+  describe('User Roles', () => {
+    const firstname = 'John';
+    const lastname = 'Doe';
+    const email = 'johndoe@example.com';
+    const phone = '123-456-7890';
+
+    it('should create a Product Owner with the correct role', () => {
+      const po = new ProductOwner(firstname, lastname, email, phone, []);
+      expect(po.getRole()).toBe('Product Owner');
+    });
+
+    it('should create a Scrum Master with the correct role', () => {
+      const sm = new ScrumMaster(firstname, lastname, email, phone, []);
+      expect(sm.getRole()).toBe('Scrum Master');
+    });
+
+    it('should create a Developer with the correct role', () => {
+      const dev = new Developer(firstname, lastname, email, phone, []);
+      expect(dev.getRole()).toBe('Developer');
+    });
+
+    it('should create a Lead Developer with the correct role', () => {
+      const leadDev = new LeadDeveloper(firstname, lastname, email, phone, []);
+      expect(leadDev.getRole()).toBe('Lead Developer');
+    });
+
+    it('should create a Tester with the correct role', () => {
+      const tester = new Tester(firstname, lastname, email, phone, []);
+      expect(tester.getRole()).toBe('Tester');
     });
   });
 });

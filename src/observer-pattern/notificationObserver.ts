@@ -7,7 +7,6 @@ import { IMessage } from "../adapter-pattern/interfaces/IMessage";
 import { Notification } from "../models/notification.model";
 import { NotificationType } from "../models/enumerations";
 import { IEmail } from "../adapter-pattern/interfaces/IEmail";
-import { User } from "../models/user.model";
 
 export class NotificationObserver implements IObserver {
   update(data: any): void {

@@ -3,7 +3,7 @@ import { ISprintState } from "../../interface/ISprintState";
 import { SprintActiveState } from "./active.state";
 
 export class SprintCreatedState implements ISprintState {
-  constructor(private sprint: Sprint) {}
+  constructor(private sprint: Sprint) { }
 
   public create(): () => void {
     return this.throwError("Created");
@@ -19,6 +19,9 @@ export class SprintCreatedState implements ISprintState {
   }
   public close(): () => void {
     return this.throwError("Closed");
+  }
+  public cancel(): () => void {
+    return this.throwError("CancelRelease");
   }
 
   start(): void {

@@ -1,13 +1,10 @@
+import { TeamFactory } from "../src/factory-pattern/team-factory";
 import { UserFactory } from "../src/factory-pattern/user-factory";
 import { NotificationType, ScrumRole } from "../src/models/enumerations";
 import { Pipeline } from "../src/models/pipeline.model";
 import { Project } from "../src/models/project.model";
 import { Sprint } from "../src/models/sprint.model";
-import {
-  Developer,
-  User,
-  NotificationPreference,
-} from "../src/models/user.model";
+import { User, NotificationPreference } from "../src/models/user.model";
 
 describe("Project", () => {
   let project: Project;
@@ -62,14 +59,13 @@ describe("Project", () => {
       ScrumRole.LEAD_DEVELOPER
     );
     const developers = [developer, leadDeveloper];
+    const team = TeamFactory.createTeam('Test Team', productOwner, scrumMaster, [developers[1]], [developers[0]])
     project = new Project(
       1,
       "Test Project",
       new Date(),
       new Date(),
-      productOwner,
-      scrumMaster,
-      developers
+      team
     );
     pipeline = new Pipeline("pipelineTest", productOwner, scrumMaster);
     sprint = new Sprint(
@@ -90,7 +86,7 @@ describe("Project", () => {
     });
 
     it("should not add a sprint to the project if there is no scrum master", () => {
-      project["_scrumMaster"] = undefined;
+      project["_team"]['scrumMaster'] = undefined;
       project.addSprint(sprint);
       expect(project["_sprints"][0]).not.toContainEqual(sprint);
     });

@@ -125,7 +125,7 @@ describe("Pipeline Tests", () => {
   });
 
   describe("notify", () => {
-    const notification = new Notification(scrumMaster, "Test Notification");
+    const notification = new Notification(scrumMaster, "Test Notification", 'test');
     it("should notify all observers with the given notification", () => {
       pipeline.subscribe(observer1);
       pipeline.subscribe(observer2);
@@ -151,7 +151,7 @@ describe("Pipeline Tests", () => {
         log: jest.fn(),
         getLog: jest.fn(),
       };
-      mockNotification = new Notification(scrumMaster, "test notification");
+      mockNotification = new Notification(scrumMaster, "test notification", '');
       mockObserver = {
         update: jest.fn(),
       };
@@ -174,8 +174,8 @@ describe("Pipeline Tests", () => {
       pipeline.setVisitor(mockVisitor);
       pipeline.subscribe(mockObserver);
       pipeline.execute();
-      mockNotification["message"] =
-        "Pipeline _tasks were successfully executed!";
+      mockNotification["message"] = "Pipeline _tasks were successfully executed!";
+      mockNotification['subject'] = "Task Executed Sucessfully";
       expect(mockTask.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
       expect(mockTask2.acceptVisitor).toHaveBeenCalledWith(mockVisitor);
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
@@ -188,6 +188,7 @@ describe("Pipeline Tests", () => {
       pipeline.execute();
       mockNotification["message"] =
         "There was an error during one of the pipeline _tasks!";
+      mockNotification['subject'] = "Task Execution Error";
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
     });
 

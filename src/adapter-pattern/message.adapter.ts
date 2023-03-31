@@ -1,15 +1,20 @@
 import { IMessage } from "./interfaces/IMessage";
-import { IMessagingAdapter } from "./interfaces/IMessagingAdapter";
 import { IMessagingService } from "./interfaces/IMessagingService";
+import { EmailService } from "./services/email.service";
 
-export class MessagingServiceAdapter implements IMessagingAdapter {
-  private _messagingService: IMessagingService;
+export class EmailServiceAdapter implements IMessagingService {
+  private _emailService: EmailService;
 
-  constructor(messagingService: IMessagingService) {
-    this._messagingService = messagingService;
+  constructor(emailService: EmailService) {
+    this._emailService = emailService;
   }
 
   public sendMessage(message: IMessage): void {
-    this._messagingService.sendMessage(message);
+    this._emailService.sendEmail({
+      from: "pipe@line.pro",
+      to: message.address,
+      subject: "IMPORTANT EMAIL FROM PIPELINE-PRO",
+      body: message.message
+    })
   }
 }

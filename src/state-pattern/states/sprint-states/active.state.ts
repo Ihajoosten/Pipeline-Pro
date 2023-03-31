@@ -3,7 +3,7 @@ import { ISprintState } from "../../interface/ISprintState";
 import { SprintFinishedState } from "./finished.state";
 
 export class SprintActiveState implements ISprintState {
-  constructor(private sprint: Sprint) {}
+  constructor(private sprint: Sprint) { }
 
   public create(): () => void {
     return this.throwError("Created");
@@ -24,6 +24,10 @@ export class SprintActiveState implements ISprintState {
   public finish(): void {
     console.log("Scrum Master is finishing the sprint!");
     this.sprint.setState(new SprintFinishedState(this.sprint));
+  }
+
+  public cancel(): () => void {
+    return this.throwError("CancelRelease");
   }
 
   private throwError(to: string): any {

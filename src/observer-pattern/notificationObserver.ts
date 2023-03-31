@@ -6,6 +6,8 @@ import { WhatsappService } from "../adapter-pattern/services/whatsapp.service";
 import { IMessage } from "../adapter-pattern/interfaces/IMessage";
 import { Notification } from "../models/notification.model";
 import { NotificationType } from "../models/enumerations";
+import { IEmail } from "../adapter-pattern/interfaces/IEmail";
+import { User } from "../models/user.model";
 
 export class NotificationObserver implements IObserver {
   update(data: any): void {
@@ -32,7 +34,13 @@ export class NotificationObserver implements IObserver {
           discordService.sendMessage(message);
           break;
         case NotificationType.EMAIL:
-          emailService.sendMessage(message);
+          const email: IEmail = {
+            to: notificationData.getRecipient().getEmail(),
+            from: notificationPreference.getAddress(),
+            subject: notificationData.getSubject(),
+            body: notificationData.getMessage()
+          }
+          emailService.sendEmail(email);
           break;
         case NotificationType.SLACK:
           slackService.sendMessage(message);

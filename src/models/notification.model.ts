@@ -2,7 +2,7 @@ import { NotificationType } from "./enumerations";
 import { User } from "./user.model";
 
 export class Notification {
-  constructor(private recipient: User, private message: string) {}
+  constructor(private recipient: User, private message: string, private subject: string) { }
 
   public getRecipient(): User {
     return this.recipient;
@@ -10,6 +10,10 @@ export class Notification {
 
   public getMessage(): string {
     return this.message;
+  }
+
+  public getSubject(): string {
+    return this.subject
   }
 }
 
@@ -28,6 +32,7 @@ export class NotificationPreference {
   public getAddress(): string {
     return this._address;
   }
+
   public equals(other: NotificationPreference): boolean {
     return this._type === other._type && this._address === other._address;
   }

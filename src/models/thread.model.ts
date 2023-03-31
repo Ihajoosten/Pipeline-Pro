@@ -13,7 +13,7 @@ export class Thread implements ISubject {
 
   constructor(title: string, message: string, createdBy: User) {
     this._title = title;
-    this._messages.push(new ThreadMessage(message, createdBy, null));
+    this._messages.push(new ThreadMessage(message, createdBy, []));
     this._createdBy = createdBy;
     this._createdAt = new Date(Date.now());
   }

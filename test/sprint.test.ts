@@ -1,9 +1,11 @@
 import { UserFactory } from "../src/factory-pattern/user-factory";
 import { BacklogItem } from "../src/models/backlogItem.model";
 import { NotificationType, ScrumRole } from "../src/models/enumerations";
+import { Notification } from "../src/models/notification.model";
 import { Pipeline } from "../src/models/pipeline.model";
 import { Sprint } from "../src/models/sprint.model";
 import { NotificationPreference, User } from "../src/models/user.model";
+import { IObserver } from "../src/observer-pattern/interfaces/IObserver";
 import { BacklogDoneState } from "../src/state-pattern/states/backlog-states/done.state";
 import { SprintActiveState } from "../src/state-pattern/states/sprint-states/active.state";
 import { SprintCancelReleaseState } from "../src/state-pattern/states/sprint-states/canceled.state";
@@ -20,6 +22,8 @@ describe("Sprint", () => {
   let leadDeveloper: User;
   let backlogItem: BacklogItem;
   let pipeline: Pipeline;
+  let observer: IObserver;
+  let notification: Notification
 
   beforeEach(() => {
     scrumMaster = new UserFactory().createUser(
@@ -92,6 +96,10 @@ describe("Sprint", () => {
       scrumMaster,
       pipeline
     );
+    observer = {
+      update: jest.fn(),
+    };
+    notification = new Notification(scrumMaster, "notification", 'test');
     sprint.addBacklogItem(leadDeveloper, backlogItem);
   });
 
@@ -190,6 +198,39 @@ describe("Sprint", () => {
           new pipelineMock("", productOwner, scrumMaster)
         );
       }).toThrowError();
+    });
+  });
+
+  describe("subscribe", () => {
+    it("should add an observer to the observers array", () => {
+      sprint.subscribe(observer);
+      expect(sprint["_observers"]).toContain(observer);
+    });
+  });
+
+  describe("unsubscribe", () => {
+    it("should remove an observer from the observers array", () => {
+      sprint.subscribe(observer);
+      sprint.unsubscribe(observer);
+      expect(sprint["_observers"]).not.toContain(observer);
+    });
+
+    it("should not remove an observer that is not subscribed", () => {
+      sprint.unsubscribe(observer);
+      expect(sprint["_observers"]).toEqual([]);
+    });
+  });
+
+  describe("notify", () => {
+    it("should call the update method of all subscribed observers", () => {
+      sprint.subscribe(observer);
+      sprint.notify(notification);
+      expect(observer.update).toHaveBeenCalledWith(notification);
+    });
+
+    it("should not call the update method when there are no observers", () => {
+      backlogItem.notify(notification);
+      expect(observer.update).not.toHaveBeenCalled();
     });
   });
 

@@ -4,7 +4,7 @@ import { SprintReleasedState } from "./released.state";
 import { SprintReviewedState } from "./reviewed.state";
 
 export class SprintFinishedState implements ISprintState {
-  constructor(private sprint: Sprint) {}
+  constructor(private sprint: Sprint) { }
 
   public create(): () => void {
     return this.throwError("Created");
@@ -21,6 +21,9 @@ export class SprintFinishedState implements ISprintState {
   }
   public close(): () => void {
     return this.throwError("Closed");
+  }
+  public cancel(): () => void {
+    return this.throwError("CancelRelease");
   }
 
   release(): void {

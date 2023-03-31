@@ -1,10 +1,11 @@
 import { Sprint } from "../../../models/sprint.model";
 import { ISprintState } from "../../interface/ISprintState";
 import { SprintActiveState } from "./active.state";
+import { SprintCancelReleaseState } from "./canceled.state";
 import { SprintReviewedState } from "./reviewed.state";
 
 export class SprintReleasedState implements ISprintState {
-  constructor(private sprint: Sprint) {}
+  constructor(private sprint: Sprint) { }
 
   public create(): () => void {
     return this.throwError("Created");
@@ -26,6 +27,11 @@ export class SprintReleasedState implements ISprintState {
     );
     this.sprint.setState(new SprintActiveState(this.sprint));
     return this.throwError("Active");
+  }
+
+  public cancel(): void {
+    console.log("Scrum Master is reviewing the sprint!");
+    this.sprint.setState(new SprintCancelReleaseState(this.sprint));
   }
 
   review(): void {

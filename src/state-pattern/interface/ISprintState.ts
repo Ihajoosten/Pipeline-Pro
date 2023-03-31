@@ -5,4 +5,5 @@ export interface ISprintState {
   release(): void;
   review(): void;
   close(): void;
+  cancel(): void;
 }

@@ -1,5 +1,4 @@
 import { DiscordService } from "../src/adapter-pattern/services/discord.service";
-import { EmailService } from "../src/adapter-pattern/services/email.service";
 import { SlackService } from "../src/adapter-pattern/services/slack.service";
 import { WhatsappService } from "../src/adapter-pattern/services/whatsapp.service";
 import { UserFactory } from "../src/factory-pattern/user-factory";
@@ -13,19 +12,15 @@ import { NotificationObserver } from "../src/observer-pattern/notificationObserv
 
 // Mock service classes
 class MockDiscordService {
-  sendMessage(): void {}
-}
-
-class MockEmailService {
-  sendMessage(): void {}
+  sendMessage(): void { }
 }
 
 class MockSlackService {
-  sendMessage(): void {}
+  sendMessage(): void { }
 }
 
 class MockWhatsappService {
-  sendMessage(): void {}
+  sendMessage(): void { }
 }
 
 describe("NotificationObserver", () => {
@@ -75,19 +70,18 @@ describe("NotificationObserver", () => {
       ],
       ScrumRole.DEVELOPER
     );
-    notificationData = new Notification(developer, "Test notification message");
-    fakeData = new Notification(fakeDeveloper, "Testing Fake data");
+    notificationData = new Notification(developer, "Test notification message", 'test');
+    fakeData = new Notification(fakeDeveloper, "Testing Fake data", 'test');
   });
 
   it("update method should send notifications to all notification preferences", () => {
     // Arrange
-    const notification = new Notification(developer, "Test");
+    const notification = new Notification(developer, "Test", 'test');
     const observer = new NotificationObserver();
     const discordServiceSpy = jest.spyOn(
       DiscordService.prototype,
       "sendMessage"
     );
-    const emailServiceSpy = jest.spyOn(EmailService.prototype, "sendMessage");
     const slackServiceSpy = jest.spyOn(SlackService.prototype, "sendMessage");
     const whatsappServiceSpy = jest.spyOn(
       WhatsappService.prototype,
@@ -99,13 +93,11 @@ describe("NotificationObserver", () => {
 
     // Assert
     expect(discordServiceSpy).toHaveBeenCalled();
-    expect(emailServiceSpy).toHaveBeenCalled();
     expect(slackServiceSpy).toHaveBeenCalled();
     expect(whatsappServiceSpy).toHaveBeenCalled();
 
     // Clean up
     discordServiceSpy.mockRestore();
-    emailServiceSpy.mockRestore();
     slackServiceSpy.mockRestore();
     whatsappServiceSpy.mockRestore();
   });

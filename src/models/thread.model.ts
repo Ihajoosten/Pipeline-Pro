@@ -13,7 +13,7 @@ export class Thread implements ISubject {
 
   constructor(title: string, message: string, createdBy: User) {
     this._title = title;
-    this._messages.push(new ThreadMessage(message, createdBy));
+    this._messages.push(new ThreadMessage(message, createdBy, []));
     this._createdBy = createdBy;
     this._createdAt = new Date(Date.now());
   }
@@ -28,11 +28,10 @@ export class Thread implements ISubject {
 
   public addMessage(threadMessage: ThreadMessage) {
     this._messages.push(threadMessage);
-    const notificationMessage = `${
-      threadMessage.createdBy.getFirstName() +
+    const notificationMessage = `${threadMessage.createdBy.getFirstName() +
       threadMessage.createdBy.getLastName()
-    } responded to your thread with: ${threadMessage.getMessage()}`;
-    const notification = new Notification(this._createdBy, notificationMessage);
+      } responded to your thread with: ${threadMessage.getMessage()}`;
+    const notification = new Notification(this._createdBy, notificationMessage, 'Thread Reaction');
     this.notify(notification);
   }
 

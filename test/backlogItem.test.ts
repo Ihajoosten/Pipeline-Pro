@@ -83,7 +83,7 @@ describe("Backlog Item Path Coverage Tests", () => {
     observer = {
       update: jest.fn(),
     };
-    notification = new Notification(user, "notification");
+    notification = new Notification(user, "notification", 'test');
   });
 
   it("throws an error when not all activities are done", () => {

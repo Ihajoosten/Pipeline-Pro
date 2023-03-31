@@ -1,8 +1,7 @@
-import { IMessage } from "../interfaces/IMessage";
-import { IMessagingService } from "../interfaces/IMessagingService";
+import { IEmail } from "../interfaces/IEmail";
 
-export class EmailService implements IMessagingService {
-  public sendMessage(message: IMessage): void {
-    console.log(`Sending Email to ${message.address}: ${message.message}`);
+export class EmailService {
+  public sendEmail(email: IEmail): void {
+    console.log(`Sending Email from ${email.from }to ${email.to}: ${email.subject} ----- ${email.body}`);
   }
 }

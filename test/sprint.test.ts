@@ -1,11 +1,14 @@
 import { UserFactory } from "../src/factory-pattern/user-factory";
 import { BacklogItem } from "../src/models/backlogItem.model";
 import { NotificationType, ScrumRole } from "../src/models/enumerations";
+import { Notification } from "../src/models/notification.model";
 import { Pipeline } from "../src/models/pipeline.model";
 import { Sprint } from "../src/models/sprint.model";
 import { NotificationPreference, User } from "../src/models/user.model";
+import { IObserver } from "../src/observer-pattern/interfaces/IObserver";
 import { BacklogDoneState } from "../src/state-pattern/states/backlog-states/done.state";
 import { SprintActiveState } from "../src/state-pattern/states/sprint-states/active.state";
+import { SprintCancelReleaseState } from "../src/state-pattern/states/sprint-states/canceled.state";
 import { SprintClosedState } from "../src/state-pattern/states/sprint-states/closed.state";
 import { SprintFinishedState } from "../src/state-pattern/states/sprint-states/finished.state";
 import { SprintReleasedState } from "../src/state-pattern/states/sprint-states/released.state";
@@ -19,6 +22,8 @@ describe("Sprint", () => {
   let leadDeveloper: User;
   let backlogItem: BacklogItem;
   let pipeline: Pipeline;
+  let observer: IObserver;
+  let notification: Notification
 
   beforeEach(() => {
     scrumMaster = new UserFactory().createUser(
@@ -91,6 +96,10 @@ describe("Sprint", () => {
       scrumMaster,
       pipeline
     );
+    observer = {
+      update: jest.fn(),
+    };
+    notification = new Notification(scrumMaster, "notification", 'test');
     sprint.addBacklogItem(leadDeveloper, backlogItem);
   });
 
@@ -192,6 +201,39 @@ describe("Sprint", () => {
     });
   });
 
+  describe("subscribe", () => {
+    it("should add an observer to the observers array", () => {
+      sprint.subscribe(observer);
+      expect(sprint["_observers"]).toContain(observer);
+    });
+  });
+
+  describe("unsubscribe", () => {
+    it("should remove an observer from the observers array", () => {
+      sprint.subscribe(observer);
+      sprint.unsubscribe(observer);
+      expect(sprint["_observers"]).not.toContain(observer);
+    });
+
+    it("should not remove an observer that is not subscribed", () => {
+      sprint.unsubscribe(observer);
+      expect(sprint["_observers"]).toEqual([]);
+    });
+  });
+
+  describe("notify", () => {
+    it("should call the update method of all subscribed observers", () => {
+      sprint.subscribe(observer);
+      sprint.notify(notification);
+      expect(observer.update).toHaveBeenCalledWith(notification);
+    });
+
+    it("should not call the update method when there are no observers", () => {
+      backlogItem.notify(notification);
+      expect(observer.update).not.toHaveBeenCalled();
+    });
+  });
+
   describe("Check Role", () => {
     it("should not update sprint when sprint is in active state", () => {
       sprint.setState(new SprintActiveState(sprint));
@@ -236,6 +278,11 @@ describe("Sprint", () => {
         "Only the scrum master can perform this action!"
       );
     });
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
+      }).toThrowError();
+    });
   });
 
   describe("Sprint Created State Tests", () => {
@@ -271,6 +318,11 @@ describe("Sprint", () => {
     it("should not move to Closed state, should throw error", () => {
       expect(() => {
         sprint.close(scrumMaster);
+      }).toThrowError();
+    });
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
       }).toThrowError();
     });
   });
@@ -314,6 +366,11 @@ describe("Sprint", () => {
         sprint.close(scrumMaster);
       }).toThrowError();
     });
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
+      }).toThrowError();
+    });
   });
 
   describe("Sprint Finished State Tests", () => {
@@ -352,6 +409,12 @@ describe("Sprint", () => {
     it("should not move to Closed state, should throw error", () => {
       expect(() => {
         sprint.close(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
       }).toThrowError();
     });
   });
@@ -395,6 +458,10 @@ describe("Sprint", () => {
         sprint.close(scrumMaster);
       }).toThrowError();
     });
+    it("should move to CancelReview state", () => {
+      sprint.cancelRelease(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe("SprintCancelReleaseState");
+    });
   });
 
   describe("Sprint Review State Tests", () => {
@@ -436,6 +503,12 @@ describe("Sprint", () => {
       sprint.close(scrumMaster);
       expect(sprint.getState().constructor.name).toBe("SprintClosedState");
     });
+
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
+      }).toThrowError();
+    });
   });
 
   describe("Sprint Closed State Tests", () => {
@@ -476,6 +549,58 @@ describe("Sprint", () => {
     it("should not move to Close state, should throw error", () => {
       expect(() => {
         sprint.close(scrumMaster);
+      }).toThrowError();
+    });
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
+      }).toThrowError();
+    });
+  });
+
+  describe("Sprint Canceled Release State Tests", () => {
+    beforeEach(() => {
+      sprint.setState(new SprintCancelReleaseState(sprint));
+    });
+
+    it("should not move to Created state, should throw error", () => {
+      expect(() => {
+        sprint.create(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should move to Active state", () => {
+      sprint.start(scrumMaster);
+      expect(sprint.getState().constructor.name).toBe("SprintActiveState");
+    });
+
+    it("should not move to Finshed state, should throw error", () => {
+      expect(() => {
+        sprint.finish(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to Released state, should throw error", () => {
+      expect(() => {
+        sprint.release(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to Reviewed state, should throw error", () => {
+      expect(() => {
+        sprint.review(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to Closed state, should throw error", () => {
+      expect(() => {
+        sprint.close(scrumMaster);
+      }).toThrowError();
+    });
+
+    it("should not move to CancelRelease state, should throw error", () => {
+      expect(() => {
+        sprint.cancelRelease(scrumMaster);
       }).toThrowError();
     });
   });

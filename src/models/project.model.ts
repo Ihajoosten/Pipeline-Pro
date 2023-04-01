@@ -1,8 +1,10 @@
+import { ScrumRole } from "./enumerations";
 import { Sprint } from "./sprint.model";
 import { Team } from "./team.model";
 import { User, ScrumMaster } from "./user.model";
 
 export class Project {
+  // Getters?
   private _id: number;
   private _name: string;
   private _startDate: Date;
@@ -27,7 +29,6 @@ export class Project {
   }
 
   public addSprint(sprint: Sprint): void {
-    // Check if created by ...
     this._sprints.push(sprint);
   }
 
@@ -38,7 +39,6 @@ export class Project {
   }
 
   public removeSprint(sprint: Sprint, currentUser: User): void {
-    // Check if created by ...
     if (!(currentUser instanceof ScrumMaster))
       throw new Error("Only the Scrum Master can remove a sprint");
     const index = this._sprints.indexOf(sprint);

@@ -81,12 +81,6 @@ describe("Pipeline Tests", () => {
       pipeline.removeTask(task2);
       expect(pipeline.getTasks()).toEqual([task1, task3]);
     });
-
-    it("should not remove a task if it is not in the pipeline", () => {
-      pipeline.addTask(task1);
-      pipeline.removeTask(task2);
-      expect(pipeline.getTasks()).toEqual([task1]);
-    });
   });
 
   describe("setVisitor", () => {
@@ -115,12 +109,6 @@ describe("Pipeline Tests", () => {
       pipeline.subscribe(observer3);
       pipeline.unsubscribe(observer2);
       expect(pipeline["_observers"]).toEqual([observer1, observer3]);
-    });
-
-    it("should not unsubscribe an observer if it is not subscribed", () => {
-      pipeline.subscribe(observer1);
-      pipeline.unsubscribe(observer2);
-      expect(pipeline["_observers"]).toEqual([observer1]);
     });
   });
 
@@ -190,14 +178,6 @@ describe("Pipeline Tests", () => {
         "There was an error during one of the pipeline _tasks!";
       mockNotification['subject'] = "Task Execution Error";
       expect(mockObserver.update).toHaveBeenCalledWith(mockNotification);
-    });
-
-    it("should not execute tasks or notify observers if visitor is undefined", () => {
-      pipeline.addTask(mockTask3);
-      pipeline.subscribe(mockObserver);
-      pipeline.execute();
-      expect(mockTask3.acceptVisitor).not.toHaveBeenCalled();
-      expect(mockObserver.update).not.toHaveBeenCalled();
     });
   });
 

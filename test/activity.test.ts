@@ -18,4 +18,11 @@ describe("Activity Tests", () => {
     activity.setDeveloper(user);
     expect(activity.getDeveloper()).toBe(user);
   });
+
+  it("should remove a (lead)developer", () => {
+    activity.setDeveloper(user);
+    activity.removeDeveloper();
+    expect(activity.getDeveloper()).not.toBe(user);
+    expect(activity['_developer']).toEqual(undefined);
+  });
 });

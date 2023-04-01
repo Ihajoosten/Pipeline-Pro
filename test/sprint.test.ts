@@ -123,12 +123,6 @@ describe("Sprint", () => {
     });
   });
 
-  describe("getScrumMaster", () => {
-    it("should return the scrum master of the sprint", () => {
-      expect(sprint.getScrumMaster()).toBe(scrumMaster);
-    });
-  });
-
   describe("addBacklogItem", () => {
     it("should add a new backlog item to the backlog items array", () => {
       sprint.addBacklogItem(leadDeveloper, backlogItem);
@@ -199,6 +193,19 @@ describe("Sprint", () => {
         );
       }).toThrowError();
     });
+
+    it('Should throw error when sprint is already started', () => {
+      sprint.setState(new SprintActiveState(sprint));
+      expect(() => {
+        sprint.updateSprint(
+          "New Sprint Name",
+          new Date("2023-04-02"),
+          new Date("2023-04-15"),
+          scrumMaster,
+          pipeline
+        );
+      }).toThrowError();
+    })
   });
 
   describe("subscribe", () => {

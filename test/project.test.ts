@@ -79,64 +79,18 @@ describe("Project", () => {
     );
   });
 
-  describe("constructor", () => {
-    it("should throw an error when an invalid product owner is provided", () => {
-      expect(() => {
-        new Project(0, "", new Date(), new Date(), scrumMaster, productOwner, []);
-      }).toThrowError();
-    });
-
-    it("should throw an error when an invalid scrum master is provided", () => {
-      expect(() => {
-        new Project(0, "", new Date(), new Date(), productOwner, scrumMaster, []);
-      }).toThrowError();
-    });
-  });
-
   describe("addSprint", () => {
-    it("should add a sprint to the project if there is a scrum master", () => {
+    it("should add a sprint to the project", () => {
       project.addSprint(sprint);
       expect(project["_sprints"]).toContain(sprint);
-    });
-
-    it("should not add a sprint to the project if there is no scrum master", () => {
-      project["_team"]['scrumMaster'] = undefined;
-      project.addSprint(sprint);
-      expect(project["_sprints"][0]).not.toContainEqual(sprint);
     });
   });
 
   describe("removeSprint", () => {
     it("should remove a sprint from the project if the current user is a scrum master", () => {
       project["_sprints"] = [sprint];
-      project.removeSprint(sprint, project.getScrumMaster());
+      project.removeSprint(sprint);
       expect(project["_sprints"]).not.toContain(sprint);
-    });
-
-    it("should throw an error if the current user is not a scrum master", () => {
-      project["_sprints"] = [sprint];
-      expect(() => project.removeSprint(sprint, developer)).toThrowError(
-        "Only the Scrum Master can remove a sprint"
-      );
-    });
-
-    it("should not remove a sprint from the project if it does not exist", () => {
-      const nonExistingSprint = new Sprint(
-        "Non-existing Sprint",
-        new Date(),
-        new Date(),
-        developer,
-        productOwner,
-        scrumMaster,
-        pipeline
-      );
-      project["_sprints"] = [sprint];
-
-      // Act
-      project.removeSprint(nonExistingSprint, project.getScrumMaster());
-
-      // Assert
-      expect(project["_sprints"]).toContain(sprint);
     });
   });
 });

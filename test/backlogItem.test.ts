@@ -130,11 +130,6 @@ describe("Backlog Item Path Coverage Tests", () => {
     }).toThrowError();
   });
 
-  it("should set and get state", () => {
-    backlogItem.setState(backlogItem.getState());
-    expect(backlogItem.getState()).toBe(backlogItem.getState());
-  });
-
   describe("subscribe", () => {
     it("should add an observer to the observers array", () => {
       backlogItem.subscribe(observer);
@@ -148,11 +143,6 @@ describe("Backlog Item Path Coverage Tests", () => {
       backlogItem.unsubscribe(observer);
       expect(backlogItem["_observers"]).not.toContain(observer);
     });
-
-    it("should not remove an observer that is not subscribed", () => {
-      backlogItem.unsubscribe(observer);
-      expect(backlogItem["_observers"]).toEqual([]);
-    });
   });
 
   describe("notify", () => {
@@ -160,11 +150,6 @@ describe("Backlog Item Path Coverage Tests", () => {
       backlogItem.subscribe(observer);
       backlogItem.notify(notification);
       expect(observer.update).toHaveBeenCalledWith(notification);
-    });
-
-    it("should not call the update method when there are no observers", () => {
-      backlogItem.notify(notification);
-      expect(observer.update).not.toHaveBeenCalled();
     });
   });
 

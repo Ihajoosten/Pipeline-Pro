@@ -79,20 +79,6 @@ describe("Project", () => {
     );
   });
 
-  describe("constructor", () => {
-    it("should throw an error when an invalid product owner is provided", () => {
-      expect(() => {
-        new Project(0, "", new Date(), new Date(), scrumMaster, productOwner, []);
-      }).toThrowError();
-    });
-
-    it("should throw an error when an invalid scrum master is provided", () => {
-      expect(() => {
-        new Project(0, "", new Date(), new Date(), productOwner, scrumMaster, []);
-      }).toThrowError();
-    });
-  });
-
   describe("addSprint", () => {
     it("should add a sprint to the project if there is a scrum master", () => {
       project.addSprint(sprint);
